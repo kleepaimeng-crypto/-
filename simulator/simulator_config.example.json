@@ -1,0 +1,28 @@
+{
+  "udpHost": "127.0.0.1",
+  "passengerCount": 320,
+  "windowCount": 200,
+  "windowRows": 50,
+  "ifePageSize": 50,
+  "randomSeed": 20260703,
+  "ports": {
+    "qar.frame": 8090,
+    "ground.task": 8091,
+    "ground.traffic_record": 8092,
+    "ground.session_summary": 8093,
+    "smart_window.status": 8094,
+    "ife_633.behavior": 8095,
+    "ife_cockrell.behavior": 8096
+  },
+  "sendIntervalsSeconds": {
+    "default": 10,
+    "qar.frame": 10,
+    "ground.task": 10,
+    "ground.traffic_record": 10,
+    "ground.session_summary": 10,
+    "smart_window.status": 10,
+    "ife_633.behavior": 10,
+    "ife_cockrell.behavior": 10
+  }
+}
+
