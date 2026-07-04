@@ -130,12 +130,17 @@
 - 后端生成 `data_record.id`，不要求模拟器提供 `messageId`。
 - 补齐来源设备、接收时间、测试飞机、航班和航段等目录字段。
 - 合法报文完整写入 `raw_payload`，并在同一事务写入对应业务表；非法 JSON 保存原文并标记 `FAILED`。
-- 修正模拟器 `ground.traffic_record` 的 5 秒时间窗口，其余报文结构不变。
+- 保留当前模拟器 `ground.traffic_record.windowStart` 与 `windowEnd` 可相等的窗口形态；数据库约束和解析逻辑允许 `window_end >= window_start`。
+- QAR 报文没有外层 `sentAt`，只有 `time=HH:mm:ss`；后端使用接收日期与 QAR `time` 合成 `sent_at` 和 `qar_sample.sample_at`。
+- `smart_window.status.timestamp` 和 IFE `sysInfo.timestamp` 为无时区文本，后端按 `Asia/Shanghai` 解析为 `timestamptz`。
+- 舷窗报文不携带航班、航段和飞机字段，后端按当前模拟器上下文或默认测试飞机配置补齐 `data_record` 公共字段。
+- `ife_cockrell.behavior` 的 `coverBase64` 只保留在父级 `data_record.raw_payload`；业务表仅保存 `cover_mime_type`、`cover_checksum` 和去除大字段后的 `behavior_detail`。
 
 ### 测试
 
 - 为七类消息分别发送 fixture 数据报。
 - 验证一份批量数据报只有一条 `data_record`，流量、会话、舷窗和 IFE 的 `items` 按序号拆入业务表，并仍可追溯到完整 JSONB。
+- 验证 QAR、舷窗、IFE 三类时间字段按上述规则入库，且 `traffic_record.window_end = window_start` 的报文可以成功入库。
 - 验证非法 UTF-8/JSON、缺字段、非法数值和未知端口配置。
 - 连续运行现有模拟器，检查收包数量与入库数量。
 
