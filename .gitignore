@@ -1,0 +1,24 @@
+.idea/
+
+# Java / Maven
+target/
+*.jar
+*.war
+
+# Node / Vue
+node_modules/
+dist/
+
+# logs
+*.log
+logs/
+
+# env / secrets
+.env
+*.local
+application-prod.yml
+application-dev.yml
+
+# system
+.DS_Store
+Thumbs.db
