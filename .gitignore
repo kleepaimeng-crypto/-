@@ -16,8 +16,8 @@ logs/
 # env / secrets
 .env
 *.local
-application-prod.yml
-application-dev.yml
+application-local.yml
+application-*.local.yml
 
 # system
 .DS_Store
