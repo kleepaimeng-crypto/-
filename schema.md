@@ -345,7 +345,7 @@ erDiagram
 | `item_no` | integer | NOT NULL，CHECK >= 1 | `items` 中从 1 开始的稳定序号 |
 | `task_id` | varchar(64) | NOT NULL | `taskId` |
 | `window_start` | timestamptz | NOT NULL | `windowStart` |
-| `window_end` | timestamptz | NOT NULL，CHECK > `window_start` | `windowEnd` |
+| `window_end` | timestamptz | NOT NULL，CHECK >= `window_start` | `windowEnd`，允许等于开始时间以贴合当前模拟器窗口 |
 | `terminal_id` | varchar(32) | NOT NULL | `terminalId` |
 | `display_terminal_id` | varchar(32) | NULL | `displayTerminalId` |
 | `seat_label` | varchar(16) | NULL | `seatLabel` |
@@ -809,7 +809,7 @@ CREATE TABLE traffic_record (
     created_at timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT uk_traffic_record_item UNIQUE (record_id, item_no),
     CONSTRAINT ck_traffic_item_no CHECK (item_no >= 1),
-    CONSTRAINT ck_traffic_window CHECK (window_end > window_start),
+    CONSTRAINT ck_traffic_window CHECK (window_end >= window_start),
     CONSTRAINT ck_traffic_bytes CHECK (bytes_count >= 0),
     CONSTRAINT ck_traffic_packets CHECK (packet_count >= 0),
     CONSTRAINT ck_traffic_throughput CHECK (throughput_mbps >= 0),
