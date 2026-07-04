@@ -12,6 +12,7 @@ spring:
     clean-disabled: true
 
 mybatis:
+  type-handlers-package: com.cabin.config.mybatis
   configuration:
     map-underscore-to-camel-case: true
 

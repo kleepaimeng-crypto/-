@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/cabin_data_platform
-    username: cabin_app
+    username: postgres
     password: "123456"
     driver-class-name: org.postgresql.Driver
 
@@ -15,3 +15,8 @@ cabin:
     username: admin
     password: "123456"
     email: admin@example.invalid
+
+management:
+  health:
+    redis:
+      enabled: false
