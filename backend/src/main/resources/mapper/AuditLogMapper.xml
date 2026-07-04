@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.persistence.mapper.AuditLogMapper">
+    <insert id="insert" parameterType="com.cabin.persistence.model.AuditLogRow">
+        INSERT INTO audit_log (
+            action,
+            target_type,
+            target_id,
+            operator_id,
+            request_ip,
+            before_value,
+            after_value,
+            result,
+            trace_id
+        ) VALUES (
+            #{action},
+            #{targetType},
+            #{targetId,jdbcType=VARCHAR},
+            CAST(#{operatorId,jdbcType=VARCHAR} AS uuid),
+            CAST(#{requestIp,jdbcType=VARCHAR} AS inet),
+            CAST(#{beforeValueJson,jdbcType=VARCHAR} AS jsonb),
+            CAST(#{afterValueJson,jdbcType=VARCHAR} AS jsonb),
+            #{result},
+            #{traceId,jdbcType=VARCHAR}
+        )
+    </insert>
+</mapper>
