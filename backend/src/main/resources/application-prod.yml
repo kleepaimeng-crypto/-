@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+cabin:
+  jwt:
+    issuer: ${JWT_ISSUER:cabin-data-platform}
+    secret: ${JWT_SECRET}
+    expires-in-seconds: ${JWT_EXPIRES_IN_SECONDS:7200}
+
+  bootstrap-admin:
+    username: ${BOOTSTRAP_ADMIN_USERNAME}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD}
+    email: ${BOOTSTRAP_ADMIN_EMAIL}

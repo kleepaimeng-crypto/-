@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cabin_data_platform
+    username: cabin_app
+    password: "123456"
+    driver-class-name: org.postgresql.Driver
+
+cabin:
+  jwt:
+    issuer: cabin-data-platform-dev
+    secret: "12345612345612345612345612345612"
+    expires-in-seconds: 7200
+
+  bootstrap-admin:
+    username: admin
+    password: "123456"
+    email: admin@example.invalid

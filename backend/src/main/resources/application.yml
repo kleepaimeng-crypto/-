@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: backend
+
+  profiles:
+    active: dev
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    clean-disabled: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,flyway
