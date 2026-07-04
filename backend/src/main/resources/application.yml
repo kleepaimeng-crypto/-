@@ -1,4 +1,4 @@
-spring:
+﻿spring:
   application:
     name: backend
 
@@ -21,3 +21,14 @@ management:
     web:
       exposure:
         include: health,info,flyway
+
+cabin:
+  udp:
+    enabled: ${UDP_ENABLED:true}
+    socket-receive-buffer-bytes: ${UDP_SOCKET_RECEIVE_BUFFER_BYTES:1048576}
+    max-datagram-bytes: ${UDP_MAX_DATAGRAM_BYTES:1048576}
+    aircraft-registration-no: ${TEST_AIRCRAFT_REGISTRATION_NO:B-TEST-001}
+    aircraft-model: ${TEST_AIRCRAFT_MODEL:Boeing 777-300ER}
+    airline-code: ${TEST_AIRLINE_CODE:CA}
+    zone-id: ${APP_ZONE_ID:Asia/Shanghai}
+

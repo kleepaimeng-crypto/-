@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, BootstrapAdminProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, BootstrapAdminProperties.class, UdpProperties.class})
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -65,3 +65,4 @@ public class SecurityConfig {
         return registration;
     }
 }
+
