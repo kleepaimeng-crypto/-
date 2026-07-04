@@ -39,7 +39,7 @@
 ### 后端
 
 - Java 21、Spring Boot 4.1.x、Maven。
-- PostgreSQL JDBC、Flyway、Spring Security、Bean Validation。
+- PostgreSQL JDBC、MyBatis、Redis、Flyway、Spring Security、Bean Validation。
 - 时间使用 `Instant`、`OffsetDateTime` 或明确时区的类型，禁止用无时区字符串在层间传递。
 - 数据库批量写入和大文件导出必须流式/分批处理。
 

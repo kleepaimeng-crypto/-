@@ -6,7 +6,7 @@
 | --- | --- |
 | 文档状态 | 首期开发基线 |
 | 首期范围 | 数据管理、UDP 接入、查询详情、标签批注、软删除、导入导出 |
-| 技术基线 | Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot；PostgreSQL 18 |
+| 技术基线 | Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot + MyBatis + Redis；PostgreSQL 18 |
 | 数据来源 | 项目需求 Word、6 张界面预设图、`simulator/` 下的接口 Schema 与模拟器代码 |
 | 非首期页面 | 飞机轨迹实时、轨迹回放、数据统计、用户管理、乘客实时动态 |
 
@@ -173,7 +173,7 @@
 ### 6.3 兼容性与运行环境
 
 - 数据库由 Docker Compose 启动 PostgreSQL 18，并使用命名卷持久化。
-- 后端使用 Java 21、Spring Boot 4.1.x、Maven。
+- 后端使用 Java 21、Spring Boot 4.1.x、Maven、MyBatis 和 Redis。
 - 前端使用 Vue 3、TypeScript、Vite 8、Element Plus，开发机使用 Node 22 LTS。
 - 首期桌面端目标分辨率为 1920x1080，最低支持 1366 像素宽度。
 

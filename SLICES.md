@@ -4,7 +4,7 @@
 
 本文件把首期开发拆成可独立验证的垂直切片。除 Slice 0/1 的公共基线外，每个切片必须同时覆盖必要的数据库、后端、前端和测试，不能先堆完全部后端再集中补页面。
 
-统一技术基线：Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot；Docker Compose + PostgreSQL 18。
+统一技术基线：Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot + MyBatis + Redis；Docker Compose + PostgreSQL 18。
 
 执行规则：
 
