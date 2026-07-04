@@ -4,7 +4,7 @@
 
 本文件把首期开发拆成可独立验证的垂直切片。除 Slice 0/1 的公共基线外，每个切片必须同时覆盖必要的数据库、后端、前端和测试，不能先堆完全部后端再集中补页面。
 
-统一技术基线：Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot；Docker Compose + PostgreSQL 18。
+统一技术基线：Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot + MyBatis + Redis；Docker Compose + PostgreSQL 18。
 
 执行规则：
 
@@ -19,7 +19,7 @@
 | 顺序 | 切片 | 可演示结果 | 主要依赖 |
 | ---: | --- | --- | --- |
 | 0 | 契约与工程基线 | 文档和目录约束完整 | 无 |
-| 1 | Docker 数据库与迁移 | PostgreSQL 可启动，16 表自动创建 | Slice 0 |
+| 1 | Docker 数据库与迁移 | PostgreSQL 可启动，15表自动创建 | Slice 0 |
 | 2 | 管理员登录与公共后端 | 管理员可登录，统一错误与审计可用 | Slice 1 |
 | 3 | UDP 入库闭环 | 7 路模拟数据进入统一目录和 7 张业务表 | Slice 1、2 |
 | 4 | 数据列表与详情 | 页面可查真实数据和只读原报文 | Slice 3 |
@@ -130,12 +130,17 @@
 - 后端生成 `data_record.id`，不要求模拟器提供 `messageId`。
 - 补齐来源设备、接收时间、测试飞机、航班和航段等目录字段。
 - 合法报文完整写入 `raw_payload`，并在同一事务写入对应业务表；非法 JSON 保存原文并标记 `FAILED`。
-- 修正模拟器 `ground.traffic_record` 的 5 秒时间窗口，其余报文结构不变。
+- 保留当前模拟器 `ground.traffic_record.windowStart` 与 `windowEnd` 可相等的窗口形态；数据库约束和解析逻辑允许 `window_end >= window_start`。
+- QAR 报文没有外层 `sentAt`，只有 `time=HH:mm:ss`；后端使用接收日期与 QAR `time` 合成 `sent_at` 和 `qar_sample.sample_at`。
+- `smart_window.status.timestamp` 和 IFE `sysInfo.timestamp` 为无时区文本，后端按 `Asia/Shanghai` 解析为 `timestamptz`。
+- 舷窗报文不携带航班、航段和飞机字段，后端按当前模拟器上下文或默认测试飞机配置补齐 `data_record` 公共字段。
+- `ife_cockrell.behavior` 的 `coverBase64` 只保留在父级 `data_record.raw_payload`；业务表仅保存 `cover_mime_type`、`cover_checksum` 和去除大字段后的 `behavior_detail`。
 
 ### 测试
 
 - 为七类消息分别发送 fixture 数据报。
 - 验证一份批量数据报只有一条 `data_record`，流量、会话、舷窗和 IFE 的 `items` 按序号拆入业务表，并仍可追溯到完整 JSONB。
+- 验证 QAR、舷窗、IFE 三类时间字段按上述规则入库，且 `traffic_record.window_end = window_start` 的报文可以成功入库。
 - 验证非法 UTF-8/JSON、缺字段、非法数值和未知端口配置。
 - 连续运行现有模拟器，检查收包数量与入库数量。
 

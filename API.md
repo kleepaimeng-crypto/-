@@ -12,7 +12,7 @@
 | 时间 | ISO 8601 带时区，例如 `2026-07-03T15:30:00+08:00` |
 | ID | 平台实体使用 UUID；审计流水为十进制整数 |
 | 分页 | `page` 从 1 开始，默认 20；`pageSize` 允许 20、50、100 |
-| 实现基线 | Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot；PostgreSQL 18 |
+| 实现基线 | Vue 3 + TypeScript + Element Plus；Java 21 + Spring Boot + MyBatis + Redis；PostgreSQL 18 |
 
 除登录接口外，所有接口均要求已登录且状态为 `ACTIVE` 的管理员。
 
