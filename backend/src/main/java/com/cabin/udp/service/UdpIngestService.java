@@ -2,6 +2,7 @@ package com.cabin.udp.service;
 
 import com.cabin.common.exception.BusinessException;
 import com.cabin.common.response.ResponseCode;
+import com.cabin.udp.dto.CurrentFlightContext;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
 import com.cabin.udp.entity.DataTypeConfig;
@@ -25,15 +26,18 @@ public class UdpIngestService {
     private final ObjectProvider<UdpIngestMapper> mapperProvider;
     private final ObjectMapper objectMapper;
     private final UdpPayloadParser parser;
+    private final CurrentFlightContextService currentFlightContextService;
 
     public UdpIngestService(
             ObjectProvider<UdpIngestMapper> mapperProvider,
             ObjectMapper objectMapper,
-            UdpPayloadParser parser
+            UdpPayloadParser parser,
+            CurrentFlightContextService currentFlightContextService
     ) {
         this.mapperProvider = mapperProvider;
         this.objectMapper = objectMapper;
         this.parser = parser;
+        this.currentFlightContextService = currentFlightContextService;
     }
 
     @Transactional
@@ -94,9 +98,20 @@ public class UdpIngestService {
 
     private void persist(ParsedUdpPayload parsed) {
         UdpIngestMapper mapper = mapper();
-        mapper.insertDataRecord(parsed.record());
+        DataRecord record = currentFlightContextService.applyTo(parsed.record());
+        mapper.insertDataRecord(record);
         for (Map<String, Object> row : parsed.businessRows()) {
-            insertBusinessRow(mapper, parsed.record().getDataTypeCode(), row);
+            insertBusinessRow(mapper, record.getDataTypeCode(), row);
+        }
+        CurrentFlightContext context = currentFlightContextService.updateFrom(record);
+        if (context != null && context.hasRoute()) {
+            mapper.backfillMissingFlightContext(
+                    context.flightNo(),
+                    context.origin(),
+                    context.destination(),
+                    context.airlineCode(),
+                    currentFlightContextService.startedAt()
+            );
         }
     }
 

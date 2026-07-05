@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,26 @@ public class AuditLogService {
 
         AuditLog entry = baseLoginEntry(username, requestIp, "FAILURE");
         entry.setAfterValue(toJson(afterValue));
+        auditLogMapper().insert(entry);
+    }
+
+    public void recordMetadataChange(
+            UUID recordId,
+            UUID operatorId,
+            String requestIp,
+            Map<String, Object> beforeValue,
+            Map<String, Object> afterValue
+    ) {
+        AuditLog entry = new AuditLog();
+        entry.setAction("UPDATE_METADATA");
+        entry.setTargetType("DATA_RECORD");
+        entry.setTargetId(recordId.toString());
+        entry.setOperatorId(operatorId);
+        entry.setRequestIp(blankToNull(requestIp));
+        entry.setBeforeValue(toJson(beforeValue));
+        entry.setAfterValue(toJson(afterValue));
+        entry.setResult("SUCCESS");
+        entry.setTraceId(TraceContext.currentTraceId());
         auditLogMapper().insert(entry);
     }
 
