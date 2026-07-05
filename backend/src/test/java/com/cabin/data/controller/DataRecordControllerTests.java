@@ -4,18 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.cabin.common.exception.GlobalExceptionHandler;
+import com.cabin.data.dto.BatchDeleteResponse;
 import com.cabin.common.response.PageResponse;
 import com.cabin.common.security.CurrentUser;
 import com.cabin.data.dto.DataRecordListItemResponse;
 import com.cabin.data.dto.DataRecordQuery;
 import com.cabin.data.dto.RecordMetadataResponse;
+import com.cabin.data.service.DataRecordLifecycleService;
 import com.cabin.data.service.DataRecordService;
+import com.cabin.data.service.TagService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -28,8 +33,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class DataRecordControllerTests {
     private final DataRecordService service = mock(DataRecordService.class);
+    private final DataRecordLifecycleService lifecycleService = mock(DataRecordLifecycleService.class);
+    private final TagService tagService = mock(TagService.class);
     private final MockMvc mockMvc = MockMvcBuilders
-            .standaloneSetup(new DataRecordController(service))
+            .standaloneSetup(new DataRecordController(service, lifecycleService, tagService))
             .setControllerAdvice(new GlobalExceptionHandler())
             .build();
 
@@ -104,5 +111,43 @@ class DataRecordControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.version").value(2))
                 .andExpect(jsonPath("$.data.sourceDeviceCode").value("SIM-QAR"));
+    }
+
+    @Test
+    void deleteRecordReturnsNullEnvelope() throws Exception {
+        UUID recordId = UUID.randomUUID();
+        CurrentUser currentUser = new CurrentUser(UUID.randomUUID(), "admin", null, "ADMIN");
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(currentUser, null);
+
+        mockMvc.perform(delete("/api/v1/data-records/{recordId}", recordId)
+                        .principal(authentication)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"reason":"测试清理","expectedVersion":1}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("OK"))
+                .andExpect(jsonPath("$.data").doesNotExist());
+    }
+
+    @Test
+    void batchDeleteReturnsSummary() throws Exception {
+        UUID recordId = UUID.randomUUID();
+        CurrentUser currentUser = new CurrentUser(UUID.randomUUID(), "admin", null, "ADMIN");
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(currentUser, null);
+        when(lifecycleService.batchDeleteRecords(any(), any(), any()))
+                .thenReturn(new BatchDeleteResponse(1, 1, 0));
+
+        mockMvc.perform(post("/api/v1/data-records/batch-delete")
+                        .principal(authentication)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"recordIds":["%s"],"reason":"批量清理"}
+                                """.formatted(recordId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.requested").value(1))
+                .andExpect(jsonPath("$.data.deleted").value(1));
     }
 }

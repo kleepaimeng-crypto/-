@@ -5,10 +5,12 @@ import java.util.UUID;
 
 public class AnnotationRow {
     private UUID id;
+    private UUID recordId;
     private String content;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private int version;
+    private boolean deleted;
 
     public UUID getId() {
         return id;
@@ -16,6 +18,14 @@ public class AnnotationRow {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(UUID recordId) {
+        this.recordId = recordId;
     }
 
     public String getContent() {
@@ -48,5 +58,13 @@ public class AnnotationRow {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

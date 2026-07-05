@@ -246,7 +246,8 @@ public interface DataRecordMapper {
                 r.version,
                 r.raw_payload::text AS raw_payload,
                 r.raw_text,
-                r.is_deleted AS deleted
+                r.is_deleted AS deleted,
+                r.deleted_at
             FROM data_record r
             WHERE r.id = #{recordId}
               AND (#{includeDeleted} = true OR r.is_deleted = false)

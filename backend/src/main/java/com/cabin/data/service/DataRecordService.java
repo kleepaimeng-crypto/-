@@ -212,7 +212,8 @@ public class DataRecordService {
                 row.getContent(),
                 row.getCreatedAt(),
                 row.getUpdatedAt(),
-                row.getVersion()
+                row.getVersion(),
+                row.isDeleted()
         );
     }
 

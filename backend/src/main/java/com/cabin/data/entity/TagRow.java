@@ -6,6 +6,9 @@ public class TagRow {
     private UUID id;
     private String name;
     private String color;
+    private boolean enabled;
+    private int version;
+    private UUID createdBy;
 
     public UUID getId() {
         return id;
@@ -29,5 +32,29 @@ public class TagRow {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public UUID getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UUID createdBy) {
+        this.createdBy = createdBy;
     }
 }

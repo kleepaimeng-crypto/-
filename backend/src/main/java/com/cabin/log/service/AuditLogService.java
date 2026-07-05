@@ -56,14 +56,34 @@ public class AuditLogService {
             Map<String, Object> beforeValue,
             Map<String, Object> afterValue
     ) {
+        recordSuccess(
+                "UPDATE_METADATA",
+                "DATA_RECORD",
+                recordId.toString(),
+                operatorId,
+                requestIp,
+                beforeValue,
+                afterValue
+        );
+    }
+
+    public void recordSuccess(
+            String action,
+            String targetType,
+            String targetId,
+            UUID operatorId,
+            String requestIp,
+            Map<String, Object> beforeValue,
+            Map<String, Object> afterValue
+    ) {
         AuditLog entry = new AuditLog();
-        entry.setAction("UPDATE_METADATA");
-        entry.setTargetType("DATA_RECORD");
-        entry.setTargetId(recordId.toString());
+        entry.setAction(action);
+        entry.setTargetType(targetType);
+        entry.setTargetId(targetId);
         entry.setOperatorId(operatorId);
         entry.setRequestIp(blankToNull(requestIp));
-        entry.setBeforeValue(toJson(beforeValue));
-        entry.setAfterValue(toJson(afterValue));
+        entry.setBeforeValue(beforeValue == null ? null : toJson(beforeValue));
+        entry.setAfterValue(afterValue == null ? null : toJson(afterValue));
         entry.setResult("SUCCESS");
         entry.setTraceId(TraceContext.currentTraceId());
         auditLogMapper().insert(entry);

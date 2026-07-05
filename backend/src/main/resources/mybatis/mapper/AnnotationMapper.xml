@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.data.mapper.AnnotationMapper">
+    <select id="findForRecord" resultType="com.cabin.data.entity.AnnotationRow">
+        SELECT
+            id,
+            record_id,
+            content,
+            created_at,
+            updated_at,
+            version,
+            is_deleted AS deleted
+        FROM data_annotation
+        WHERE record_id = #{recordId,jdbcType=OTHER}
+          AND (#{includeDeleted} = true OR is_deleted = false)
+        ORDER BY created_at
+    </select>
+
+    <select id="findById" resultType="com.cabin.data.entity.AnnotationRow">
+        SELECT
+            id,
+            record_id,
+            content,
+            created_at,
+            updated_at,
+            version,
+            is_deleted AS deleted
+        FROM data_annotation
+        WHERE id = #{annotationId,jdbcType=OTHER}
+          AND (#{includeDeleted} = true OR is_deleted = false)
+    </select>
+
+    <insert id="insertAnnotation">
+        INSERT INTO data_annotation (id, record_id, content, created_by)
+        VALUES (
+            #{id,jdbcType=OTHER},
+            #{recordId,jdbcType=OTHER},
+            #{content},
+            #{createdBy,jdbcType=OTHER}
+        )
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO data_annotation (record_id, content, created_by)
+        SELECT r.id, #{content}, #{createdBy,jdbcType=OTHER}
+        FROM data_record r
+        WHERE r.is_deleted = false
+          AND r.id IN
+        <foreach collection="recordIds" item="recordId" open="(" close=")" separator=",">
+            #{recordId,jdbcType=OTHER}
+        </foreach>
+    </insert>
+
+    <update id="updateAnnotation">
+        UPDATE data_annotation
+        SET content = #{content},
+            version = version + 1
+        WHERE id = #{annotationId,jdbcType=OTHER}
+          AND is_deleted = false
+          AND version = #{expectedVersion}
+    </update>
+
+    <update id="softDeleteAnnotation">
+        UPDATE data_annotation
+        SET is_deleted = true,
+            deleted_at = now(),
+            deleted_by = #{deletedBy,jdbcType=OTHER},
+            version = version + 1
+        WHERE id = #{annotationId,jdbcType=OTHER}
+          AND is_deleted = false
+          AND version = #{expectedVersion}
+    </update>
+</mapper>

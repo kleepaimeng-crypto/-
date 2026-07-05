@@ -7,12 +7,20 @@ import com.cabin.common.response.Response;
 import com.cabin.common.response.ResponseCode;
 import com.cabin.common.security.CurrentUser;
 import com.cabin.common.trace.TraceContext;
+import com.cabin.data.dto.BatchDeleteRequest;
+import com.cabin.data.dto.BatchDeleteResponse;
+import com.cabin.data.dto.BatchTagRequest;
+import com.cabin.data.dto.BatchTagResponse;
 import com.cabin.data.dto.DataRecordDetailResponse;
 import com.cabin.data.dto.DataRecordListItemResponse;
 import com.cabin.data.dto.DataRecordQuery;
+import com.cabin.data.dto.DeleteRecordRequest;
 import com.cabin.data.dto.MetadataUpdateRequest;
 import com.cabin.data.dto.RecordMetadataResponse;
+import com.cabin.data.dto.RestoreRecordRequest;
+import com.cabin.data.service.DataRecordLifecycleService;
 import com.cabin.data.service.DataRecordService;
+import com.cabin.data.service.TagService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
@@ -21,9 +29,11 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,9 +43,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/data-records")
 public class DataRecordController {
     private final DataRecordService dataRecordService;
+    private final DataRecordLifecycleService lifecycleService;
+    private final TagService tagService;
 
-    public DataRecordController(DataRecordService dataRecordService) {
+    public DataRecordController(
+            DataRecordService dataRecordService,
+            DataRecordLifecycleService lifecycleService,
+            TagService tagService
+    ) {
         this.dataRecordService = dataRecordService;
+        this.lifecycleService = lifecycleService;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -99,6 +117,72 @@ public class DataRecordController {
         return Response.success(
                 dataRecordService.updateMetadata(
                         recordId,
+                        request,
+                        currentUser(authentication),
+                        httpRequest.getRemoteAddr()
+                ),
+                TraceContext.currentTraceId()
+        );
+    }
+
+    @DeleteMapping("/{recordId}")
+    public Response<Void> deleteRecord(
+            @PathVariable UUID recordId,
+            @Valid @RequestBody DeleteRecordRequest request,
+            Authentication authentication,
+            HttpServletRequest httpRequest
+    ) {
+        lifecycleService.deleteRecord(
+                recordId,
+                request,
+                currentUser(authentication),
+                httpRequest.getRemoteAddr()
+        );
+        return Response.success(null, TraceContext.currentTraceId());
+    }
+
+    @PostMapping("/batch-delete")
+    public Response<BatchDeleteResponse> batchDelete(
+            @Valid @RequestBody BatchDeleteRequest request,
+            Authentication authentication,
+            HttpServletRequest httpRequest
+    ) {
+        return Response.success(
+                lifecycleService.batchDeleteRecords(
+                        request,
+                        currentUser(authentication),
+                        httpRequest.getRemoteAddr()
+                ),
+                TraceContext.currentTraceId()
+        );
+    }
+
+    @PostMapping("/{recordId}/restore")
+    public Response<DataRecordListItemResponse> restore(
+            @PathVariable UUID recordId,
+            @Valid @RequestBody RestoreRecordRequest request,
+            Authentication authentication,
+            HttpServletRequest httpRequest
+    ) {
+        return Response.success(
+                lifecycleService.restoreRecord(
+                        recordId,
+                        request,
+                        currentUser(authentication),
+                        httpRequest.getRemoteAddr()
+                ),
+                TraceContext.currentTraceId()
+        );
+    }
+
+    @PostMapping("/tags/batch")
+    public Response<BatchTagResponse> batchTags(
+            @Valid @RequestBody BatchTagRequest request,
+            Authentication authentication,
+            HttpServletRequest httpRequest
+    ) {
+        return Response.success(
+                tagService.applyBatch(
                         request,
                         currentUser(authentication),
                         httpRequest.getRemoteAddr()

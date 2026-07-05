@@ -12,6 +12,7 @@
     clean-disabled: true
 
 mybatis:
+  mapper-locations: classpath*:mybatis/mapper/**/*.xml
   type-handlers-package: com.cabin.config.mybatis
   configuration:
     map-underscore-to-camel-case: true

@@ -22,6 +22,7 @@ public class DataRecordDetailRow {
     private String rawPayload;
     private String rawText;
     private boolean deleted;
+    private OffsetDateTime deletedAt;
 
     public UUID getId() {
         return id;
@@ -165,5 +166,13 @@ public class DataRecordDetailRow {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public OffsetDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(OffsetDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

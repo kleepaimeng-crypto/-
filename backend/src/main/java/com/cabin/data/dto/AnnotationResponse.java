@@ -8,6 +8,7 @@ public record AnnotationResponse(
         String content,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt,
-        int version
+        int version,
+        boolean deleted
 ) {
 }

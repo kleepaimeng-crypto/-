@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.log.mapper.AuditLogQueryMapper">
+    <sql id="auditLogWhere">
+        <where>
+            <if test="query.action != null">
+                action = #{query.action}
+            </if>
+            <if test="query.targetType != null">
+                AND target_type = #{query.targetType}
+            </if>
+            <if test="query.targetId != null">
+                AND target_id = #{query.targetId}
+            </if>
+            <if test="query.operatorId != null">
+                AND operator_id = #{query.operatorId,jdbcType=OTHER}
+            </if>
+            <if test="query.createdFrom != null">
+                AND created_at &gt;= #{query.createdFrom}
+            </if>
+            <if test="query.createdTo != null">
+                AND created_at &lt; #{query.createdTo}
+            </if>
+        </where>
+    </sql>
+
+    <select id="countAuditLogs" resultType="long">
+        SELECT count(*)
+        FROM audit_log
+        <include refid="auditLogWhere"/>
+    </select>
+
+    <select id="findAuditLogPage" resultType="com.cabin.log.entity.AuditLogRow">
+        SELECT
+            id,
+            action,
+            target_type,
+            target_id,
+            operator_id,
+            request_ip::text AS request_ip,
+            before_value::text AS before_value,
+            after_value::text AS after_value,
+            result,
+            trace_id,
+            created_at
+        FROM audit_log
+        <include refid="auditLogWhere"/>
+        ORDER BY created_at DESC, id DESC
+        LIMIT #{query.pageSize}
+        OFFSET #{query.offset}
+    </select>
+</mapper>
