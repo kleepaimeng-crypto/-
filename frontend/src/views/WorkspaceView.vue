@@ -52,7 +52,6 @@ const page = ref(1)
 const pageSize = ref<20 | 50 | 100>(20)
 const total = ref(0)
 const totalPages = ref(0)
-const autoRefresh = ref(true)
 const openFilterPanel = ref<'route' | 'date' | null>(null)
 const routeFilterRef = ref<HTMLElement | null>(null)
 const dateFilterRef = ref<HTMLElement | null>(null)
@@ -100,7 +99,7 @@ const dateLabel = computed(() => {
   if (!filters.receivedFrom && !filters.receivedTo) return '日期'
   return `${displayDate(filters.receivedFrom) || '开始'} — ${displayDate(filters.receivedTo) || '结束'}`
 })
-const canAutoRefresh = computed(() => autoRefresh.value && page.value === 1 && selectedIds.value.length === 0
+const canAutoRefresh = computed(() => page.value === 1 && selectedIds.value.length === 0
   && !detailOpen.value && !editOpen.value && !deleteOpen.value && !importOpen.value)
 const pageNumbers = computed(() => {
   const start = Math.max(1, page.value - 1)
@@ -518,23 +517,12 @@ onBeforeUnmount(() => {
           <button class="button button--import" @click="importOpen = true">CSV 数据导入</button>
         </section>
 
-        <div class="table-toolbar">
-          <div>
-            <span class="section-kicker">DATA CATALOG</span>
-            <strong>数据目录</strong>
-            <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
-            <button v-if="selectedIds.length" class="batch-action" @click="openBatchDelete">批量删除</button>
-            <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
-          </div>
-          <label class="refresh-toggle">
-            <input v-model="autoRefresh" type="checkbox" />
-            <span></span>
-            5 秒自动刷新
-          </label>
-        </div>
-
-        <section class="data-table-wrap" :class="{ 'is-loading': loading }">
+        <section class="data-table-wrap" :class="{ 'is-loading': loading, 'is-extended-page': pageSize > 20 }">
           <table class="data-table">
+            <colgroup>
+              <col class="data-table__selection-column" />
+              <col span="5" />
+            </colgroup>
             <thead>
               <tr>
                 <th class="selection-cell"><input type="checkbox" :checked="allSelected" @change="toggleAll" /></th>
@@ -542,18 +530,16 @@ onBeforeUnmount(() => {
                 <th><button class="sort-button" @click="changeSort('dataType')">数据类型 <span>{{ sort.by === 'dataType' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
                 <th><button class="sort-button" @click="changeSort('sentAt')">数据发送时间 <span>{{ sort.by === 'sentAt' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
                 <th><button class="sort-button" @click="changeSort('receivedAt')">数据接收时间 <span>{{ sort.by === 'receivedAt' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
-                <th>解析状态</th>
                 <th class="actions-cell">操作</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="record in records" :key="record.id" :class="{ 'is-selected': selectedIds.includes(record.id) }">
                 <td class="selection-cell"><input type="checkbox" :checked="selectedIds.includes(record.id)" @change="toggleRecord(record.id)" /></td>
-                <td><button class="record-link" @click="openDetail(record)">{{ record.aircraftRegistrationNo }}</button><small>{{ record.flightNo || '无航班号' }}</small></td>
-                <td><span class="type-name">{{ record.dataType.name }}</span><small>{{ record.sourceDevice.name }}</small></td>
+                <td><button class="record-link" @click="openDetail(record)">{{ record.aircraftRegistrationNo }}</button></td>
+                <td><span class="type-name">{{ record.dataType.name }}</span></td>
                 <td>{{ formatDate(record.sentAt) }}</td>
                 <td>{{ formatDate(record.receivedAt) }}</td>
-                <td><span class="status-badge" :class="`is-${record.parseStatus.toLowerCase()}`">{{ record.parseStatus }}</span></td>
                 <td class="actions-cell">
                   <button class="row-action" @click="openEdit(record)">编辑</button>
                   <button class="row-action row-action--danger" @click="openDelete(record)">删除</button>
@@ -568,7 +554,12 @@ onBeforeUnmount(() => {
         </section>
 
         <footer class="table-footer">
-          <div>总计 <strong>{{ total }}</strong> 条</div>
+          <div class="table-footer__summary">
+            <span>总计 <strong>{{ total }}</strong> 条</span>
+            <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
+            <button v-if="selectedIds.length" class="batch-action" @click="openBatchDelete">批量删除</button>
+            <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
+          </div>
           <select v-model="pageSize" @change="applyFilters">
             <option :value="20">20 条/页</option><option :value="50">50 条/页</option><option :value="100">100 条/页</option>
           </select>

@@ -53,6 +53,8 @@ describe('WorkspaceView filters', () => {
     await settleRequests()
 
     expect(wrapper.find('.filter-bar').exists()).toBe(true)
+    expect(wrapper.find('.table-toolbar').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('5 秒自动刷新')
     expect(wrapper.find('[aria-label="起飞机场"]').exists()).toBe(false)
     expect(wrapper.find('[aria-label="接收开始日期"]').exists()).toBe(false)
     expect(wrapper.findAll('.filter-trigger').map((button) => button.text())).toEqual(['航段⌄', '日期⌄'])
