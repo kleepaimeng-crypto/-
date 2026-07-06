@@ -1,26 +1,38 @@
-# Phase 2 数据库契约
+# 乘客实时动态数据契约
 
-## 1. 结论
+## 1. Schema 决策
 
-Phase 2 复用根 `schema.md` 定义的 15 张表，不新增表、字段、索引或 Flyway 迁移。原始报文仍不可更新。
+本期不新增表、字段、索引或 Flyway 迁移，继续保持根 `schema.md` 固定的 15 张表。
 
-## 2. 流量统计来源
+页面只读取：
 
-- `simulation_task`：任务选项、任务状态和统计窗口秒数。
-- `traffic_record`：任务、窗口、终端、座位、应用、字节数、包数、吞吐和记录状态。
-- `session_summary`：会话最新快照、终端、座位、应用、流量及状态。
+- `ife_633_behavior`：633 IFE 乘客行为。
+- `ife_cockrell_behavior`：科克瑞尔 IFE 乘客行为。
+- `smart_window_status`：智慧舷窗状态。
+- `data_record`：过滤软删除来源及跳转只读原始报文。
 
-所有范围查询使用半开区间 `[from, to)`。相同任务、窗口和应用先按窗口聚合，再计算峰值，禁止把每个终端的 `peak_mbps` 直接相加作为任务峰值。会话必须先按 `session_id` 取 `snapshot_at` 最新一行，再判断 `status='active'`。
+`traffic_record`、`session_summary`、`simulation_task` 不参与本页面统计。
 
-## 3. 智慧舷窗来源
+## 2. 影音排行查询口径
 
-- `smart_window_status`：`record_id`、`item_no`、`window_id`、`zone_id`、`brightness`、`connect_status`、`status`、`event_at`。
-- `data_record`：确认父记录可见且未软删除，并提供只读原始报文追溯。
+1. 两张 IFE 表均连接 `data_record`，排除 `deleted_at IS NOT NULL` 的来源记录。
+2. 仅取 `MOVIE_PLAY` 和 `MUSIC_PLAY`，合并两套 IFE 来源。
+3. 以 `passenger_id + media_kind` 分组，按 `event_at DESC, created_at DESC, id DESC` 取最新一条。
+4. 视频读取 `behavior_detail->>'contentType'`，音乐读取 `behavior_detail->>'musicType'`。
+5. 按 `/` 拆分，trim、移除空值并在单条状态内去重；每个保留类型贡献一次计数。
+6. 排行按 `count DESC, type ASC`；total 是对应媒体种类拥有有效最新状态的不同乘客数。
 
-快照以一条最新、未删除、解析成功的父 `data_record` 为边界，只返回该 `record_id` 下的状态，不跨记录补齐。只有恰好包含 200 个不同 `window_id`（1–200）的记录才是完整快照；不存在完整快照时返回 empty，而不是伪造缺失舷窗。
+该口径与 `simulator/receiver_server.py` 的 `user_media`、`videoRanking` 和 `musicRanking` 行为一致，不统计 Mbps 或历史累计流量。
 
-显示侧别为派生值，不入库：`((window_id - 1) % 4) < 2` 为 LEFT，否则为 RIGHT；显示顺序按 `zone_id, window_id`。舱区使用已入库 `zone_id`：1 前舱、2 中舱、3 后舱。
+## 3. 座位与乘客当前状态
 
-## 4. 性能边界
+- 固定布局为 32 排×10 座，字母 `A B C D E F G H J K`，不是新增数据库配置。
+- 每个座位从两张 IFE 表合并结果中取最近行为；相同时间按 `created_at`、`id` 决定稳定顺序。
+- `MOVIE_PLAY` 映射 `VIDEO`，`MUSIC_PLAY` 映射 `MUSIC`，其他行为映射 `OTHER`。
+- 电影标题取 `contentName`，音乐标题取 `musicName`，动作分别取 `playAction`；缺失字段返回 `null`，不得猜测。
 
-查询必须参数绑定并复用现有索引。终端明细服务端分页；统计接口只返回聚合和当前页，不加载全量原始报文。若性能验收失败，先记录 `EXPLAIN (ANALYZE, BUFFERS)`，再单独评审迁移，不能在本期实现中临时加索引。
+## 4. 舷窗快照
+
+- 按 `record_id` 分组，只选择未软删除且具有 200 条、200 个唯一 `window_id` 的最新来源记录。
+- 每四个连续 ID 中位置 1、2 为 `LEFT`，3、4 为 `RIGHT`；同侧序号为 1–100。
+- 平均亮度保留两位小数；断连、故障和测试数由该完整快照直接计算。

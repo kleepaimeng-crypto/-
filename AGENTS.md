@@ -177,6 +177,6 @@ npm run build
 
 ## 13. Phase 2 授权与契约入口
 
-经负责人确认，Phase 2 允许开发“流量统计”和“智慧舷窗”两个只读展示功能。参与者开始相关开发前必须依次阅读 `phase2-contracts/SPEC.md`、`phase2-contracts/API.md`、`phase2-contracts/schema.md`、`phase2-contracts/SLICES.md` 和 `phase2-contracts/AGENTS.md`。
+经负责人确认，Phase 2 只允许开发“乘客实时动态”单个只读页面。参与者开始相关开发前必须依次阅读 `phase2-contracts/SPEC.md`、`phase2-contracts/API.md`、`phase2-contracts/schema.md`、`phase2-contracts/SLICES.md` 和 `phase2-contracts/AGENTS.md`。
 
-上述文件仅在这两个 Phase 2 功能范围内覆盖根级文档的“暂不开发数据统计、乘客实时动态”限制；登录、数据管理、导入导出及其他功能继续以根级契约为准。不得借 Phase 2 扩展其他统计报告、乘客影音、推荐或用户管理功能。
+上述文件仅在该页面范围内覆盖根级文档的“暂不开发乘客实时动态”限制；“数据统计”仍不在本期范围。登录、数据管理、导入导出及其他功能继续以根级契约为准。不得借 Phase 2 扩展流量统计、统计报告、乘客推荐、驾驶舱视频、舷窗控制或用户管理功能。
