@@ -56,9 +56,9 @@ class SmartWindowModel:
 
     def _initial_window(self, window_id: int) -> WindowState:
         side_sequence = window_id if window_id <= 58 else window_id - 58
-        if side_sequence <= 9:
+        if side_sequence <= 17:
             zone_id = 1
-        elif side_sequence <= 32:
+        elif side_sequence <= 37:
             zone_id = 2
         else:
             zone_id = 3

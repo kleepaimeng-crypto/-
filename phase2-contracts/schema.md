@@ -12,7 +12,8 @@
 ## 2. 最新乘客行为
 
 - 合并两张 IFE 表，连接 `data_record` 并排除软删除记录。
-- 每名乘客按 `event_at DESC, created_at DESC, id DESC` 取最新一条行为作为座位和右侧详情当前状态。
+- 临时合并查询为两张表附加 SQL 常量 `sourcePriority`：633 为 1、科克瑞尔为 2；不写回数据库。
+- 每名乘客按 `event_at DESC, created_at DESC, sourcePriority DESC, id DESC` 取最新一条行为作为座位和右侧详情当前状态。
 - 电影读取 `contentName/contentType/playAction`；音乐读取 `musicName/musicType/playAction`；浏览读取 `dstDomain/url/trafficBytes`。
 - 237 名乘客按确认的 A330-200 座位清单排序；分页不依赖数据库自然顺序。
 
@@ -31,5 +32,5 @@
 ## 5. 舷窗快照
 
 - 只选择未软删除且同一 `record_id` 下具有 116 条、116 个唯一 `window_id` 的最新记录。
-- ID 1–58 为左侧，59–116 为右侧；每侧区域数量为前舱 9、中舱 23、后舱 26。
+- ID 1–58 为左侧，59–116 为右侧；每侧区域数量为前舱 17、中舱 20、后舱 21。
 - 平均亮度保留一位小数；断连、故障、测试数从该快照计算。
