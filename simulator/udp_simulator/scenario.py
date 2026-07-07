@@ -57,7 +57,7 @@ def create_scenario(passenger_count: int, window_rows: int, rng: random.Random) 
         destination=destination,
         scenario_start_time=now,
         simulated_now=now,
-        aircraft_model="Boeing 777-300ER",
+        aircraft_model="Airbus A330-200",
         passenger_count=passenger_count,
         window_rows=window_rows,
     )
@@ -104,4 +104,3 @@ def interpolate_lat_lon(origin: Airport, destination: Airport, progress: float) 
     lat = origin.lat + (destination.lat - origin.lat) * progress
     lon = origin.lon + (destination.lon - origin.lon) * progress
     return lat, lon
-

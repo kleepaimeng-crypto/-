@@ -55,8 +55,8 @@ class ReceiverState:
 
             rows: dict[int, list[dict[str, Any]]] = defaultdict(list)
             for window_id, window in sorted(self.windows.items()):
-                row = ((window_id - 1) // 4) + 1
-                rows[row].append(window)
+                side_sequence = window_id if window_id <= 58 else window_id - 58
+                rows[side_sequence].append(window)
 
             return {
                 "uptimeSeconds": int(time.time() - self.started_at),
@@ -375,7 +375,7 @@ DASHBOARD_HTML = r"""<!doctype html>
       </div>
     </section>
     <section>
-      <h2>每排舷窗状态</h2>
+        <h2>左右舷窗状态</h2>
       <div id="windowTable"></div>
     </section>
   </main>
@@ -497,4 +497,3 @@ DASHBOARD_HTML = r"""<!doctype html>
 
 if __name__ == "__main__":
     main()
-

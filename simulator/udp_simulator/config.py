@@ -44,9 +44,9 @@ class SimulatorConfig:
     udp_host: str = UDP_HOST
     ports: dict[str, int] = field(default_factory=lambda: dict(DEFAULT_PORTS))
     send_intervals_seconds: dict[str, float] = field(default_factory=lambda: dict(DEFAULT_INTERVALS))
-    passenger_count: int = 320
-    window_count: int = 200
-    window_rows: int = 50
+    passenger_count: int = 237
+    window_count: int = 116
+    window_rows: int = 58
     ife_page_size: int = 50
     random_seed: int | None = None
 
@@ -90,4 +90,3 @@ class SimulatorConfig:
 
 def json_default(value: Any) -> str:
     return str(value)
-

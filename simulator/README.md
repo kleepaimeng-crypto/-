@@ -2,6 +2,8 @@
 
 本项目按 `接口格式Schema.md` 和 `数据模拟器开发指导.md` 实现本地 UDP 数据模拟器。
 
+默认场景为 Airbus A330-200：237 名乘客（公务舱 30、经济舱 207）和 116 个智慧舷窗（左右各 58）。座位和舷窗只改变现有字段的取值与数量，不扩展 UDP JSON 字段。
+
 ## 运行
 
 只构建一轮数据，不发送 UDP：
@@ -40,7 +42,7 @@ http://127.0.0.1:8080
 
 - 飞机飞行状态：来自 `qar.frame`
 - 视频/音乐类型排名：来自 `ife_633.behavior` 和 `ife_cockrell.behavior`
-- 每排舷窗状态：来自 `smart_window.status`
+- 左右配对的舷窗状态：来自 `smart_window.status`
 
 可以先开接收端，再另开一个终端运行模拟器：
 
@@ -61,3 +63,10 @@ python run_simulator.py --config simulator_config.example.json --summary
 | `ife_cockrell.behavior` | 8096 |
 
 默认发送周期为 10 秒，每个接口可在 `simulator_config.example.json` 中单独配置。
+
+## 验证
+
+```powershell
+python -m unittest discover -s tests -v
+python run_simulator.py --once --dry-run --summary --config simulator_config.example.json
+```

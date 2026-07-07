@@ -393,7 +393,7 @@ erDiagram
 
 ### 6.5 `smart_window_status`
 
-`smart_window.status.items` 的舷窗状态。一份默认报文产生 200 条明细。
+`smart_window.status.items` 的舷窗状态。A330-200 新模拟报文产生 116 条明细；历史 200 条报文继续兼容。
 
 | 字段 | PostgreSQL 类型 | 约束/默认值 | 来源字段/说明 |
 | --- | --- | --- | --- |
@@ -1054,7 +1054,7 @@ ON CONFLICT (code) DO UPDATE SET
 | `ground.task` | `GROUND_TASK` | 1 | `simulation_task` | 1 |
 | `ground.traffic_record` | `GROUND_TRAFFIC_RECORD` | 通常 50 | `traffic_record` | 等于 `items` 数量 |
 | `ground.session_summary` | `GROUND_SESSION_SUMMARY` | 通常 50 | `session_summary` | 等于 `items` 数量 |
-| `smart_window.status` | `SMART_WINDOW_STATUS` | 200 | `smart_window_status` | 等于 `items` 数量 |
+| `smart_window.status` | `SMART_WINDOW_STATUS` | 116（历史报文可为 200） | `smart_window_status` | 等于 `items` 数量 |
 | `ife_633.behavior` | `IFE_633_BEHAVIOR` | 50，末页通常 20 | `ife_633_behavior` | 等于 `items` 数量 |
 | `ife_cockrell.behavior` | `IFE_COCKRELL_BEHAVIOR` | 50，末页通常 20 | `ife_cockrell_behavior` | 等于 `items` 数量 |
 

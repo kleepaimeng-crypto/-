@@ -1,66 +1,91 @@
 # 乘客实时动态 REST API 契约
 
-## 1. 公共规则
+## 1. 公共约定
 
-- 基础路径 `/api/v1/passenger-realtime`；全部为管理员 JWT 保护的只读 `GET` 接口。
-- 沿用根 `API.md` 的统一响应、traceId、错误码和 ISO 8601 带时区时间。
-- 本目录不定义数据统计、流量、吞吐、带宽或丢包接口。
+- 基础路径 `/api/v1/passenger-realtime`，全部为管理员 JWT 保护的只读 `GET`。
+- 沿用根 `API.md` 的统一响应、traceId、错误结构和 ISO 8601 带时区时间。
+- 不定义驾驶舱监控接口，不返回 SVG 内容，不改变任何 UDP 报文格式。
 
 ## 2. 页面快照
 
 ### `GET /api/v1/passenger-realtime/snapshot`
 
-无查询参数。一次返回页面当前所需的影音排行、座位/乘客状态和智慧舷窗快照，避免三个区域使用不同刷新版本。
-
-`data` 结构：
+返回影音排行、座位当前状态和最新完整舷窗快照：
 
 ```json
 {
   "hasData": true,
-  "updatedAt": "2026-07-06T10:00:00+08:00",
+  "updatedAt": "2026-07-07T10:00:00+08:00",
   "mediaStatistics": {
-    "videoTotalCount": 248,
+    "videoTotalCount": 148,
     "videoRanking": [{"type":"奇幻","count":57}],
-    "musicTotalCount": 139,
+    "musicTotalCount": 96,
     "musicRanking": [{"type":"民谣","count":48}]
   },
-  "cabin": {
-    "seatRowCount": 32,
-    "seatsPerRow": 10,
-    "seatLetters": ["A","B","C","D","E","F","G","H","J","K"],
-    "passengers": [{
-      "seatNo":"1A",
-      "passengerId":"USR-001",
-      "deviceId":"DEV-001",
-      "mediaKind":"VIDEO",
-      "title":"示例标题",
-      "types":["奇幻","科幻"],
-      "action":"PLAY",
-      "eventAt":"2026-07-06T09:59:58+08:00",
-      "sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000001"
-    }]
-  },
+  "seats": [{
+    "seatNo":"11A",
+    "cabinClass":"BUSINESS",
+    "passengerId":"PAX-00001",
+    "behaviorType":"MOVIE_PLAY",
+    "eventAt":"2026-07-07T09:59:58+08:00"
+  }],
   "smartWindows": {
-    "hasData": true,
-    "sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000002",
-    "updatedAt":"2026-07-06T10:00:00+08:00",
-    "summary":{"averageBrightness":5.40,"disconnectedCount":3,"faultCount":2,"testCount":4},
-    "layout":{"windowCount":200,"leftWindowCount":100,"rightWindowCount":100},
-    "windows":[{"windowId":1,"zoneId":1,"side":"LEFT","sideSequence":1,"brightnessLevel":7,"connected":true,"status":"NORMAL","updatedAt":"2026-07-06T10:00:00+08:00","sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000002"}]
+    "hasData":true,
+    "sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000001",
+    "updatedAt":"2026-07-07T10:00:00+08:00",
+    "summary":{"averageBrightness":5.4,"disconnectedCount":3,"faultCount":2,"testCount":4},
+    "windows":[{"windowId":1,"zoneId":1,"brightnessLevel":7,"connected":true,"status":"NORMAL","updatedAt":"2026-07-07T10:00:00+08:00","sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000001"}]
   }
 }
 ```
 
-约束：
+- `seats` 只返回现有业务字段，不返回 SVG ID；前端拥有固定 237 座布局。
+- 完整舷窗快照必须包含同一 `record_id` 下 116 个唯一 `windowId`，否则 `smartWindows.hasData=false`。
 
-- `videoRanking[].count`、`musicRanking[].count` 及两个 total 均为非负整数，不返回带宽单位。
-- `mediaKind` 为 `VIDEO|MUSIC|OTHER|NONE`；无乘客行为的座位可省略于 `passengers`，前端按固定布局补为空闲座位。
-- `types` 按 `/` 拆分、去空白并去重；`title/action/eventAt/sourceRecordId` 来自该乘客最新行为。
-- 只有包含 200 个唯一舷窗 ID 的来源记录才构成完整舷窗快照；否则 `smartWindows.hasData=false`、汇总为零、`windows=[]`，布局计数仍返回。
-- 全页无任何业务数据时 `hasData=false`，各列表为空；不返回 404。
+## 3. 乘客观看与浏览列表
 
-## 3. 错误
+### `GET /api/v1/passenger-realtime/passenger-activities?page={page}&pageSize=4`
 
-- 401：JWT 缺失或失效。
-- 403：管理员账号不可用。
-- 503：数据库不可用；不得暴露 SQL、堆栈或原始报文。
+- `page` 从 1 开始；`pageSize` 固定为 4，其他值返回 400。
+- 按飞机布局中的座位顺序稳定分页，返回公共分页结构。
+
+列表项：
+
+```json
+{
+  "passengerId":"PAX-00001",
+  "seatNo":"11A",
+  "cabinClass":"BUSINESS",
+  "behaviorType":"MOVIE_PLAY",
+  "activityKind":"VIDEO",
+  "title":"星海远航",
+  "types":["奇幻","科幻"],
+  "action":"PLAY",
+  "domain":null,
+  "url":null,
+  "trafficBytes":null,
+  "bandwidthMbps":8.42,
+  "windowBytes":5262500,
+  "eventAt":"2026-07-07T09:59:58+08:00",
+  "bandwidthUpdatedAt":"2026-07-07T10:00:00+08:00",
+  "sourceRecordId":"9f4f9f0c-0000-4000-8000-000000000002"
+}
+```
+
+- `activityKind` 为 `VIDEO|MUSIC|BROWSING|OTHER|IDLE`。
+- 视频标题/类型取 `contentName/contentType`；音乐取 `musicName/musicType`；浏览取 `dstDomain/url/trafficBytes`。
+- `bandwidthMbps/windowBytes` 取同座位最新 `traffic_record`；无匹配记录返回 `null`。
+- 237 名乘客全部参与分页；没有观看或浏览行为的乘客返回 `IDLE` 或 `OTHER`，不从列表删除。
+
+## 4. 座位定位
+
+### `GET /api/v1/passenger-realtime/passenger-activities/locate?seatNo={seatNo}`
+
+按固定每页 4 人计算该座位所在页：
+
+```json
+{"seatNo":"11A","page":1,"indexInPage":0}
+```
+
+- 非法或不存在的座位返回 404。
+- 该接口只用于座位点击后定位右侧分页，不返回重复的乘客详情。

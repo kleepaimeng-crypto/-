@@ -1,8 +1,8 @@
 {
   "udpHost": "127.0.0.1",
-  "passengerCount": 320,
-  "windowCount": 200,
-  "windowRows": 50,
+  "passengerCount": 237,
+  "windowCount": 116,
+  "windowRows": 58,
   "ifePageSize": 50,
   "randomSeed": 20260703,
   "ports": {
@@ -25,4 +25,3 @@
     "ife_cockrell.behavior": 10
   }
 }
-
