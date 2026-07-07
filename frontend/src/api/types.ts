@@ -262,3 +262,28 @@ export interface SmartWindowDisplayDto {
   zones: SmartWindowZoneDto[]
   windows: SmartWindowItemDto[]
 }
+
+export interface PassengerSmartWindowSummaryDto {
+  averageBrightness: number | null
+  disconnectedCount: number
+  faultCount: number
+  testCount: number
+}
+
+export interface PassengerSmartWindowItemDto {
+  windowId: number
+  zoneId: number
+  brightnessLevel: number
+  connected: boolean
+  status: SmartWindowStatus
+  updatedAt: string
+  sourceRecordId: string
+}
+
+export interface PassengerSmartWindowSnapshotDto {
+  hasData: boolean
+  sourceRecordId: string | null
+  updatedAt: string | null
+  summary: PassengerSmartWindowSummaryDto
+  windows: PassengerSmartWindowItemDto[]
+}

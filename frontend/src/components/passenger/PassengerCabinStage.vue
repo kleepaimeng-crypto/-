@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
-import type { SmartWindowDisplayDto } from '../../api/types'
+import type {
+  PassengerSmartWindowItemDto,
+  PassengerSmartWindowSnapshotDto,
+} from '../../api/types'
+import {
+  windowSide,
+  windowVisualBrightness,
+  windowZone,
+} from '../../utils/smartWindowDisplay'
 
 type WatchKind = 'video' | 'music'
 type CabinSectionKey = 'front' | 'middle' | 'rear'
@@ -27,8 +35,18 @@ interface CabinSection {
   fallbackRatio: number
 }
 
+interface WindowLabelView {
+  windowId: number
+  brightnessLevel: number
+  connected: boolean
+  status: PassengerSmartWindowItemDto['status']
+  side: 'left' | 'right'
+  style: Record<string, string>
+}
+
 const seatNodeSelector = 'g[id^="Business-Seat-"], g[id^="Economy-Seat-"]'
 const seatIdPattern = /\bid="(?:Business|Economy)-Seat-([A-Z][0-9]+)"/g
+const windowNodeSelector = 'g[id^="Window-"]'
 const cabinSections: CabinSection[] = [
   { key: 'front', label: '前舱', anchorSeat: 'C11', fallbackRatio: 0.08 },
   { key: 'middle', label: '中舱', anchorSeat: 'D14', fallbackRatio: 0.34 },
@@ -38,10 +56,13 @@ const cabinSections: CabinSection[] = [
 const selectedSeat = ref('D48')
 const activeCabinSection = ref<CabinSectionKey>('middle')
 const seatOverlaySvg = ref('')
+const windowOverlaySvg = ref('')
 const cabinScrollElement = ref<HTMLElement | null>(null)
 const seatLayerRef = ref<HTMLElement | null>(null)
+const windowLayerRef = ref<HTMLElement | null>(null)
 const watchListRef = ref<HTMLElement | null>(null)
 const selectedSeatLabelStyle = ref<Record<string, string>>({ opacity: '0' })
+const windowLabels = ref<WindowLabelView[]>([])
 const defaultCabinSectionApplied = ref(false)
 
 const knownWatchPreviewRows: Omit<WatchPreviewRow, 'active'>[] = [
@@ -75,9 +96,9 @@ const watchPreviewRows = computed<WatchPreviewRow[]>(() => {
   return rows.map((seat) => buildWatchPreviewRow(seat, seat === selectedSeat.value))
 })
 
-defineProps<{
+const props = defineProps<{
   cabinScroller: HTMLElement | null
-  windowDisplay: SmartWindowDisplayDto | null
+  windowDisplay: PassengerSmartWindowSnapshotDto | null
   windowError: string
   windowLoading: boolean
 }>()
@@ -209,6 +230,79 @@ function refreshSeatLayer(): void {
     prepareSeatLayer()
     applyDefaultCabinSection()
   })
+}
+
+function extractWindowId(groupId: string): number | null {
+  const match = /^Window-(\d{3})$/.exec(groupId)
+  if (!match?.[1]) return null
+  const windowId = Number(match[1])
+  return Number.isInteger(windowId) && windowId >= 1 && windowId <= 116 ? windowId : null
+}
+
+function refreshWindowLayer(): void {
+  void nextTick().then(syncWindowLayer)
+}
+
+function syncWindowLayer(): void {
+  const root = windowLayerRef.value
+  if (!root) {
+    windowLabels.value = []
+    return
+  }
+
+  const svg = root.querySelector<SVGSVGElement>('svg')
+  if (!svg || svg.viewBox.baseVal.width <= 0 || svg.viewBox.baseVal.height <= 0) {
+    windowLabels.value = []
+    return
+  }
+
+  const dataById = new Map(
+    (props.windowDisplay?.hasData ? props.windowDisplay.windows : [])
+      .map((item) => [item.windowId, item]),
+  )
+  const labels: WindowLabelView[] = []
+  const viewBox = svg.viewBox.baseVal
+
+  root.querySelectorAll<SVGGElement>(windowNodeSelector).forEach((group) => {
+    const windowId = extractWindowId(group.id)
+    if (windowId === null) return
+
+    const item = dataById.get(windowId)
+    group.classList.add('window-svg-node')
+    group.classList.toggle('is-disconnected', item !== undefined && !item.connected)
+    group.classList.toggle('is-fault', item?.status === 'FAULT')
+    group.classList.toggle('is-test', item?.status === 'TEST')
+    group.setAttribute('aria-label', item
+      ? `舷窗 ${windowId}，透光度 ${item.brightnessLevel}`
+      : `舷窗 ${windowId}，暂无数据`)
+    group.style.filter = item
+      ? `brightness(${windowVisualBrightness(item.brightnessLevel)})`
+      : 'brightness(0.35) grayscale(1)'
+
+    if (!item) return
+
+    try {
+      const box = group.getBBox()
+      const side = windowSide(windowId)
+      const anchorX = side === 'left' ? box.x - 10 : box.x + box.width + 10
+      labels.push({
+        windowId,
+        brightnessLevel: item.brightnessLevel,
+        connected: item.connected,
+        status: item.status,
+        side,
+        style: {
+          left: `${((anchorX - viewBox.x) / viewBox.width) * 100}%`,
+          top: `${((box.y + box.height / 2 - viewBox.y) / viewBox.height) * 100}%`,
+        },
+      })
+      group.setAttribute('data-zone-id', String(windowZone(windowId)))
+    } catch {
+      // SVG geometry can be unavailable during the first render; the next refresh retries it.
+    }
+  })
+
+  windowLabels.value = labels.sort((left, right) => left.windowId - right.windowId)
 }
 
 function handleSeatLayerClick(event: MouseEvent): void {
@@ -418,6 +512,16 @@ async function loadSeatOverlaySvg(): Promise<void> {
   }
 }
 
+async function loadWindowOverlaySvg(): Promise<void> {
+  try {
+    const response = await fetch('/assets/airplane_windows.svg', { cache: 'force-cache' })
+    if (!response.ok) return
+    windowOverlaySvg.value = await response.text()
+  } catch {
+    windowOverlaySvg.value = ''
+  }
+}
+
 watch(availableSeatIds, (seats) => {
   if (seats.length > 0 && !seats.includes(selectedSeat.value)) {
     selectedSeat.value = seats[0]
@@ -425,6 +529,8 @@ watch(availableSeatIds, (seats) => {
 })
 
 watch(seatOverlaySvg, refreshSeatLayer)
+watch(windowOverlaySvg, refreshWindowLayer)
+watch(() => props.windowDisplay, refreshWindowLayer)
 
 watch(selectedSeat, () => {
   void nextTick().then(() => {
@@ -434,6 +540,7 @@ watch(selectedSeat, () => {
 
 onMounted(() => {
   void loadSeatOverlaySvg()
+  void loadWindowOverlaySvg()
 })
 </script>
 
@@ -457,6 +564,31 @@ onMounted(() => {
       <div class="cabin-map">
         <div class="cabin-blueprint-frame" aria-hidden="true">
           <img class="cabin-blueprint" src="/assets/CA_332-1%201.svg" alt="" />
+        </div>
+        <div
+          v-if="windowOverlaySvg"
+          ref="windowLayerRef"
+          class="window-svg-layer"
+          role="group"
+          aria-label="智慧舷窗透光度"
+        >
+          <div class="window-svg-inline" v-html="windowOverlaySvg"></div>
+          <span
+            v-for="label in windowLabels"
+            :key="label.windowId"
+            class="window-brightness-label"
+            :class="[
+              `window-brightness-label--${label.side}`,
+              {
+                'is-disconnected': !label.connected,
+                'is-fault': label.status === 'FAULT',
+                'is-test': label.status === 'TEST',
+              },
+            ]"
+            :style="label.style"
+          >
+            <i></i>舷窗透光度：{{ label.brightnessLevel }}
+          </span>
         </div>
         <div
           v-if="seatOverlaySvg"
@@ -511,18 +643,23 @@ onMounted(() => {
       </div>
     </aside>
 
-    <div v-if="windowLoading" class="cabin-aircraft-state">
+    <div v-if="windowLoading && !windowDisplay" class="cabin-aircraft-state">
       <div class="cabin-overlay">读取智慧舷窗状态中</div>
     </div>
-    <div v-else-if="windowError" class="cabin-aircraft-state">
+    <div v-else-if="windowError && !windowDisplay?.hasData" class="cabin-aircraft-state">
       <div class="cabin-overlay cabin-overlay--error">
-        <strong>舷窗接口未就绪</strong>
+        <strong>舷窗数据读取失败</strong>
         <span>{{ windowError }}</span>
       </div>
     </div>
-    <div v-else-if="windowDisplay && windowDisplay.windows.length === 0" class="cabin-aircraft-state">
+    <div v-else-if="windowDisplay && !windowDisplay.hasData" class="cabin-aircraft-state">
       <div class="cabin-overlay">
-        暂无智慧舷窗状态数据
+        暂无完整的 116 舷窗快照
+      </div>
+    </div>
+    <div v-else-if="windowError && windowDisplay?.hasData" class="cabin-aircraft-state">
+      <div class="cabin-overlay cabin-overlay--stale">
+        舷窗数据刷新失败，当前显示上一次成功结果
       </div>
     </div>
 

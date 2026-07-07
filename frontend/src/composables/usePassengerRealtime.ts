@@ -1,13 +1,11 @@
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { getSmartWindowDisplay } from '../api/smartWindows'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { getPassengerSmartWindows } from '../api/smartWindows'
 import { getTrafficOverview } from '../api/trafficStatistics'
 import type {
-  SmartWindowDisplayDto,
-  SmartWindowItemDto,
+  PassengerSmartWindowSnapshotDto,
   TrafficApplicationStatDto,
   TrafficOverviewDto,
 } from '../api/types'
-import { buildCabinSections, type CabinZoneSelection } from '../config/passengerCabinLayout'
 import { toMessage } from '../utils/displayFormatters'
 
 export interface MediaStatRow {
@@ -24,25 +22,18 @@ const MUSIC_KEYWORDS = ['音乐', '歌曲', '音频', '歌', 'r&b', 'soul', ...M
 
 export function usePassengerRealtime() {
   const trafficOverview = ref<TrafficOverviewDto | null>(null)
-  const windowDisplay = ref<SmartWindowDisplayDto | null>(null)
+  const windowDisplay = ref<PassengerSmartWindowSnapshotDto | null>(null)
   const trafficLoading = ref(false)
   const windowLoading = ref(false)
   const trafficError = ref('')
   const windowError = ref('')
   const autoRefresh = ref(true)
-  const selectedZone = ref<CabinZoneSelection>('ALL')
-  const selectedWindowId = ref<number | null>(null)
   const cabinScroller = ref<HTMLElement | null>(null)
 
   let refreshTimer: number | undefined
+  let windowRequestInFlight = false
 
   const trafficTotals = computed(() => trafficOverview.value?.totals ?? null)
-  const windowSummary = computed(() => windowDisplay.value?.summary ?? null)
-  const selectedWindow = computed(() => {
-    if (selectedWindowId.value === null) return null
-    return windowDisplay.value?.windows.find((item) => item.windowId === selectedWindowId.value) ?? null
-  })
-  const cabinSections = computed(() => buildCabinSections(windowDisplay.value))
   const maxApplicationMbps = computed(() => {
     const values = trafficOverview.value?.applicationStats.map((item) => item.averageThroughputMbps) ?? []
     return values.length ? Math.max(...values) : 0
@@ -82,18 +73,17 @@ export function usePassengerRealtime() {
   }
 
   async function loadWindows(background = false): Promise<void> {
-    if (!background) windowLoading.value = true
-    windowError.value = ''
+    if (windowRequestInFlight) return
+    windowRequestInFlight = true
+    if (!background && windowDisplay.value === null) windowLoading.value = true
     try {
-      windowDisplay.value = await getSmartWindowDisplay()
-      if (selectedWindowId.value !== null) {
-        const stillVisible = windowDisplay.value.windows.some((item) => item.windowId === selectedWindowId.value)
-        if (!stillVisible) selectedWindowId.value = null
-      }
+      windowDisplay.value = await getPassengerSmartWindows()
+      windowError.value = ''
     } catch (error) {
       windowError.value = toMessage(error)
     } finally {
       windowLoading.value = false
+      windowRequestInFlight = false
     }
   }
 
@@ -101,35 +91,10 @@ export function usePassengerRealtime() {
     autoRefresh.value = !autoRefresh.value
   }
 
-  async function selectZone(zoneId: CabinZoneSelection): Promise<void> {
-    selectedZone.value = zoneId
-    await nextTick()
-    if (!cabinScroller.value) return
-    if (zoneId === 'ALL') {
-      cabinScroller.value.scrollTo({ top: 0, behavior: 'smooth' })
-      return
-    }
-    const target = cabinScroller.value.querySelector<HTMLElement>(`[data-zone-id="${zoneId}"]`)
-    if (target) {
-      cabinScroller.value.scrollTo({
-        top: Math.max(0, target.offsetTop - cabinScroller.value.offsetTop - 8),
-        behavior: 'smooth',
-      })
-    }
-  }
-
-  function selectWindow(windowItem: SmartWindowItemDto): void {
-    selectedWindowId.value = windowItem.windowId
-  }
-
   return {
     autoRefresh,
     cabinScroller,
-    cabinSections,
     maxApplicationMbps,
-    selectedWindow,
-    selectedWindowId,
-    selectedZone,
     trafficError,
     trafficLoading,
     trafficOverview,
@@ -139,13 +104,10 @@ export function usePassengerRealtime() {
     windowDisplay,
     windowError,
     windowLoading,
-    windowSummary,
     maxMusicMbps,
     maxVideoMbps,
     musicStats,
     musicTerminalCount,
-    selectWindow,
-    selectZone,
     toggleAutoRefresh,
   }
 }

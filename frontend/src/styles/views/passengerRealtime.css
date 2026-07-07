@@ -415,6 +415,94 @@
   user-select: none;
 }
 
+.window-svg-layer {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  width: 99.6055%;
+  height: 100%;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.window-svg-inline,
+.window-svg-layer svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.window-svg-layer .window-svg-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+
+.window-svg-layer .window-svg-node path {
+  vector-effect: non-scaling-stroke;
+}
+
+.window-svg-layer .window-svg-node.is-disconnected {
+  opacity: 0.52;
+}
+
+.window-svg-layer .window-svg-node.is-fault path {
+  stroke: #ff625f;
+  stroke-width: 2;
+}
+
+.window-svg-layer .window-svg-node.is-test path {
+  stroke: #ff9d35;
+  stroke-width: 2;
+}
+
+.window-brightness-label {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(222, 229, 240, 0.78);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(7, 12, 20, 0.78);
+}
+
+.window-brightness-label--left {
+  justify-content: flex-end;
+  transform: translate(-100%, -50%);
+}
+
+.window-brightness-label--right {
+  transform: translate(0, -50%);
+}
+
+.window-brightness-label i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.window-brightness-label.is-disconnected {
+  color: #727c8b;
+}
+
+.window-brightness-label.is-fault {
+  color: #ff7771;
+}
+
+.window-brightness-label.is-test {
+  color: #ffac52;
+}
+
 .seat-svg-layer {
   position: absolute;
   inset: 0;
@@ -759,6 +847,10 @@
 
 .cabin-overlay--error {
   color: #ffbdad;
+}
+
+.cabin-overlay--stale {
+  color: #ffd19b;
 }
 
 .cabin-overlay strong {
