@@ -10,7 +10,7 @@ import 'element-plus/theme-chalk/el-input.css'
 import 'element-plus/theme-chalk/el-loading.css'
 import App from './App.vue'
 import { router } from './router'
-import './styles.css'
+import './styles/index.css'
 
 createApp(App)
   .component('ElAlert', ElAlert)

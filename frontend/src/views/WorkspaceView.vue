@@ -453,7 +453,7 @@ onBeforeUnmount(() => {
         <button class="workspace-nav__item" disabled>飞机轨迹回放系统</button>
         <button class="workspace-nav__item" disabled>数据统计</button>
         <button class="workspace-nav__item" disabled>用户管理</button>
-        <button class="workspace-nav__item" disabled>乘客实时动态</button>
+        <button class="workspace-nav__item" @click="router.push('/passenger-realtime')">乘客实时动态</button>
       </nav>
       <div class="workspace-header__account">
         <span class="account-dot"></span>

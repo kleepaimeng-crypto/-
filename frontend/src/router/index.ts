@@ -17,6 +17,12 @@ export const router = createRouter({
       component: () => import('../views/WorkspaceView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/passenger-realtime',
+      name: 'passenger-realtime',
+      component: () => import('../views/PassengerRealtimeView.vue'),
+      meta: { requiresAuth: true },
+    },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

@@ -51,6 +51,8 @@ export type DataTypeCode =
 export type ParseStatus = 'RECEIVED' | 'PARSED' | 'PARTIAL' | 'FAILED'
 export type JobStatus = 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'PARTIAL' | 'FAILED'
 export type ExportFormat = 'CSV' | 'PDF'
+export type WindowSide = 'LEFT' | 'RIGHT'
+export type SmartWindowStatus = 'NORMAL' | 'FAULT' | 'TEST'
 
 export interface CodeNameOption {
   code: string
@@ -140,4 +142,123 @@ export interface FileJobSummaryDto {
   createdAt: string
   completedAt?: string | null
   requestedBy?: UserDto | null
+}
+
+export interface TrafficTaskDto {
+  taskId: string
+  flightNo: string
+  scenarioName: string
+  status: string
+  phase: string | null
+  terminalCount: number
+  startedAt: string
+  statisticsWindowSeconds: number
+}
+
+export interface TrafficWindowDto {
+  from: string
+  to: string
+}
+
+export interface TrafficTotalsDto {
+  bytesCount: number
+  packetCount: number
+  activeTerminalCount: number
+  activeSessionCount: number
+  averageThroughputMbps: number
+  peakMbps: number
+  packetLossRate: number | null
+}
+
+export interface TrafficApplicationStatDto {
+  application: string
+  bytesCount: number
+  packetCount: number
+  averageThroughputMbps: number
+  peakMbps: number
+  activeTerminalCount: number
+  packetLossRate: number | null
+}
+
+export interface TrafficTerminalStatDto {
+  terminalId: string
+  displayTerminalId: string | null
+  seatLabel: string | null
+  application: string
+  averageThroughputMbps: number
+  peakMbps: number
+  bytesCount: number
+}
+
+export interface TrafficTimelinePointDto {
+  windowStart: string
+  windowEnd: string
+  averageThroughputMbps: number
+  peakMbps: number
+  bytesCount: number
+}
+
+export interface TrafficOverviewDto {
+  task: TrafficTaskDto | null
+  window: TrafficWindowDto | null
+  totals: TrafficTotalsDto
+  applicationStats: TrafficApplicationStatDto[]
+  topTerminals: TrafficTerminalStatDto[]
+  timeline: TrafficTimelinePointDto[]
+}
+
+export interface TrafficRecordDto {
+  windowStart: string
+  windowEnd: string
+  taskId: string
+  terminalId: string
+  displayTerminalId: string | null
+  seatLabel: string | null
+  application: string
+  protocol: string
+  direction: string
+  bytesCount: number
+  packetCount: number
+  throughputMbps: number
+  peakMbps: number
+  recordStatus: string
+}
+
+export interface SmartWindowSummaryDto {
+  windowCount: number
+  connectedCount: number
+  faultCount: number
+  testCount: number
+  averageBrightnessLevel: number | null
+}
+
+export interface SmartWindowZoneDto {
+  zoneId: number
+  name: string
+  windowCount: number
+  connectedCount: number
+  faultCount: number
+  averageBrightnessLevel: number | null
+}
+
+export interface SmartWindowItemDto {
+  windowId: number
+  label: string | null
+  zoneId: number
+  side: WindowSide
+  rowNo: number
+  positionNo: number
+  brightnessLevel: number
+  connectStatus: boolean
+  status: SmartWindowStatus
+  eventAt: string
+}
+
+export interface SmartWindowDisplayDto {
+  flightNo: string | null
+  aircraftRegistrationNo: string | null
+  snapshotAt: string | null
+  summary: SmartWindowSummaryDto
+  zones: SmartWindowZoneDto[]
+  windows: SmartWindowItemDto[]
 }
