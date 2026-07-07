@@ -3,7 +3,7 @@
   display: grid;
   height: calc(100vh - 90px);
   min-height: 0;
-  grid-template-columns: minmax(0, 2.32fr) minmax(390px, 1fr);
+  grid-template-columns: minmax(0, 1fr) 552px;
   gap: 18px;
   padding: 18px 28px 12px;
   animation: workspace-enter 360ms ease-out both;
@@ -601,14 +601,16 @@
 }
 
 .workspace-inspector {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  align-content: stretch;
+  gap: 14px;
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 
 .inspector-section {
+  min-height: 0;
   overflow: hidden;
   border: 1px solid var(--workspace-line);
   border-radius: 8px;
@@ -733,7 +735,9 @@
 }
 
 .history-section {
-  min-height: 206px;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
 }
 
 .history-head,
@@ -768,10 +772,16 @@
 
 .history-empty {
   display: grid;
-  min-height: 120px;
+  flex: 1;
+  min-height: 0;
   place-items: center;
   color: #617189;
   font-size: 12px;
+}
+
+.history-list {
+  min-height: 0;
+  overflow: auto;
 }
 
 .job-succeeded { color: #61d69f; }
@@ -1002,7 +1012,7 @@
 
 @media (max-width: 1540px) {
   .workspace-layout {
-    grid-template-columns: minmax(0, 2.05fr) minmax(360px, 0.95fr);
+    grid-template-columns: minmax(0, 1fr) 460px;
     padding-inline: 18px;
   }
 

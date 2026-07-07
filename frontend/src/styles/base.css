@@ -10,6 +10,7 @@
   --text-muted: #8f9db3;
   --accent: #ff8a00;
   --cyan: #3dd6ff;
+  --app-max-width: 1920px;
 }
 
 * {
@@ -26,6 +27,7 @@ body,
 
 body {
   min-height: 100vh;
+  background: #0c1422;
 }
 
 button,

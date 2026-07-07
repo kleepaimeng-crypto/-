@@ -500,7 +500,7 @@
   position: absolute;
   z-index: 9;
   top: 18px;
-  right: 22px;
+  right: 38px;
   bottom: 32px;
   display: flex;
   width: clamp(430px, 25vw, 470px);
@@ -519,14 +519,12 @@
   align-items: center;
   gap: 9px;
   padding: 0 14px;
-  border: 1px solid rgba(74, 105, 154, 0.26);
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, rgba(54, 104, 190, 0.76), rgba(14, 23, 38, 0.98) 46%),
-    #0b1422;
+  border: 1px solid rgba(62, 82, 116, 0.42);
+  border-radius: 10px;
+  background: #111923;
   box-shadow:
     0 10px 26px rgba(0, 0, 0, 0.32),
-    inset 0 1px 0 rgba(177, 207, 255, 0.18);
+    inset 0 1px 0 rgba(177, 207, 255, 0.08);
 }
 
 .floating-panel-title span {
@@ -561,30 +559,18 @@
   display: block;
   width: 100%;
   padding: 14px 12px 18px;
-  border: 1px solid rgba(84, 116, 168, 0.22);
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 0 0, rgba(79, 124, 205, 0.08), transparent 34%),
-    linear-gradient(180deg, rgba(14, 23, 38, 0.98), rgba(8, 14, 25, 0.99));
+  border: 1px solid rgba(43, 58, 82, 0.88);
+  border-radius: 10px;
+  background: transparent;
   color: inherit;
   cursor: pointer;
   text-align: left;
-  box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.34),
-    0 2px 0 rgba(9, 14, 24, 0.72),
-    inset 0 1px 0 rgba(178, 205, 250, 0.08);
+  box-shadow: none;
   transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
 }
 
 .watch-detail-card::before {
-  position: absolute;
-  inset: 1px;
-  border-radius: 5px;
-  background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.06), transparent 38%),
-    linear-gradient(180deg, rgba(91, 126, 184, 0.05), transparent 42%);
-  content: "";
-  pointer-events: none;
+  display: none;
 }
 
 .watch-detail-card + .watch-detail-card {
@@ -593,34 +579,16 @@
 
 .watch-detail-card:hover,
 .watch-detail-card:focus-visible {
-  border-color: rgba(86, 139, 224, 0.46);
-  background:
-    radial-gradient(circle at 0 0, rgba(92, 142, 232, 0.12), transparent 36%),
-    linear-gradient(180deg, rgba(17, 29, 48, 0.99), rgba(8, 16, 29, 0.99));
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, 0.38),
-    0 2px 0 rgba(9, 14, 24, 0.72),
-    inset 0 1px 0 rgba(184, 211, 255, 0.13);
+  border-color: rgba(82, 111, 160, 0.72);
+  background: transparent;
+  box-shadow: none;
   outline: none;
 }
 
 .watch-detail-card.is-active {
-  border-color: rgba(255, 138, 0, 0.68);
-  background:
-    linear-gradient(90deg, rgba(255, 138, 0, 0.08), rgba(12, 21, 35, 0.97) 30%),
-    linear-gradient(180deg, rgba(22, 31, 47, 0.98), rgba(8, 15, 27, 0.98));
-  box-shadow:
-    0 18px 36px rgba(0, 0, 0, 0.44),
-    0 2px 0 rgba(42, 23, 5, 0.5),
-    0 0 0 1px rgba(255, 138, 0, 0.12),
-    0 0 18px rgba(255, 138, 0, 0.08),
-    inset 0 1px 0 rgba(255, 211, 162, 0.14);
-}
-
-.watch-detail-card.is-active::before {
-  background:
-    linear-gradient(120deg, rgba(255, 183, 99, 0.1), transparent 36%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 42%);
+  border-color: rgba(255, 138, 0, 0.88);
+  background: transparent;
+  box-shadow: none;
 }
 
 .watch-detail-card:last-child {
@@ -689,22 +657,18 @@
   display: grid;
   min-height: 136px;
   place-items: center;
-  border: 1px solid rgba(77, 109, 160, 0.42);
-  border-radius: 4px;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(79, 118, 180, 0.18), transparent 36%),
-    linear-gradient(135deg, rgba(27, 47, 78, 0.94), rgba(12, 22, 38, 0.98));
+  border: 1px solid rgba(61, 88, 130, 0.68);
+  border-radius: 6px;
+  background: #18283f;
   color: #89a4cc;
   font-size: 13px;
   box-shadow:
-    inset 0 1px 0 rgba(179, 203, 242, 0.12),
-    inset 0 -18px 34px rgba(0, 0, 0, 0.12);
+    inset 0 1px 0 rgba(179, 203, 242, 0.08);
 }
 
 .watch-detail-card.is-active .watch-thumb {
-  border-color: rgba(255, 138, 0, 0.72);
-  background:
-    linear-gradient(135deg, rgba(32, 50, 77, 0.94), rgba(15, 25, 41, 0.98));
+  border-color: rgba(255, 138, 0, 0.88);
+  background: #18283f;
 }
 
 .watch-copy {

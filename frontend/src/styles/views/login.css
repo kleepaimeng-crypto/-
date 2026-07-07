@@ -2,8 +2,11 @@
 .login-shell {
   position: relative;
   display: grid;
+  width: min(100vw, var(--app-max-width));
+  max-width: var(--app-max-width);
   min-height: 100svh;
   grid-template-rows: auto 1fr auto;
+  margin: 0 auto;
   overflow: hidden;
   background:
     radial-gradient(circle at 68% 45%, rgba(27, 73, 122, 0.28), transparent 28%),
