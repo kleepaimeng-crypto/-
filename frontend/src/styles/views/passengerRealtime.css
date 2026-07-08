@@ -33,6 +33,8 @@
 .passenger-layout {
   --panel-offset: 4px;
   --panel-bottom: 0px;
+  --left-panel-width: 440px;
+  --right-panel-width: 470px;
   --cabin-map-width: 920px;
   --aircraft-width: 614px;
   --window-layer-width: 200px;
@@ -165,6 +167,7 @@
 
 .media-card {
   min-height: 246px;
+  overflow: hidden;
 }
 
 .cockpit-card {
@@ -757,6 +760,32 @@
 
 .watch-kind--music {
   color: #39f0a4;
+}
+
+.watch-kind--browsing {
+  color: #74b4ff;
+}
+
+.watch-kind--other,
+.watch-kind--idle {
+  color: #9aa9bf;
+}
+
+.watch-list-state {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  color: #8fa1bb;
+}
+
+.watch-list-state--error,
+.watch-refresh-warning {
+  color: #ffb1a1;
+}
+
+.watch-refresh-warning {
+  padding: 10px;
+  text-align: center;
 }
 
 .watch-detail-body {

@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import type { TrafficOverviewDto, TrafficTotalsDto } from '../../api/types'
-import type { MediaStatRow } from '../../composables/usePassengerRealtime'
-import { barWidth, formatBytes, formatCount, formatMbps } from '../../utils/displayFormatters'
+import { computed } from 'vue'
+import type { PassengerRealtimeSnapshotDto } from '../../api/types'
+import { barWidth, formatCount, formatDate } from '../../utils/displayFormatters'
 
-defineProps<{
+const props = defineProps<{
   autoRefresh: boolean
-  trafficOverview: TrafficOverviewDto | null
-  trafficTotals: TrafficTotalsDto | null
-  trafficLoading: boolean
-  trafficError: string
-  videoStats: MediaStatRow[]
-  musicStats: MediaStatRow[]
-  videoTerminalCount: number | null
-  musicTerminalCount: number | null
-  maxVideoMbps: number
-  maxMusicMbps: number
+  snapshot: PassengerRealtimeSnapshotDto | null
+  loading: boolean
+  error: string
 }>()
 
 const emit = defineEmits<{
   (event: 'toggleAutoRefresh'): void
 }>()
+
+const videoMax = computed(() => maxCount(props.snapshot?.mediaStatistics.videoRanking ?? []))
+const musicMax = computed(() => maxCount(props.snapshot?.mediaStatistics.musicRanking ?? []))
+
+function maxCount(items: { count: number }[]): number {
+  return items.length > 0 ? Math.max(...items.map((item) => item.count)) : 0
+}
 </script>
 
 <template>
@@ -31,8 +31,8 @@ const emit = defineEmits<{
 
     <div class="panel-actions">
       <div>
-        <strong>{{ trafficOverview?.task?.flightNo || '航班待同步' }}</strong>
-        <small>{{ trafficOverview?.task?.scenarioName || '等待流量统计接口返回任务信息' }}</small>
+        <strong>播放类型排行</strong>
+        <small>更新时间：{{ formatDate(snapshot?.updatedAt) }}</small>
       </div>
       <button class="mini-toggle" @click="emit('toggleAutoRefresh')">
         {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
@@ -41,46 +41,42 @@ const emit = defineEmits<{
 
     <section class="media-card">
       <div class="media-card__heading">
-        <h3>视频：{{ formatCount(videoTerminalCount) }}台</h3>
-        <span>{{ formatBytes(trafficTotals?.bytesCount) }}</span>
+        <h3>视频：{{ formatCount(snapshot?.mediaStatistics.videoTotalCount) }}次</h3>
       </div>
       <div class="media-list">
         <div
-          v-for="item in videoStats"
-          :key="`video-${item.name}`"
+          v-for="item in snapshot?.mediaStatistics.videoRanking ?? []"
+          :key="`video-${item.type}`"
           class="media-row"
-          :class="{ 'is-empty': !item.hasData }"
         >
-          <span>{{ item.name }}</span>
-          <i><b :style="{ width: item.hasData ? barWidth(item.averageThroughputMbps || 0, maxVideoMbps) : '0%' }"></b></i>
-          <em>{{ item.hasData ? formatMbps(item.averageThroughputMbps) : '—' }}</em>
+          <span>{{ item.type }}</span>
+          <i><b :style="{ width: barWidth(item.count, videoMax) }"></b></i>
+          <em>{{ formatCount(item.count) }}</em>
         </div>
       </div>
-      <div v-if="trafficLoading" class="media-state">读取流量统计中</div>
-      <div v-else-if="trafficError" class="media-state media-state--error">{{ trafficError }}</div>
-      <div v-else-if="!trafficOverview?.applicationStats.length" class="media-state">暂无流量统计数据</div>
+      <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
+      <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
+      <div v-else-if="!snapshot?.mediaStatistics.videoRanking.length" class="media-state">暂无视频播放数据</div>
     </section>
 
     <section class="media-card">
       <div class="media-card__heading">
-        <h3>音乐：{{ formatCount(musicTerminalCount) }}台</h3>
-        <span>{{ formatMbps(trafficTotals?.averageThroughputMbps) }}</span>
+        <h3>音乐：{{ formatCount(snapshot?.mediaStatistics.musicTotalCount) }}次</h3>
       </div>
       <div class="media-list">
         <div
-          v-for="item in musicStats"
-          :key="`music-${item.name}`"
+          v-for="item in snapshot?.mediaStatistics.musicRanking ?? []"
+          :key="`music-${item.type}`"
           class="media-row"
-          :class="{ 'is-empty': !item.hasData }"
         >
-          <span>{{ item.name }}</span>
-          <i><b :style="{ width: item.hasData ? barWidth(item.averageThroughputMbps || 0, maxMusicMbps) : '0%' }"></b></i>
-          <em>{{ item.hasData ? formatMbps(item.averageThroughputMbps) : '—' }}</em>
+          <span>{{ item.type }}</span>
+          <i><b :style="{ width: barWidth(item.count, musicMax) }"></b></i>
+          <em>{{ formatCount(item.count) }}</em>
         </div>
       </div>
-      <div v-if="trafficLoading" class="media-state">读取流量统计中</div>
-      <div v-else-if="trafficError" class="media-state media-state--error">{{ trafficError }}</div>
-      <div v-else-if="!trafficOverview?.applicationStats.length" class="media-state">暂无流量统计数据</div>
+      <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
+      <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
+      <div v-else-if="!snapshot?.mediaStatistics.musicRanking.length" class="media-state">暂无音乐播放数据</div>
     </section>
 
     <section class="cockpit-card">
@@ -90,7 +86,7 @@ const emit = defineEmits<{
       </div>
       <div class="cockpit-monitor">
         <span>驾驶舱监控待接入</span>
-        <strong>不显示模拟视频内容</strong>
+        <strong>暂不请求视频接口</strong>
       </div>
     </section>
   </section>

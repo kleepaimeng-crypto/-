@@ -1,0 +1,101 @@
+from __future__ import annotations
+
+import random
+import unittest
+from collections import Counter
+
+from receiver_server import ReceiverState
+from udp_simulator.config import SimulatorConfig
+from udp_simulator.ground_model import GroundModel
+from udp_simulator.ife_model import IfeModel
+from udp_simulator.passengers import A330_200_SEATS, build_passengers
+from udp_simulator.scenario import create_scenario
+from udp_simulator.window_model import SmartWindowModel
+
+
+class A330LayoutTests(unittest.TestCase):
+    def test_seat_manifest_has_expected_capacity_and_special_rows(self) -> None:
+        seat_numbers = [seat.seat_no for seat in A330_200_SEATS]
+        cabin_counts = Counter(seat.cabin_class for seat in A330_200_SEATS)
+
+        self.assertEqual(237, len(seat_numbers))
+        self.assertEqual(237, len(set(seat_numbers)))
+        self.assertEqual({"BUSINESS": 30, "ECONOMY": 207}, dict(cabin_counts))
+        self.assertEqual({"A31", "C31", "D31", "E31", "H31", "J31", "L31"}, self._row(31))
+        self.assertEqual({"A54", "C54", "D54", "E54", "H54", "J54", "L54"}, self._row(54))
+        self.assertEqual({"D57", "E57", "H57"}, self._row(57))
+        for invalid in ("A01", "B11", "F31", "F54", "A57", "11A"):
+            self.assertNotIn(invalid, seat_numbers)
+        self.assertTrue(all(seat[0].isalpha() and seat[1:].isdigit() for seat in seat_numbers))
+
+    def test_passengers_and_ife_keep_existing_wire_shape(self) -> None:
+        rng = random.Random(20260703)
+        passengers = build_passengers(237, rng)
+        context = create_scenario(237, 58, rng)
+        model = IfeModel(context, passengers, rng)
+
+        pages_633 = model.build_633_pages(50)
+        pages_cockrell = model.build_cockrell_pages(50)
+        self.assertEqual([50, 50, 50, 50, 37], [len(page["items"]) for page in pages_633])
+        self.assertEqual([50, 50, 50, 50, 37], [len(page["items"]) for page in pages_cockrell])
+        self.assertTrue(all(page["total"] == 237 for page in pages_633 + pages_cockrell))
+
+        item = pages_cockrell[0]["items"][0]
+        self.assertEqual({"sysInfo", "paxInfo", "behaviorInfo", "extInfo"}, set(item))
+        self.assertEqual({"timestamp", "flightId"}, set(item["sysInfo"]))
+        self.assertEqual({"pnr", "seatNo", "cabinClass", "deviceId", "userId"}, set(item["paxInfo"]))
+        self.assertFalse(any("svg" in key.lower() for key in self._all_keys(item)))
+
+        task = GroundModel(context, passengers, rng).task_payload()
+        self.assertEqual(237, task["payload"]["terminalCount"])
+        self.assertEqual("Airbus A330-200", context.aircraft_model)
+
+        ground = GroundModel(context, passengers, rng)
+        traffic_item = ground.traffic_payload()[0]["items"][0]
+        session_item = ground.session_payload()[0]["items"][0]
+        self.assertRegex(item["paxInfo"]["seatNo"], r"^[A-Z][0-9]{2}$")
+        self.assertRegex(traffic_item["seatLabel"], r"^[A-Z][0-9]{2}$")
+        self.assertEqual(traffic_item["seatLabel"], traffic_item["displayTerminalId"])
+        self.assertRegex(session_item["seatLabel"], r"^[A-Z][0-9]{2}$")
+        self.assertEqual(session_item["seatLabel"], session_item["displayTerminalId"])
+
+    def test_default_config_matches_confirmed_aircraft(self) -> None:
+        config = SimulatorConfig()
+        self.assertEqual(237, config.passenger_count)
+        self.assertEqual(116, config.window_count)
+        self.assertEqual(58, config.window_rows)
+
+        with self.assertRaisesRegex(ValueError, "passengerCount must be 237"):
+            build_passengers(320, random.Random(1))
+
+    def test_smart_windows_are_116_with_symmetric_zone_counts(self) -> None:
+        rng = random.Random(20260703)
+        context = create_scenario(237, 58, rng)
+        payload = SmartWindowModel(context, 116, rng).update_payload()
+
+        self.assertEqual(116, payload["total"])
+        self.assertEqual(list(range(1, 117)), [item["windowId"] for item in payload["items"]])
+        self.assertEqual({"windowId", "zoneId", "brightnessLevel", "connectStatus", "status", "timestamp"}, set(payload["items"][0]))
+        for side in (payload["items"][:58], payload["items"][58:]):
+            self.assertEqual({1: 17, 2: 20, 3: 21}, dict(Counter(item["zoneId"] for item in side)))
+
+        receiver = ReceiverState()
+        receiver.update("smart_window.status", payload)
+        rows = receiver.snapshot()["windowRows"]
+        self.assertEqual(58, len(rows))
+        self.assertEqual([1, 59], [item["windowId"] for item in rows[0]["windows"]])
+        self.assertEqual([58, 116], [item["windowId"] for item in rows[-1]["windows"]])
+
+    def _row(self, row: int) -> set[str]:
+        return {seat.seat_no for seat in A330_200_SEATS if seat.row == row}
+
+    def _all_keys(self, value: object) -> list[str]:
+        if isinstance(value, dict):
+            return [str(key) for key in value] + [key for item in value.values() for key in self._all_keys(item)]
+        if isinstance(value, list):
+            return [key for item in value for key in self._all_keys(item)]
+        return []
+
+
+if __name__ == "__main__":
+    unittest.main()

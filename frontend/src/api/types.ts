@@ -287,3 +287,48 @@ export interface PassengerSmartWindowSnapshotDto {
   summary: PassengerSmartWindowSummaryDto
   windows: PassengerSmartWindowItemDto[]
 }
+
+export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'OTHER' | 'IDLE'
+
+export interface MediaRankingItemDto {
+  type: string
+  count: number
+}
+
+export interface PassengerMediaStatisticsDto {
+  videoTotalCount: number
+  videoRanking: MediaRankingItemDto[]
+  musicTotalCount: number
+  musicRanking: MediaRankingItemDto[]
+}
+
+export interface PassengerActivityDto {
+  passengerId: string | null
+  seatNo: string
+  cabinClass: 'BUSINESS' | 'ECONOMY'
+  behaviorType: string | null
+  activityKind: PassengerActivityKind
+  title: string | null
+  types: string[]
+  action: string | null
+  domain: string | null
+  url: string | null
+  trafficBytes: number | null
+  bandwidthMbps: number | null
+  windowBytes: number | null
+  eventAt: string | null
+  bandwidthUpdatedAt: string | null
+  sourceRecordId: string | null
+}
+
+export interface PassengerActivitiesDto {
+  total: number
+  items: PassengerActivityDto[]
+}
+
+export interface PassengerRealtimeSnapshotDto {
+  hasData: boolean
+  updatedAt: string | null
+  mediaStatistics: PassengerMediaStatisticsDto
+  passengerActivities: PassengerActivitiesDto
+}

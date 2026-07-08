@@ -26,7 +26,7 @@ def _build_a330_200_seats() -> tuple[SeatDefinition, ...]:
     seats: list[SeatDefinition] = []
 
     def add_row(row: int, letters: tuple[str, ...], cabin_class: str) -> None:
-        seats.extend(SeatDefinition(f"{row}{letter}", row, letter, cabin_class) for letter in letters)
+        seats.extend(SeatDefinition(f"{letter}{row}", row, letter, cabin_class) for letter in letters)
 
     for row in range(11, 16):
         add_row(row, BUSINESS_SEAT_LETTERS, "BUSINESS")

@@ -4,12 +4,18 @@ import { useRouter } from 'vue-router'
 import { authSession } from '../auth/session'
 import PlatformBrand from '../components/PlatformBrand.vue'
 import PassengerCabinStage from '../components/passenger/PassengerCabinStage.vue'
+import PassengerTrafficPanel from '../components/passenger/PassengerTrafficPanel.vue'
 import { usePassengerRealtime } from '../composables/usePassengerRealtime'
 import { calculateFixedCanvasScale } from '../utils/fixedCanvas'
 
 const router = useRouter()
 const {
+  autoRefresh,
   cabinScroller,
+  snapshot,
+  snapshotError,
+  snapshotLoading,
+  toggleAutoRefresh,
   windowDisplay,
   windowError,
   windowLoading,
@@ -59,8 +65,20 @@ async function logout(): Promise<void> {
       </header>
 
       <section class="passenger-layout">
+        <aside class="passenger-left">
+          <PassengerTrafficPanel
+            :auto-refresh="autoRefresh"
+            :snapshot="snapshot"
+            :loading="snapshotLoading"
+            :error="snapshotError"
+            @toggle-auto-refresh="toggleAutoRefresh"
+          />
+        </aside>
         <PassengerCabinStage
           v-model:cabin-scroller="cabinScroller"
+          :activities="snapshot?.passengerActivities.items ?? []"
+          :activity-error="snapshotError"
+          :activity-loading="snapshotLoading"
           :window-display="windowDisplay"
           :window-error="windowError"
           :window-loading="windowLoading"

@@ -2,16 +2,18 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
 import type {
+  PassengerActivityDto,
   PassengerSmartWindowItemDto,
   PassengerSmartWindowSnapshotDto,
 } from '../../api/types'
+import { formatBytes, formatDate, formatMbps } from '../../utils/displayFormatters'
 import {
   windowSide,
   windowVisualBrightness,
   windowZone,
 } from '../../utils/smartWindowDisplay'
 
-type WatchKind = 'video' | 'music'
+type WatchKind = 'video' | 'music' | 'browsing' | 'other' | 'idle'
 type CabinSectionKey = 'front' | 'middle' | 'rear'
 
 interface WatchPreviewRow {
@@ -20,6 +22,7 @@ interface WatchPreviewRow {
   title: string
   meta: string
   role: string
+  detail: string
   active: boolean
 }
 
@@ -47,6 +50,7 @@ interface WindowLabelView {
 const seatNodeSelector = 'g[id^="Business-Seat-"], g[id^="Economy-Seat-"]'
 const seatIdPattern = /\bid="(?:Business|Economy)-Seat-([A-Z][0-9]+)"/g
 const windowNodeSelector = 'g[id^="Window-"]'
+const cabinBlueprintUrl = '/assets/CA_332-1%201.svg'
 const cabinSections: CabinSection[] = [
   { key: 'front', label: '前舱', anchorSeat: 'C11', fallbackRatio: 0.08 },
   { key: 'middle', label: '中舱', anchorSeat: 'D14', fallbackRatio: 0.34 },
@@ -65,14 +69,15 @@ const selectedSeatLabelStyle = ref<Record<string, string>>({ opacity: '0' })
 const windowLabels = ref<WindowLabelView[]>([])
 const defaultCabinSectionApplied = ref(false)
 
-const knownWatchPreviewRows: Omit<WatchPreviewRow, 'active'>[] = [
-  { seat: 'A46', type: 'video', title: '视频标题', meta: '标签', role: '演员 1   演员 2   演员 3' },
-  { seat: 'A47', type: 'music', title: '音乐标题', meta: '标签', role: '歌手' },
-  { seat: 'D48', type: 'video', title: '视频标题', meta: '标签', role: '演员 1   演员 2   演员 3' },
-  { seat: 'A49', type: 'music', title: '音乐标题', meta: '标签', role: '歌手' },
-]
-
-const knownWatchPreviewMap = new Map(knownWatchPreviewRows.map((item) => [item.seat, item]))
+const props = defineProps<{
+  activities: PassengerActivityDto[]
+  activityError: string
+  activityLoading: boolean
+  cabinScroller: HTMLElement | null
+  windowDisplay: PassengerSmartWindowSnapshotDto | null
+  windowError: string
+  windowLoading: boolean
+}>()
 
 const availableSeatIds = computed(() => {
   const seats = new Set<string>()
@@ -87,21 +92,11 @@ const availableSeatIds = computed(() => {
 })
 
 const watchPreviewRows = computed<WatchPreviewRow[]>(() => {
-  const listedSeats = availableSeatIds.value.length > 0
-    ? availableSeatIds.value
-    : knownWatchPreviewRows.map((item) => item.seat)
-  const prioritySeats = knownWatchPreviewRows.map((item) => item.seat)
-  const rows = [...new Set([...prioritySeats, ...listedSeats])]
-
-  return rows.map((seat) => buildWatchPreviewRow(seat, seat === selectedSeat.value))
+  return props.activities.map((activity) => buildWatchPreviewRow(
+    activity,
+    activity.seatNo === selectedSeat.value,
+  ))
 })
-
-const props = defineProps<{
-  cabinScroller: HTMLElement | null
-  windowDisplay: PassengerSmartWindowSnapshotDto | null
-  windowError: string
-  windowLoading: boolean
-}>()
 
 const emit = defineEmits<{
   (event: 'update:cabinScroller', element: HTMLElement | null): void
@@ -114,24 +109,41 @@ function setScroller(element: Element | ComponentPublicInstance | null): void {
   emit('update:cabinScroller', scroller)
 }
 
-function buildWatchPreviewRow(seat: string, active: boolean): WatchPreviewRow {
-  const knownRow = knownWatchPreviewMap.get(seat)
-
-  if (knownRow) {
-    return {
-      ...knownRow,
-      active,
-    }
-  }
-
+function buildWatchPreviewRow(activity: PassengerActivityDto, active: boolean): WatchPreviewRow {
+  const type = watchKind(activity)
   return {
-    seat,
-    type: 'video',
-    title: '观看内容待接入',
-    meta: '占位信息',
-    role: '详情接口接入后展示',
+    seat: activity.seatNo,
+    type,
+    title: activity.title || (type === 'idle' ? '暂无观看或浏览行为' : watchKindLabel(type)),
+    meta: activity.types.length > 0 ? activity.types.join(' / ') : (activity.behaviorType || '暂无类型'),
+    role: `当前带宽：${formatMbps(activity.bandwidthMbps)} · 窗口流量：${formatBytes(activity.windowBytes)}`,
+    detail: activityKindDetail(activity),
     active,
   }
+}
+
+function watchKind(activity: PassengerActivityDto): WatchKind {
+  if (activity.activityKind === 'VIDEO') return 'video'
+  if (activity.activityKind === 'MUSIC') return 'music'
+  if (activity.activityKind === 'BROWSING') return 'browsing'
+  if (activity.activityKind === 'IDLE') return 'idle'
+  return 'other'
+}
+
+function watchKindLabel(kind: WatchKind): string {
+  if (kind === 'video') return '视频'
+  if (kind === 'music') return '音乐'
+  if (kind === 'browsing') return '浏览'
+  if (kind === 'idle') return '空闲'
+  return '其他'
+}
+
+function activityKindDetail(activity: PassengerActivityDto): string {
+  if (activity.activityKind === 'BROWSING') {
+    return `${activity.domain || '未知域名'} · ${activity.url || '暂无 URL'} · 累计 ${formatBytes(activity.trafficBytes)}`
+  }
+  const action = activity.action || '暂无动作'
+  return `${action} · 行为时间 ${formatDate(activity.eventAt)}`
 }
 
 function extractSeatFromGroupId(id: string): string | null {
@@ -563,7 +575,7 @@ onMounted(() => {
     <div :ref="setScroller" class="cabin-scroll">
       <div class="cabin-map">
         <div class="cabin-blueprint-frame" aria-hidden="true">
-          <img class="cabin-blueprint" src="/assets/CA_332-1%201.svg" alt="" />
+          <img class="cabin-blueprint" :src="cabinBlueprintUrl" alt="" />
         </div>
         <div
           v-if="windowOverlaySvg"
@@ -614,6 +626,12 @@ onMounted(() => {
       </header>
 
       <div ref="watchListRef" class="watch-detail-list">
+        <div v-if="activityLoading && activities.length === 0" class="watch-list-state">
+          读取乘客详情中
+        </div>
+        <div v-else-if="activityError && activities.length === 0" class="watch-list-state watch-list-state--error">
+          {{ activityError }}
+        </div>
         <article
           v-for="item in watchPreviewRows"
           :key="item.seat"
@@ -628,18 +646,21 @@ onMounted(() => {
           <header class="watch-seat-line">
             <span class="seat-icon"></span>
             <strong>{{ item.seat }}</strong>
-            <i :class="`watch-kind watch-kind--${item.type}`">{{ item.type === 'video' ? '视频' : '音乐' }}</i>
+            <i :class="`watch-kind watch-kind--${item.type}`">{{ watchKindLabel(item.type) }}</i>
           </header>
           <div class="watch-detail-body">
-            <div class="watch-thumb">{{ item.active ? '当前选中座位' : '封面待接入' }}</div>
+            <div class="watch-thumb">{{ item.active ? '当前选中座位' : watchKindLabel(item.type) }}</div>
             <div class="watch-copy">
               <strong>{{ item.title }}</strong>
               <span>{{ item.meta }}</span>
               <p class="watch-role">{{ item.role }}</p>
-              <p>简介内容待详情接口接入后展示。</p>
+              <p>{{ item.detail }}</p>
             </div>
           </div>
         </article>
+        <div v-if="activityError && activities.length > 0" class="watch-refresh-warning">
+          刷新失败，当前显示上一次成功结果
+        </div>
       </div>
     </aside>
 
