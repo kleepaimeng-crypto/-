@@ -34,25 +34,28 @@ class PassengerRealtimeServiceTests {
     }
 
     @Test
-    void assemblesActivitiesBandwidthAndDeduplicatedRankings() {
+    void buildsRankingsOnlyFromEachPassengersCurrentOverallBehavior() {
         OffsetDateTime eventAt = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
-        PassengerActivityRow activity = activity("A11", "MOVIE_PLAY", eventAt);
+        PassengerActivityRow video = activity("PAX-00001", "A11", "MOVIE_PLAY", "奇幻/科幻/奇幻", eventAt);
+        PassengerActivityRow music = activity("PAX-00002", "C11", "MUSIC_PLAY", "民谣/轻音乐", eventAt);
+        PassengerActivityRow browsing = activity("PAX-00003", "D11", "WAP_BROWSING", null, eventAt);
         when(mapper.findCurrentFlightNo()).thenReturn("CA1234");
-        when(mapper.findLatestActivities("CA1234")).thenReturn(List.of(activity));
-        when(mapper.findLatestMediaTypes("CA1234", "MOVIE_PLAY"))
-                .thenReturn(List.of("奇幻/科幻/奇幻"));
-        when(mapper.findLatestMediaTypes("CA1234", "MUSIC_PLAY"))
-                .thenReturn(List.of("民谣/轻音乐"));
+        when(mapper.findLatestActivities("CA1234")).thenReturn(List.of(video, music, browsing));
 
         var result = service.getSnapshot();
 
         assertThat(result.hasData()).isTrue();
         assertThat(result.updatedAt()).isEqualTo(eventAt);
-        assertThat(result.mediaStatistics().videoTotalCount()).isEqualTo(2);
+        assertThat(result.mediaStatistics().videoTotalCount()).isEqualTo(1);
         assertThat(result.mediaStatistics().videoRanking())
                 .extracting(item -> item.type())
                 .containsExactly("奇幻", "科幻");
-        assertThat(result.mediaStatistics().musicTotalCount()).isEqualTo(2);
+        assertThat(result.mediaStatistics().musicTotalCount()).isEqualTo(1);
+        assertThat(result.mediaStatistics().musicRanking())
+                .extracting(item -> item.type())
+                .containsExactly("民谣", "轻音乐");
+        assertThat(result.mediaStatistics().videoTotalCount() + result.mediaStatistics().musicTotalCount())
+                .isLessThanOrEqualTo(237);
         var first = result.passengerActivities().items().getFirst();
         assertThat(first.seatNo()).isEqualTo("A11");
         assertThat(first.activityKind()).isEqualTo("VIDEO");
@@ -60,14 +63,20 @@ class PassengerRealtimeServiceTests {
         assertThat(first.windowBytes()).isEqualTo(5_262_500L);
     }
 
-    private PassengerActivityRow activity(String seatNo, String behaviorType, OffsetDateTime eventAt) {
+    private PassengerActivityRow activity(
+            String passengerId,
+            String seatNo,
+            String behaviorType,
+            String typesText,
+            OffsetDateTime eventAt
+    ) {
         PassengerActivityRow row = new PassengerActivityRow();
-        row.setPassengerId("PAX-00001");
+        row.setPassengerId(passengerId);
         row.setSeatNo(seatNo);
         row.setCabinClass("BUSINESS");
         row.setBehaviorType(behaviorType);
         row.setTitle("星海远航");
-        row.setTypesText("奇幻/科幻");
+        row.setTypesText(typesText);
         row.setAction("PLAY");
         row.setBandwidthMbps(new BigDecimal("8.420"));
         row.setWindowBytes(5_262_500L);

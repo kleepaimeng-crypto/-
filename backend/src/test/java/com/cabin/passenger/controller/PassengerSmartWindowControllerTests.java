@@ -32,6 +32,10 @@ class PassengerSmartWindowControllerTests {
         OffsetDateTime updatedAt = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
         when(service.getLatestSnapshot()).thenReturn(new SmartWindowSnapshotResponse(
                 true,
+                true,
+                116,
+                116,
+                List.of(),
                 recordId,
                 updatedAt,
                 new SmartWindowSummaryResponse(new BigDecimal("7.0"), 0, 0, 0),
@@ -42,6 +46,8 @@ class PassengerSmartWindowControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("OK"))
                 .andExpect(jsonPath("$.data.hasData").value(true))
+                .andExpect(jsonPath("$.data.complete").value(true))
+                .andExpect(jsonPath("$.data.actualCount").value(116))
                 .andExpect(jsonPath("$.data.windows[0].windowId").value(1))
                 .andExpect(jsonPath("$.data.windows[0].brightnessLevel").value(7));
     }

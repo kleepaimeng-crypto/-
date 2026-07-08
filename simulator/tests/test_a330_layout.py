@@ -86,6 +86,33 @@ class A330LayoutTests(unittest.TestCase):
         self.assertEqual([1, 59], [item["windowId"] for item in rows[0]["windows"]])
         self.assertEqual([58, 116], [item["windowId"] for item in rows[-1]["windows"]])
 
+    def test_receiver_ranks_only_each_passengers_current_overall_behavior(self) -> None:
+        receiver = ReceiverState()
+        receiver.update("ife_633.behavior", self._ife_payload([
+            self._ife_item("PAX-00001", "MOVIE_PLAY", contentType="奇幻/科幻"),
+            self._ife_item("PAX-00002", "MUSIC_PLAY", musicType="民谣"),
+        ]))
+        first = receiver.snapshot()
+        self.assertEqual([("奇幻", 1), ("科幻", 1)], first["videoRanking"])
+        self.assertEqual([("民谣", 1)], first["musicRanking"])
+
+        receiver.update("ife_cockrell.behavior", self._ife_payload([
+            self._ife_item("PAX-00001", "WAP_BROWSING"),
+            self._ife_item("PAX-00002", "MOVIE_PLAY", contentType="爱情"),
+        ]))
+        current = receiver.snapshot()
+        self.assertEqual([("爱情", 1)], current["videoRanking"])
+        self.assertEqual([], current["musicRanking"])
+
+    def _ife_payload(self, items: list[dict]) -> dict:
+        return {"items": items}
+
+    def _ife_item(self, user_id: str, behavior_type: str, **details: str) -> dict:
+        return {
+            "paxInfo": {"userId": user_id},
+            "behaviorInfo": {"behaviorType": behavior_type, **details},
+        }
+
     def _row(self, row: int) -> set[str]:
         return {seat.seat_no for seat in A330_200_SEATS if seat.row == row}
 

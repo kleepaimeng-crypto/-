@@ -21,8 +21,9 @@ describe('PassengerTrafficPanel', () => {
       props: { autoRefresh: true, snapshot, loading: false, error: '' },
     })
 
-    expect(wrapper.text()).toContain('视频：57次')
-    expect(wrapper.text()).toContain('音乐：48次')
+    expect(wrapper.text()).toContain('当前影音类型排行')
+    expect(wrapper.text()).toContain('当前观看视频：57人')
+    expect(wrapper.text()).toContain('当前收听音乐：48人')
     expect(wrapper.text()).toContain('奇幻')
     expect(wrapper.text()).not.toContain('Mbps')
 
@@ -45,7 +46,7 @@ describe('PassengerTrafficPanel', () => {
       props: { autoRefresh: false, snapshot: emptySnapshot, loading: false, error: '' },
     })
 
-    expect(wrapper.text()).toContain('暂无视频播放数据')
-    expect(wrapper.text()).toContain('暂无音乐播放数据')
+    expect(wrapper.text()).toContain('当前暂无视频观看乘客')
+    expect(wrapper.text()).toContain('当前暂无音乐收听乘客')
   })
 })

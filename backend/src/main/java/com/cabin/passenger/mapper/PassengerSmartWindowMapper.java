@@ -10,21 +10,15 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface PassengerSmartWindowMapper {
     @Select("""
-            SELECT s.record_id
-            FROM smart_window_status s
-            JOIN data_record r ON r.id = s.record_id
+            SELECT r.id
+            FROM data_record r
             WHERE r.is_deleted = false
               AND r.data_type_code = 'SMART_WINDOW_STATUS'
-            GROUP BY s.record_id, r.received_at
-            HAVING count(*) = 116
-               AND count(DISTINCT s.window_id) = 116
-               AND min(s.window_id) = 1
-               AND max(s.window_id) = 116
-               AND bool_and(s.window_id BETWEEN 1 AND 116)
-            ORDER BY max(s.event_at) DESC, r.received_at DESC, s.record_id DESC
+              AND r.payload_count <= 116
+            ORDER BY r.sent_at DESC, r.received_at DESC, r.id DESC
             LIMIT 1
             """)
-    UUID findLatestCompleteSnapshotRecordId();
+    UUID findLatestSnapshotRecordId();
 
     @Select("""
             SELECT
@@ -36,6 +30,7 @@ public interface PassengerSmartWindowMapper {
                 event_at AS updated_at
             FROM smart_window_status
             WHERE record_id = #{recordId}
+              AND window_id BETWEEN 1 AND 116
             ORDER BY window_id
             """)
     List<SmartWindowRow> findSnapshotWindows(@Param("recordId") UUID recordId);

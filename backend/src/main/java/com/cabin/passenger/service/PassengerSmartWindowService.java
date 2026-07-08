@@ -11,7 +11,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,23 +31,26 @@ public class PassengerSmartWindowService {
     @Transactional(readOnly = true)
     public SmartWindowSnapshotResponse getLatestSnapshot() {
         PassengerSmartWindowMapper mapper = mapper();
-        UUID recordId = mapper.findLatestCompleteSnapshotRecordId();
+        UUID recordId = mapper.findLatestSnapshotRecordId();
         if (recordId == null) {
-            return emptySnapshot();
+            return emptySnapshot(null);
         }
 
         List<SmartWindowRow> rows = mapper.findSnapshotWindows(recordId);
-        if (!isComplete(rows)) {
-            return emptySnapshot();
-        }
+        Set<Integer> actualIds = rows.stream().map(SmartWindowRow::getWindowId).collect(java.util.stream.Collectors.toSet());
+        List<Integer> missingWindowIds = IntStream.rangeClosed(1, EXPECTED_WINDOW_COUNT)
+                .filter(windowId -> !actualIds.contains(windowId))
+                .boxed()
+                .toList();
 
         OffsetDateTime updatedAt = rows.stream()
                 .map(SmartWindowRow::getUpdatedAt)
                 .max(OffsetDateTime::compareTo)
                 .orElse(null);
-        BigDecimal averageBrightness = BigDecimal.valueOf(
-                        rows.stream().mapToInt(SmartWindowRow::getBrightnessLevel).sum())
-                .divide(BigDecimal.valueOf(EXPECTED_WINDOW_COUNT), 1, RoundingMode.HALF_UP);
+        BigDecimal averageBrightness = rows.isEmpty()
+                ? null
+                : BigDecimal.valueOf(rows.stream().mapToInt(SmartWindowRow::getBrightnessLevel).sum())
+                        .divide(BigDecimal.valueOf(rows.size()), 1, RoundingMode.HALF_UP);
         SmartWindowSummaryResponse summary = new SmartWindowSummaryResponse(
                 averageBrightness,
                 (int) rows.stream().filter(row -> !row.isConnected()).count(),
@@ -64,25 +69,27 @@ public class PassengerSmartWindowService {
                 ))
                 .toList();
 
-        return new SmartWindowSnapshotResponse(true, recordId, updatedAt, summary, windows);
+        return new SmartWindowSnapshotResponse(
+                !rows.isEmpty(),
+                missingWindowIds.isEmpty(),
+                EXPECTED_WINDOW_COUNT,
+                rows.size(),
+                missingWindowIds,
+                recordId,
+                updatedAt,
+                summary,
+                windows
+        );
     }
 
-    private boolean isComplete(List<SmartWindowRow> rows) {
-        if (rows.size() != EXPECTED_WINDOW_COUNT) {
-            return false;
-        }
-        for (int index = 0; index < rows.size(); index++) {
-            if (rows.get(index).getWindowId() != index + 1) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private SmartWindowSnapshotResponse emptySnapshot() {
+    private SmartWindowSnapshotResponse emptySnapshot(UUID recordId) {
         return new SmartWindowSnapshotResponse(
                 false,
-                null,
+                false,
+                EXPECTED_WINDOW_COUNT,
+                0,
+                IntStream.rangeClosed(1, EXPECTED_WINDOW_COUNT).boxed().toList(),
+                recordId,
                 null,
                 new SmartWindowSummaryResponse(null, 0, 0, 0),
                 List.of()

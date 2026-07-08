@@ -31,7 +31,7 @@ function maxCount(items: { count: number }[]): number {
 
     <div class="panel-actions">
       <div>
-        <strong>播放类型排行</strong>
+        <strong>当前影音类型排行</strong>
         <small>更新时间：{{ formatDate(snapshot?.updatedAt) }}</small>
       </div>
       <button class="mini-toggle" @click="emit('toggleAutoRefresh')">
@@ -41,7 +41,7 @@ function maxCount(items: { count: number }[]): number {
 
     <section class="media-card">
       <div class="media-card__heading">
-        <h3>视频：{{ formatCount(snapshot?.mediaStatistics.videoTotalCount) }}次</h3>
+        <h3>当前观看视频：{{ formatCount(snapshot?.mediaStatistics.videoTotalCount) }}人</h3>
       </div>
       <div class="media-list">
         <div
@@ -56,12 +56,12 @@ function maxCount(items: { count: number }[]): number {
       </div>
       <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
       <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
-      <div v-else-if="!snapshot?.mediaStatistics.videoRanking.length" class="media-state">暂无视频播放数据</div>
+      <div v-else-if="!snapshot?.mediaStatistics.videoRanking.length" class="media-state">当前暂无视频观看乘客</div>
     </section>
 
     <section class="media-card">
       <div class="media-card__heading">
-        <h3>音乐：{{ formatCount(snapshot?.mediaStatistics.musicTotalCount) }}次</h3>
+        <h3>当前收听音乐：{{ formatCount(snapshot?.mediaStatistics.musicTotalCount) }}人</h3>
       </div>
       <div class="media-list">
         <div
@@ -76,7 +76,7 @@ function maxCount(items: { count: number }[]): number {
       </div>
       <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
       <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
-      <div v-else-if="!snapshot?.mediaStatistics.musicRanking.length" class="media-state">暂无音乐播放数据</div>
+      <div v-else-if="!snapshot?.mediaStatistics.musicRanking.length" class="media-state">当前暂无音乐收听乘客</div>
     </section>
 
     <section class="cockpit-card">

@@ -6,6 +6,10 @@ import java.util.UUID;
 
 public record SmartWindowSnapshotResponse(
         boolean hasData,
+        boolean complete,
+        int expectedCount,
+        int actualCount,
+        List<Integer> missingWindowIds,
         UUID sourceRecordId,
         OffsetDateTime updatedAt,
         SmartWindowSummaryResponse summary,

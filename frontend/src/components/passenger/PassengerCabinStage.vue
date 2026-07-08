@@ -40,9 +40,10 @@ interface CabinSection {
 
 interface WindowLabelView {
   windowId: number
-  brightnessLevel: number
+  brightnessLevel: number | null
   connected: boolean
-  status: PassengerSmartWindowItemDto['status']
+  status: PassengerSmartWindowItemDto['status'] | null
+  missing: boolean
   side: 'left' | 'right'
   style: Record<string, string>
 }
@@ -144,6 +145,13 @@ function activityKindDetail(activity: PassengerActivityDto): string {
   }
   const action = activity.action || '暂无动作'
   return `${action} · 行为时间 ${formatDate(activity.eventAt)}`
+}
+
+function missingWindowSummary(snapshot: PassengerSmartWindowSnapshotDto): string {
+  const ids = snapshot.missingWindowIds
+  if (ids.length === 0) return ''
+  const visible = ids.slice(0, 8).join('、')
+  return ids.length <= 8 ? `缺失 ${visible}` : `缺失 ${visible} 等 ${ids.length} 个舷窗`
 }
 
 function extractSeatFromGroupId(id: string): string | null {
@@ -269,9 +277,10 @@ function syncWindowLayer(): void {
   }
 
   const dataById = new Map(
-    (props.windowDisplay?.hasData ? props.windowDisplay.windows : [])
+    (props.windowDisplay?.windows ?? [])
       .map((item) => [item.windowId, item]),
   )
+  const missingIds = new Set(props.windowDisplay?.missingWindowIds ?? [])
   const labels: WindowLabelView[] = []
   const viewBox = svg.viewBox.baseVal
 
@@ -280,18 +289,22 @@ function syncWindowLayer(): void {
     if (windowId === null) return
 
     const item = dataById.get(windowId)
+    const missing = missingIds.has(windowId)
     group.classList.add('window-svg-node')
     group.classList.toggle('is-disconnected', item !== undefined && !item.connected)
     group.classList.toggle('is-fault', item?.status === 'FAULT')
     group.classList.toggle('is-test', item?.status === 'TEST')
-    group.setAttribute('aria-label', item
-      ? `舷窗 ${windowId}，透光度 ${item.brightnessLevel}`
-      : `舷窗 ${windowId}，暂无数据`)
+    group.classList.toggle('is-missing', missing)
+    group.setAttribute('aria-label', missing
+      ? `舷窗 ${windowId}，数据缺失`
+      : item
+        ? `舷窗 ${windowId}，透光度 ${item.brightnessLevel}`
+        : `舷窗 ${windowId}，暂无数据`)
     group.style.filter = item
       ? `brightness(${windowVisualBrightness(item.brightnessLevel)})`
       : 'brightness(0.35) grayscale(1)'
 
-    if (!item) return
+    if (!item && !missing) return
 
     try {
       const box = group.getBBox()
@@ -299,9 +312,10 @@ function syncWindowLayer(): void {
       const anchorX = side === 'left' ? box.x - 10 : box.x + box.width + 10
       labels.push({
         windowId,
-        brightnessLevel: item.brightnessLevel,
-        connected: item.connected,
-        status: item.status,
+        brightnessLevel: item?.brightnessLevel ?? null,
+        connected: item?.connected ?? false,
+        status: item?.status ?? null,
+        missing,
         side,
         style: {
           left: `${((anchorX - viewBox.x) / viewBox.width) * 100}%`,
@@ -595,11 +609,12 @@ onMounted(() => {
                 'is-disconnected': !label.connected,
                 'is-fault': label.status === 'FAULT',
                 'is-test': label.status === 'TEST',
+                'is-missing': label.missing,
               },
             ]"
             :style="label.style"
           >
-            <i></i>舷窗透光度：{{ label.brightnessLevel }}
+            <i></i>{{ label.missing ? '舷窗数据缺失' : `舷窗透光度：${label.brightnessLevel}` }}
           </span>
         </div>
         <div
@@ -673,14 +688,20 @@ onMounted(() => {
         <span>{{ windowError }}</span>
       </div>
     </div>
-    <div v-else-if="windowDisplay && !windowDisplay.hasData" class="cabin-aircraft-state">
+    <div v-else-if="windowDisplay && windowDisplay.actualCount === 0" class="cabin-aircraft-state">
       <div class="cabin-overlay">
-        暂无完整的 116 舷窗快照
+        暂无可用的舷窗数据
       </div>
     </div>
     <div v-else-if="windowError && windowDisplay?.hasData" class="cabin-aircraft-state">
       <div class="cabin-overlay cabin-overlay--stale">
         舷窗数据刷新失败，当前显示上一次成功结果
+      </div>
+    </div>
+    <div v-else-if="windowDisplay && !windowDisplay.complete" class="cabin-aircraft-state">
+      <div class="cabin-overlay cabin-overlay--incomplete">
+        <strong>舷窗数据不完整：{{ windowDisplay.actualCount }}/{{ windowDisplay.expectedCount }}</strong>
+        <span>{{ missingWindowSummary(windowDisplay) }}</span>
       </div>
     </div>
 

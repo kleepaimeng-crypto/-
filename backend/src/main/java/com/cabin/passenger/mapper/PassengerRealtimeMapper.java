@@ -95,31 +95,4 @@ public interface PassengerRealtimeMapper {
             """)
     List<PassengerActivityRow> findLatestActivities(@Param("flightNo") String flightNo);
 
-    @Select("""
-            WITH all_ife AS (
-            """ + ALL_IFE + """
-            ), ranked AS (
-                SELECT passenger_id,
-                       CASE
-                           WHEN #{behaviorType} = 'MOVIE_PLAY' THEN behavior_detail ->> 'contentType'
-                           ELSE behavior_detail ->> 'musicType'
-                       END AS types_text,
-                       row_number() OVER (
-                           PARTITION BY passenger_id
-                           ORDER BY event_at DESC, created_at DESC, source_priority DESC, id DESC
-                       ) AS row_no
-                FROM all_ife
-                WHERE flight_no = #{flightNo}
-                  AND behavior_type = #{behaviorType}
-            )
-            SELECT types_text
-            FROM ranked
-            WHERE row_no = 1
-              AND types_text IS NOT NULL
-              AND btrim(types_text) <> ''
-            """)
-    List<String> findLatestMediaTypes(
-            @Param("flightNo") String flightNo,
-            @Param("behaviorType") String behaviorType
-    );
 }

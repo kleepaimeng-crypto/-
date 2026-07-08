@@ -49,6 +49,9 @@
 ```
 
 - 当前航班取两路 IFE 中业务时间最新的航班，所有排行和活动均限定在该航班。
+- 每名乘客只取当前航班最新总体行为；只有当前为 `MOVIE_PLAY` 或 `MUSIC_PLAY` 才进入对应排行。
+- `videoTotalCount`、`musicTotalCount` 分别表示当前视频观看和音乐收听的去重乘客人数，不是类型次数之和。
+- 排行项 `count` 表示当前乘客的类型命中人数；一条行为可含多个类型，因此排行合计允许超过标题人数。
 - `activityKind` 为 `VIDEO|MUSIC|BROWSING|OTHER|IDLE`。
 - 视频读取 `contentName/contentType/playAction`，音乐读取 `musicName/musicType/playAction`，浏览读取 `dstDomain/url/trafficBytes`。
 - `bandwidthMbps/windowBytes` 取同航班、同座位最新 `traffic_record`；无匹配记录返回 `null`。
@@ -59,8 +62,10 @@
 
 ### `GET /api/v1/passenger-realtime/smart-windows`
 
-- 返回同一未软删除 `record_id` 下最新的 116 个唯一舷窗完整快照。
-- 历史 200 窗和不完整快照不参与展示；无完整快照时返回 `hasData=false`、空 `windows` 和零值汇总。
+- 返回最新未软删除智慧舷窗 `data_record` 中实际存在的 1～116 号舷窗；不使用旧快照补齐缺口。
+- 响应增加 `complete`、`expectedCount=116`、`actualCount` 和 `missingWindowIds`；`windows` 只包含本批实际存在的数据。
+- `actualCount>0` 时 `hasData=true`；只有 116 个编号全部存在时 `complete=true`。汇总只按实际数据计算。
+- `actualCount=0` 时返回 `hasData=false`、全部 116 个缺失编号和零值汇总；历史 200 窗记录通过 `payload_count>116` 排除。
 - `windowId` 1–58 为左侧、59–116 为右侧；每侧区域数量为 17/20/21。
 
 ## 4. 前后端交互
@@ -68,4 +73,5 @@
 - 页面初始化并行请求 `snapshot` 和 `smart-windows`；任一失败只影响对应区域。
 - 点击座位或右侧详情只操作已返回的内存列表，不请求分页或定位接口。
 - 自动刷新默认 5 秒；刷新成功后按 `seatNo` 原位更新，保持选中座位和滚动位置。
+- 部分快照中已有舷窗正常显示，缺失编号在对应 SVG 节点原位标红并显示“舷窗数据缺失”。
 - 数据库不可用统一返回 503 `DATABASE_UNAVAILABLE`，不得返回 SQL 或堆栈。

@@ -20,14 +20,34 @@ class PassengerSmartWindowServiceTests {
 
     @Test
     void returnsEmptySnapshotWhenNoCompleteRecordExists() {
-        when(mapper.findLatestCompleteSnapshotRecordId()).thenReturn(null);
+        when(mapper.findLatestSnapshotRecordId()).thenReturn(null);
 
         var result = service.getLatestSnapshot();
 
         assertThat(result.hasData()).isFalse();
         assertThat(result.sourceRecordId()).isNull();
         assertThat(result.windows()).isEmpty();
+        assertThat(result.complete()).isFalse();
+        assertThat(result.actualCount()).isZero();
+        assertThat(result.missingWindowIds()).hasSize(116);
         assertThat(result.summary().averageBrightness()).isNull();
+    }
+
+    @Test
+    void returnsAllIdsMissingWhenLatestRecordHasNoParsedRows() {
+        UUID recordId = UUID.randomUUID();
+        when(mapper.findLatestSnapshotRecordId()).thenReturn(recordId);
+        when(mapper.findSnapshotWindows(recordId)).thenReturn(List.of());
+
+        var result = service.getLatestSnapshot();
+
+        assertThat(result.hasData()).isFalse();
+        assertThat(result.complete()).isFalse();
+        assertThat(result.sourceRecordId()).isEqualTo(recordId);
+        assertThat(result.actualCount()).isZero();
+        assertThat(result.missingWindowIds()).containsExactlyElementsOf(
+                java.util.stream.IntStream.rangeClosed(1, 116).boxed().toList()
+        );
     }
 
     @Test
@@ -37,12 +57,16 @@ class PassengerSmartWindowServiceTests {
         rows.get(0).setConnected(false);
         rows.get(1).setStatus("FAULT");
         rows.get(2).setStatus("TEST");
-        when(mapper.findLatestCompleteSnapshotRecordId()).thenReturn(recordId);
+        when(mapper.findLatestSnapshotRecordId()).thenReturn(recordId);
         when(mapper.findSnapshotWindows(recordId)).thenReturn(rows);
 
         var result = service.getLatestSnapshot();
 
         assertThat(result.hasData()).isTrue();
+        assertThat(result.complete()).isTrue();
+        assertThat(result.expectedCount()).isEqualTo(116);
+        assertThat(result.actualCount()).isEqualTo(116);
+        assertThat(result.missingWindowIds()).isEmpty();
         assertThat(result.sourceRecordId()).isEqualTo(recordId);
         assertThat(result.windows()).hasSize(116);
         assertThat(result.windows()).extracting(item -> item.windowId())
@@ -54,17 +78,36 @@ class PassengerSmartWindowServiceTests {
     }
 
     @Test
-    void refusesRowsThatAreNotExactlyOneThroughOneHundredSixteen() {
+    void returnsAvailableRowsAndMissingIdsForPartialSnapshot() {
         UUID recordId = UUID.randomUUID();
         List<SmartWindowRow> rows = completeRows();
-        rows.get(115).setWindowId(115);
-        when(mapper.findLatestCompleteSnapshotRecordId()).thenReturn(recordId);
+        rows.removeIf(row -> row.getWindowId() == 17 || row.getWindowId() == 68);
+        when(mapper.findLatestSnapshotRecordId()).thenReturn(recordId);
         when(mapper.findSnapshotWindows(recordId)).thenReturn(rows);
 
         var result = service.getLatestSnapshot();
 
-        assertThat(result.hasData()).isFalse();
-        assertThat(result.windows()).isEmpty();
+        assertThat(result.hasData()).isTrue();
+        assertThat(result.complete()).isFalse();
+        assertThat(result.actualCount()).isEqualTo(114);
+        assertThat(result.windows()).hasSize(114);
+        assertThat(result.missingWindowIds()).containsExactly(17, 68);
+        assertThat(result.summary().averageBrightness()).isEqualByComparingTo(new BigDecimal("5.0"));
+    }
+
+    @Test
+    void returnsOneAvailableWindowAndMarksTheRestMissing() {
+        UUID recordId = UUID.randomUUID();
+        SmartWindowRow row = completeRows().getFirst();
+        when(mapper.findLatestSnapshotRecordId()).thenReturn(recordId);
+        when(mapper.findSnapshotWindows(recordId)).thenReturn(List.of(row));
+
+        var result = service.getLatestSnapshot();
+
+        assertThat(result.hasData()).isTrue();
+        assertThat(result.actualCount()).isEqualTo(1);
+        assertThat(result.windows()).hasSize(1);
+        assertThat(result.missingWindowIds()).hasSize(115).doesNotContain(1);
     }
 
     private List<SmartWindowRow> completeRows() {

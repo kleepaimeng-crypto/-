@@ -282,6 +282,10 @@ export interface PassengerSmartWindowItemDto {
 
 export interface PassengerSmartWindowSnapshotDto {
   hasData: boolean
+  complete: boolean
+  expectedCount: number
+  actualCount: number
+  missingWindowIds: number[]
   sourceRecordId: string | null
   updatedAt: string | null
   summary: PassengerSmartWindowSummaryDto

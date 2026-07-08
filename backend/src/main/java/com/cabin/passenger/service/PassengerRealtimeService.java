@@ -40,10 +40,15 @@ public class PassengerRealtimeService {
         }
 
         List<PassengerActivityRow> rows = mapper.findLatestActivities(flightNo);
-        List<MediaRankResponse> videoRanking = rank(mapper.findLatestMediaTypes(flightNo, "MOVIE_PLAY"));
-        List<MediaRankResponse> musicRanking = rank(mapper.findLatestMediaTypes(flightNo, "MUSIC_PLAY"));
+        List<PassengerActivityRow> currentVideoRows = currentRows(rows, "MOVIE_PLAY");
+        List<PassengerActivityRow> currentMusicRows = currentRows(rows, "MUSIC_PLAY");
+        List<MediaRankResponse> videoRanking = rank(currentVideoRows);
+        List<MediaRankResponse> musicRanking = rank(currentMusicRows);
         MediaStatisticsResponse media = new MediaStatisticsResponse(
-                total(videoRanking), videoRanking, total(musicRanking), musicRanking
+                currentPassengerCount(currentVideoRows),
+                videoRanking,
+                currentPassengerCount(currentMusicRows),
+                musicRanking
         );
         Map<String, PassengerActivityRow> rowsBySeat = rows.stream()
                 .filter(row -> row.getSeatNo() != null)
@@ -121,10 +126,24 @@ public class PassengerRealtimeService {
         };
     }
 
-    private List<MediaRankResponse> rank(List<String> values) {
+    private List<PassengerActivityRow> currentRows(List<PassengerActivityRow> rows, String behaviorType) {
+        return rows.stream()
+                .filter(row -> behaviorType.equals(row.getBehaviorType()))
+                .toList();
+    }
+
+    private int currentPassengerCount(List<PassengerActivityRow> rows) {
+        return (int) rows.stream()
+                .map(PassengerActivityRow::getPassengerId)
+                .filter(passengerId -> passengerId != null && !passengerId.isBlank())
+                .distinct()
+                .count();
+    }
+
+    private List<MediaRankResponse> rank(List<PassengerActivityRow> rows) {
         Map<String, Integer> counts = new LinkedHashMap<>();
-        for (String value : values) {
-            for (String type : splitTypes(value)) {
+        for (PassengerActivityRow row : rows) {
+            for (String type : splitTypes(row.getTypesText())) {
                 counts.merge(type, 1, Integer::sum);
             }
         }
@@ -133,10 +152,6 @@ public class PassengerRealtimeService {
                 .sorted(Comparator.comparingInt(MediaRankResponse::count).reversed()
                         .thenComparing(MediaRankResponse::type))
                 .toList();
-    }
-
-    private int total(List<MediaRankResponse> ranking) {
-        return ranking.stream().mapToInt(MediaRankResponse::count).sum();
     }
 
     private List<String> splitTypes(String value) {

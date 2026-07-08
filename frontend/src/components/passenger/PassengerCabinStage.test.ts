@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import PassengerCabinStage from './PassengerCabinStage.vue'
-import type { PassengerActivityDto } from '../../api/types'
+import type { PassengerActivityDto, PassengerSmartWindowSnapshotDto } from '../../api/types'
 
 function activity(seatNo: string, activityKind: PassengerActivityDto['activityKind']): PassengerActivityDto {
   return {
@@ -53,5 +53,33 @@ describe('PassengerCabinStage activity list', () => {
 
     await cards[1]?.trigger('click')
     expect(wrapper.find('.watch-detail-card.is-active').attributes('data-watch-seat')).toBe('A47')
+  })
+
+  it('shows a non-blocking warning for a partial smart-window snapshot', () => {
+    const windowDisplay: PassengerSmartWindowSnapshotDto = {
+      hasData: true,
+      complete: false,
+      expectedCount: 116,
+      actualCount: 114,
+      missingWindowIds: [17, 68],
+      sourceRecordId: '00000000-0000-4000-8000-000000000002',
+      updatedAt: '2026-07-08T09:00:00+08:00',
+      summary: { averageBrightness: 5.2, disconnectedCount: 1, faultCount: 0, testCount: 0 },
+      windows: [],
+    }
+    const wrapper = mount(PassengerCabinStage, {
+      props: {
+        activities: [],
+        activityError: '',
+        activityLoading: false,
+        cabinScroller: null,
+        windowDisplay,
+        windowError: '',
+        windowLoading: false,
+      },
+    })
+
+    expect(wrapper.text()).toContain('舷窗数据不完整：114/116')
+    expect(wrapper.text()).toContain('缺失 17、68')
   })
 })
