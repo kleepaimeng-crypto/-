@@ -492,7 +492,9 @@
   flex: 0 0 auto;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
+  opacity: var(--window-dot-opacity, 0.5);
+  box-shadow: 0 0 var(--window-dot-glow, 6px) currentColor;
+  transition: opacity 0.22s ease, box-shadow 0.22s ease;
 }
 
 .window-brightness-label.is-disconnected {

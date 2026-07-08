@@ -321,6 +321,8 @@ function syncWindowLayer(): void {
         style: {
           left: `${((anchorX - viewBox.x) / viewBox.width) * 100}%`,
           top: `${((box.y + box.height / 2 - viewBox.y) / viewBox.height) * 100}%`,
+          '--window-dot-opacity': windowDotOpacity(item?.brightnessLevel ?? null),
+          '--window-dot-glow': windowDotGlow(item?.brightnessLevel ?? null),
         },
       })
       group.setAttribute('data-zone-id', String(windowZone(windowId)))
@@ -330,6 +332,18 @@ function syncWindowLayer(): void {
   })
 
   windowLabels.value = labels.sort((left, right) => left.windowId - right.windowId)
+}
+
+function windowDotOpacity(brightnessLevel: number | null): string {
+  if (brightnessLevel === null) return '0.16'
+  const level = Math.max(0, Math.min(10, brightnessLevel))
+  return (0.18 + level * 0.082).toFixed(2)
+}
+
+function windowDotGlow(brightnessLevel: number | null): string {
+  if (brightnessLevel === null) return '0px'
+  const level = Math.max(0, Math.min(10, brightnessLevel))
+  return `${(level * 1.2).toFixed(1)}px`
 }
 
 function handleSeatLayerClick(event: MouseEvent): void {
