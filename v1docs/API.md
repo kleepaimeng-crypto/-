@@ -83,8 +83,12 @@
 | `SortDirection` | `asc`、`desc` |
 | `TagBatchMode` | `ADD`、`REMOVE` |
 | `DataTypeCode` | `QAR`、`GROUND_TASK`、`GROUND_TRAFFIC_RECORD`、`GROUND_SESSION_SUMMARY`、`SMART_WINDOW_STATUS`、`IFE_633_BEHAVIOR`、`IFE_COCKRELL_BEHAVIOR` |
+| `WindowSide` | `LEFT`、`RIGHT` |
+| `SmartWindowStatus` | `NORMAL`、`FAULT`、`TEST` |
 
 PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但首期接口不承诺其导入模板和解析详情。
+
+乘客数据仿真工控机的 `/external/v1/...` 路径只作为上游接口来源说明。当前平台前端只调用 `/api/v1/...`；如后续改为后端主动拉取，上游 `baseUrl` 与 `X-API-Key` 必须由服务端运行环境配置，不能暴露给前端。
 
 ## 3. 认证接口
 
@@ -377,15 +381,194 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 
 请求：`{"reason":"批注填写错误","expectedVersion":1}`。使用软删除。错误：404、409、401、403。
 
-## 8. CSV 导入接口
+## 8. 流量统计接口
 
-### 8.1 下载模板
+流量统计接口读取 `simulation_task`、`traffic_record`、`session_summary` 和派生快照表。当前平台不直接暴露上游 `/external/v1` 路径。
+
+### 8.1 流量统计概览
+
+`GET /api/v1/traffic-statistics/overview`
+
+查询参数：
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `taskId` | string | 否 | 任务业务标识；为空时默认取最近运行任务 |
+| `flightNo` | string | 否 | 航班号，不区分大小写精确匹配 |
+| `windowFrom` | datetime | 否 | 统计窗口开始时间，包含 |
+| `windowTo` | datetime | 否 | 统计窗口结束时间，不包含 |
+| `limit` | integer | 否 | 应用和终端排行数量，默认 10，最大 50 |
+
+成功响应 `data`：
+
+```json
+{
+  "task": {
+    "taskId": "CA-FLIGHT-20260610-001",
+    "flightNo": "CA1234",
+    "scenarioName": "上海浦东 -> 北京首都 巡航压测",
+    "status": "running",
+    "phase": "cruise",
+    "terminalCount": 400,
+    "startedAt": "2026-06-10T19:20:00+08:00",
+    "statisticsWindowSeconds": 5
+  },
+  "window": {
+    "from": "2026-06-10T19:42:00+08:00",
+    "to": "2026-06-10T19:43:00+08:00"
+  },
+  "totals": {
+    "bytesCount": 9812574208,
+    "packetCount": 2750000,
+    "activeTerminalCount": 248,
+    "activeSessionCount": 139,
+    "averageThroughputMbps": 186.5,
+    "peakMbps": 255.0,
+    "packetLossRate": null
+  },
+  "applicationStats": [
+    {
+      "application": "高清视频",
+      "bytesCount": 5021574208,
+      "packetCount": 1404500,
+      "averageThroughputMbps": 186.0,
+      "peakMbps": 255.0,
+      "activeTerminalCount": 120,
+      "packetLossRate": null
+    }
+  ],
+  "topTerminals": [
+    {
+      "terminalId": "T-0001",
+      "displayTerminalId": "A47",
+      "seatLabel": "23A",
+      "application": "高清视频",
+      "averageThroughputMbps": 8.0,
+      "peakMbps": 8.4,
+      "bytesCount": 5000000
+    }
+  ],
+  "timeline": [
+    {
+      "windowStart": "2026-06-10T19:42:15+08:00",
+      "windowEnd": "2026-06-10T19:42:20+08:00",
+      "averageThroughputMbps": 186.5,
+      "peakMbps": 255.0,
+      "bytesCount": 50000000
+    }
+  ]
+}
+```
+
+`packetLossRate` 只有在上游报文提供丢包字段或后续正式算法确认后才返回数字；当前模拟器字段不足时必须返回 `null`。错误：400、401、403、404（指定任务不存在）。
+
+### 8.2 按任务查询流量明细
+
+`GET /api/v1/traffic-statistics/tasks/{taskId}/traffic`
+
+查询参数：`terminalId`、`application`、`windowFrom`、`windowTo`、分页参数。成功响应为分页 `TrafficRecord` 列表：
+
+```json
+{
+  "items": [
+    {
+      "windowStart": "2026-06-10T19:42:15+08:00",
+      "windowEnd": "2026-06-10T19:42:20+08:00",
+      "taskId": "CA-FLIGHT-20260610-001",
+      "terminalId": "T-0001",
+      "displayTerminalId": "A47",
+      "seatLabel": "23A",
+      "application": "高清视频",
+      "protocol": "TCP",
+      "direction": "downlink",
+      "bytesCount": 5000000,
+      "packetCount": 14045,
+      "throughputMbps": 8.0,
+      "peakMbps": 8.4,
+      "recordStatus": "recorded"
+    }
+  ],
+  "page": 1,
+  "pageSize": 20,
+  "total": 1,
+  "totalPages": 1
+}
+```
+
+错误：400、401、403、404。
+
+### 8.3 按终端查询流量明细
+
+`GET /api/v1/traffic-statistics/tasks/{taskId}/terminals/{terminalId}/traffic`
+
+查询参数：`application`、`windowFrom`、`windowTo`、分页参数。成功响应结构与 8.2 相同，只按任务和终端过滤。错误：400、401、403、404。
+
+## 9. 智慧舷窗展示接口
+
+### 9.1 查询全机舷窗展示状态
+
+`GET /api/v1/smart-windows/display`
+
+查询参数：
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `flightNo` | string | 否 | 航班号；为空时取最近活动航班上下文 |
+| `zoneId` | integer | 否 | 舱段，1 前舱、2 中舱、3 后舱 |
+| `includeDisabled` | boolean | 否 | 是否返回停用布局，默认 `false` |
+
+成功响应 `data`：
+
+```json
+{
+  "flightNo": "CA1234",
+  "aircraftRegistrationNo": "B-TEST-001",
+  "snapshotAt": "2026-06-10T19:42:20+08:00",
+  "summary": {
+    "windowCount": 200,
+    "connectedCount": 198,
+    "faultCount": 1,
+    "testCount": 1,
+    "averageBrightnessLevel": 6.4
+  },
+  "zones": [
+    {
+      "zoneId": 1,
+      "name": "前舱",
+      "windowCount": 48,
+      "connectedCount": 48,
+      "faultCount": 0,
+      "averageBrightnessLevel": 6.8
+    }
+  ],
+  "windows": [
+    {
+      "windowId": 1,
+      "label": "L01",
+      "zoneId": 1,
+      "side": "LEFT",
+      "rowNo": 1,
+      "positionNo": 1,
+      "brightnessLevel": 7,
+      "connectStatus": true,
+      "status": "NORMAL",
+      "eventAt": "2026-06-10T19:42:20+08:00"
+    }
+  ]
+}
+```
+
+错误：400、401、403。没有收到舷窗状态时返回空 `windows` 和汇总 0，不使用固定假数据。
+
+## 10. CSV 导入接口
+
+### 10.1 下载模板
 
 `GET /api/v1/imports/templates/{dataTypeCode}`
 
 支持：`QAR`、`GROUND_TASK`、`GROUND_TRAFFIC_RECORD`、`GROUND_SESSION_SUMMARY`。请求无正文，成功直接返回 UTF-8 BOM CSV 文件。错误：400 `UNSUPPORTED_DATA_TYPE`、401、403。
 
-### 8.2 创建导入任务
+### 10.2 创建导入任务
 
 `POST /api/v1/imports`
 
@@ -417,27 +600,27 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 
 错误：400、413、422、401、403。
 
-### 8.3 导入历史
+### 10.3 导入历史
 
 `GET /api/v1/imports`
 
 参数：`status`、`dataTypeCode`、`createdFrom`、`createdTo`、分页参数。成功返回分页任务列表。错误：400、401、403。
 
-### 8.4 导入任务详情
+### 10.4 导入任务详情
 
 `GET /api/v1/imports/{jobId}`
 
 成功响应包含状态、总行数、成功/失败数、错误文件是否可用、开始和结束时间。错误：404、401、403。
 
-### 8.5 下载错误报告
+### 10.5 下载错误报告
 
 `GET /api/v1/imports/{jobId}/error-file`
 
 任务必须为 `PARTIAL` 或 `FAILED` 且存在错误报告。成功直接返回 CSV。错误：404、409、410、401、403。
 
-## 9. 导出接口
+## 11. 导出接口
 
-### 9.1 创建导出任务
+### 11.1 创建导出任务
 
 `POST /api/v1/exports`
 
@@ -471,25 +654,25 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 
 错误：400、401、403、429。PDF 预估超过 5,000 行或 CSV 超过 100,000 行时返回 `VALIDATION_ERROR`。
 
-### 9.2 导出历史
+### 11.2 导出历史
 
 `GET /api/v1/exports`
 
 参数：`status`、`format`、`dataTypeCode`、`createdFrom`、`createdTo`、分页参数。成功返回分页任务列表。错误：400、401、403。
 
-### 9.3 导出任务详情
+### 11.3 导出任务详情
 
 `GET /api/v1/exports/{jobId}`
 
 成功响应包含格式、状态、筛选快照、总行数、错误原因、文件是否可用和起止时间。错误：404、401、403。
 
-### 9.4 下载导出文件
+### 11.4 下载导出文件
 
 `GET /api/v1/exports/{jobId}/file`
 
 仅 `SUCCEEDED` 任务可下载。成功直接返回 CSV/PDF。错误：404、409、410、401、403。下载动作写审计日志。
 
-## 10. 审计查询
+## 12. 审计查询
 
 `GET /api/v1/audit-logs`
 
@@ -497,7 +680,7 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 
 首期界面可以不提供独立审计页面，但该接口用于删除、恢复和验收追溯。
 
-## 11. 并发、幂等与文件规则
+## 13. 并发、幂等与文件规则
 
 - 可编辑资源使用整数 `version` 做乐观锁；请求中的 `expectedVersion` 不一致返回 409。
 - `POST /imports` 和 `POST /exports` 可以使用 `Idempotency-Key` 请求头；相同管理员在 10 分钟内使用相同键时返回原任务。
