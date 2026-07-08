@@ -25,14 +25,14 @@ const rules: FormRules<LoginForm> = {
 }
 const submitting = ref(false)
 const errorMessage = ref('')
-const traceId = ref('')
+const errorDetail = ref('')
 const router = useRouter()
 const route = useRoute()
 const redirectTarget = computed(() => (typeof route.query.redirect === 'string' ? route.query.redirect : '/'))
 
 async function submit(): Promise<void> {
   errorMessage.value = ''
-  traceId.value = ''
+  errorDetail.value = ''
   if (!formRef.value || !(await formRef.value.validate().catch(() => false))) {
     return
   }
@@ -42,15 +42,47 @@ async function submit(): Promise<void> {
     await authSession.login({ username: form.username, password: form.password })
     await router.replace(redirectTarget.value)
   } catch (error: unknown) {
-    if (error instanceof ApiClientError) {
-      errorMessage.value = error.message
-      traceId.value = error.traceId
-    } else {
-      errorMessage.value = '暂时无法连接到平台服务，请稍后重试'
-    }
+    const displayError = resolveLoginError(error)
+    errorMessage.value = displayError.title
+    errorDetail.value = displayError.detail
   } finally {
     form.password = ''
     submitting.value = false
+  }
+}
+
+function resolveLoginError(error: unknown): { title: string; detail: string } {
+  if (!(error instanceof ApiClientError)) {
+    return {
+      title: '服务暂时不可用',
+      detail: '请确认平台服务状态后重试。',
+    }
+  }
+
+  if (error.code === 'UNAUTHORIZED') {
+    return {
+      title: '账号或密码不正确',
+      detail: '请核对管理员账号和密码。',
+    }
+  }
+
+  if (error.code === 'ACCOUNT_DISABLED') {
+    return {
+      title: '账号已停用',
+      detail: '请联系系统管理员处理。',
+    }
+  }
+
+  if (error.code === 'TOO_MANY_REQUESTS') {
+    return {
+      title: '登录尝试过于频繁',
+      detail: '请稍后再试。',
+    }
+  }
+
+  return {
+    title: '登录失败',
+    detail: error.message || '请稍后重试。',
   }
 }
 </script>
@@ -60,6 +92,16 @@ async function submit(): Promise<void> {
     <div class="login-shell__grid" aria-hidden="true"></div>
     <div class="login-shell__route login-shell__route--one" aria-hidden="true"></div>
     <div class="login-shell__route login-shell__route--two" aria-hidden="true"></div>
+    <div class="login-ground-map" aria-hidden="true">
+      <span class="login-ground-map__runway login-ground-map__runway--main"></span>
+      <span class="login-ground-map__runway login-ground-map__runway--aux"></span>
+      <span class="login-ground-map__taxiway login-ground-map__taxiway--one"></span>
+      <span class="login-ground-map__taxiway login-ground-map__taxiway--two"></span>
+      <span class="login-ground-map__node login-ground-map__node--a"></span>
+      <span class="login-ground-map__node login-ground-map__node--b"></span>
+      <span class="login-ground-map__node login-ground-map__node--c"></span>
+      <span class="login-ground-map__node login-ground-map__node--d"></span>
+    </div>
 
     <header class="login-header">
       <PlatformBrand />
@@ -69,24 +111,24 @@ async function submit(): Promise<void> {
       </div>
     </header>
 
+    <div class="login-company-strip" aria-label="中电科航空电子有限公司">
+      <img src="/assets/logo-red.png" alt="CETC" />
+      <span>中电科航空电子有限公司</span>
+    </div>
+
     <section class="login-stage">
       <div class="login-context">
-        <p class="login-context__eyebrow">CABIN DATA NETWORK</p>
-        <h1>统一数据链路<br /><span>管理入口</span></h1>
-        <p class="login-context__summary">管理员身份验证后进入数据工作台。</p>
-        <div class="login-context__telemetry" aria-hidden="true">
-          <span>7 UDP CHANNELS</span>
-          <span>POSTGRESQL 18</span>
-          <span>TRACE ENABLED</span>
-        </div>
+        <p class="login-context__eyebrow">GROUND SYSTEM</p>
+        <h1>地面系统<br /><span>管理入口</span></h1>
+        <p class="login-context__summary">请使用地面系统管理员账号登录平台。</p>
       </div>
 
       <div class="login-panel">
         <div class="login-panel__heading">
           <span class="login-panel__index">01</span>
           <div>
-            <h2>管理员登录</h2>
-            <p>使用部署环境配置的管理员账号</p>
+            <h2>地面系统登录</h2>
+            <p>请输入管理员账号和密码完成身份验证</p>
           </div>
         </div>
 
@@ -98,8 +140,8 @@ async function submit(): Promise<void> {
           :closable="false"
           show-icon
         >
-          <template v-if="traceId" #default>
-            <span>追踪号：{{ traceId }}</span>
+          <template v-if="errorDetail" #default>
+            <span>{{ errorDetail }}</span>
           </template>
         </el-alert>
 
@@ -126,11 +168,11 @@ async function submit(): Promise<void> {
             />
           </el-form-item>
           <el-button class="login-panel__submit" type="primary" :loading="submitting" native-type="submit" size="large">
-            {{ submitting ? '正在验证' : '安全登录' }}
+            {{ submitting ? '正在登录' : '登录' }}
           </el-button>
         </el-form>
 
-        <p class="login-panel__notice">登录行为将写入安全审计，密码和 Token 不会进入日志。</p>
+        <p class="login-panel__notice">登录操作将记录审计，密码和令牌不会写入日志。</p>
       </div>
     </section>
 

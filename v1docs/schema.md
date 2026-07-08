@@ -1,8 +1,8 @@
-# 前中后舱网联数据显示平台数据库建表文档（首期 15 表方案）
+# 前中后舱网联数据显示平台数据库建表文档（首期 18 表方案）
 
 ## 1. 文档目标
 
-本文档定义“数据管理 + 七类模拟器数据结构化入库”所需的 PostgreSQL Schema。首期建立 8 张公共管理表和 7 张模拟器业务表，共 15 张表。每份 UDP 报文完整保存到 `data_record.raw_payload`，同时把可查询的业务字段解析到对应业务表。
+本文档定义“数据管理 + 七类模拟器数据结构化入库 + 流量统计 + 智慧舷窗展示”所需的 PostgreSQL Schema。首期建立 8 张公共管理表、7 张模拟器业务表和 3 张展示派生表，共 18 张表。每份 UDP 报文完整保存到 `data_record.raw_payload`，同时把可查询的业务字段解析到对应业务表；流量和舷窗页面使用派生表保存聚合或最新状态快照。
 
 本方案支持：
 
@@ -10,10 +10,12 @@
 - 7 路 UDP 数据接收及结构化明细入库。
 - 数据列表、筛选、分页、排序和原始报文详情。
 - 标签、批注、软删除、恢复和审计。
+- 流量统计页面的任务、应用、终端和时间窗口聚合。
+- 智慧舷窗页面的布局映射与最新状态展示。
 - CSV 导入、CSV/PDF 导出及任务历史。
 - 7+7 天数据保留策略。
 
-首期页面仍只交付数据管理；7 张业务表用于保证模拟数据字段有明确类型、约束和查询入口，不代表首期必须开发轨迹、流量、舷窗或乘客行为可视化页面。
+首期页面交付数据管理、流量统计和智慧舷窗展示；7 张业务表用于保证模拟数据字段有明确类型、约束和查询入口，3 张展示派生表只服务已确认的流量统计和舷窗展示，不代表首期开发轨迹、完整乘客实时动态、乘客画像或推荐。
 
 ## 2. 技术和命名约定
 
@@ -42,10 +44,12 @@
 6. 导入和导出合并为 `file_job`，通过 `job_type` 区分。
 7. 标签采用标准多对多结构，不使用字符串拼接或 JSON 数组。
 8. 审计日志只追加，不允许应用账号修改或删除。
+9. 流量统计快照从 `traffic_record` 和 `session_summary` 派生，可重算，不替代原始业务明细。
+10. 智慧舷窗当前状态从 `smart_window_status` 派生，保留最新展示状态；原始舷窗报文仍以 `data_record + smart_window_status` 为追溯基准。
 
 ## 4. 表清单和关系
 
-首期恰好建立 15 张表：
+首期扩展后建立 18 张表：
 
 | 序号 | 表名 | 用途 |
 | ---: | --- | --- |
@@ -64,6 +68,9 @@
 | 13 | `smart_window_status` | 智能舷窗状态明细 |
 | 14 | `ife_633_behavior` | 633 IFE 乘客行为 |
 | 15 | `ife_cockrell_behavior` | 科克瑞尔 IFE 乘客行为 |
+| 16 | `traffic_stat_snapshot` | 流量统计聚合快照 |
+| 17 | `cabin_window_layout` | 智慧舷窗静态布局 |
+| 18 | `smart_window_current_status` | 智慧舷窗最新状态 |
 
 ```mermaid
 erDiagram
@@ -85,6 +92,10 @@ erDiagram
     DATA_RECORD ||--o{ SMART_WINDOW_STATUS : contains
     DATA_RECORD ||--o{ IFE_633_BEHAVIOR : contains
     DATA_RECORD ||--o{ IFE_COCKRELL_BEHAVIOR : contains
+    TRAFFIC_RECORD ||..o{ TRAFFIC_STAT_SNAPSHOT : aggregates
+    SESSION_SUMMARY ||..o{ TRAFFIC_STAT_SNAPSHOT : contributes
+    CABIN_WINDOW_LAYOUT ||--o| SMART_WINDOW_CURRENT_STATUS : displays
+    DATA_RECORD ||..o{ SMART_WINDOW_CURRENT_STATUS : latest_source
 ```
 
 ## 5. 字段字典
@@ -269,7 +280,7 @@ erDiagram
 | `trace_id` | varchar(64) | NULL | 请求追踪 ID |
 | `created_at` | timestamptz | NOT NULL，默认 `now()` | 操作时间 |
 
-## 6. 七张模拟器业务表字段字典
+## 6. 模拟器业务表和展示派生表字段字典
 
 七张业务表都是 `data_record` 的解析结果。除 `created_at` 外，这些表按“只追加快照”使用，不通过数据管理页面直接修改。物理删除父级 `data_record` 时通过外键级联删除业务明细。
 
@@ -471,6 +482,68 @@ erDiagram
 
 - 电影/音乐：在 633 相应字段基础上增加 `coverMimeType`、`coverChecksum`；`coverBase64` 只保留于原报文。
 - 购物：`orderList[]`；订单包含 `orderId`、`totalPrice`、`shopAction`、`payStatus`、`payType`、`goodsList[]`；商品包含 `goodsId`、`goodsName`、`goodsType`、`quantity`、`unitPrice`、`coverMimeType`。商品 `coverBase64` 同样只保留于原报文。
+
+### 6.8 `traffic_stat_snapshot`
+
+流量统计页面的聚合快照表。该表从 `traffic_record` 和 `session_summary` 计算生成，可以按窗口重算，不作为原始数据来源。
+
+| 字段 | PostgreSQL 类型 | 约束/默认值 | 来源字段/说明 |
+| --- | --- | --- | --- |
+| `id` | bigint identity | PK | 快照流水 |
+| `task_id` | varchar(64) | NOT NULL | 任务业务标识 |
+| `flight_no` | varchar(20) | NULL | 航班号，来自任务或数据目录 |
+| `window_start` | timestamptz | NOT NULL | 聚合窗口开始时间 |
+| `window_end` | timestamptz | NOT NULL，CHECK > `window_start` | 聚合窗口结束时间 |
+| `bucket_seconds` | integer | NOT NULL，CHECK > 0 | 聚合桶秒数，例如 5、30、60 |
+| `application` | varchar(128) | NULL | 应用类型；为空表示任务总计 |
+| `direction` | varchar(16) | NULL | 方向；为空表示全部方向 |
+| `bytes_count` | bigint | NOT NULL，默认 0，CHECK >= 0 | 窗口内字节总数 |
+| `packet_count` | bigint | NOT NULL，默认 0，CHECK >= 0 | 窗口内包总数 |
+| `terminal_count` | integer | NOT NULL，默认 0，CHECK >= 0 | 活跃终端数 |
+| `session_count` | integer | NOT NULL，默认 0，CHECK >= 0 | 活跃会话数 |
+| `sample_count` | integer | NOT NULL，默认 0，CHECK >= 0 | 参与聚合的流量明细数 |
+| `avg_throughput_mbps` | numeric(12,3) | NOT NULL，默认 0，CHECK >= 0 | 平均吞吐 |
+| `peak_mbps` | numeric(12,3) | NOT NULL，默认 0，CHECK >= 0 | 峰值吞吐 |
+| `packet_loss_rate` | numeric(8,5) | NULL，CHECK 0～1 | 丢包率；当前模拟器无来源时为空 |
+| `source_record_count` | integer | NOT NULL，默认 0，CHECK >= 0 | 参与聚合的 `data_record` 数 |
+| `calculated_at` | timestamptz | NOT NULL，默认 `now()` | 计算时间 |
+| `created_at` | timestamptz | NOT NULL，默认 `now()` | 创建时间 |
+
+唯一索引：`task_id, window_start, window_end, coalesce(application, ''), coalesce(direction, '')`。普通索引：`task_id, window_start DESC`；`application, window_start DESC`；`flight_no, window_start DESC`。
+
+### 6.9 `cabin_window_layout`
+
+智慧舷窗展示布局表。该表描述 `window_id` 在客舱平面中的展示位置，不保存运行状态。
+
+| 字段 | PostgreSQL 类型 | 约束/默认值 | 来源字段/说明 |
+| --- | --- | --- | --- |
+| `window_id` | integer | PK，CHECK 1～200 | 舷窗编号 |
+| `zone_id` | smallint | NOT NULL，CHECK 1～3 | 舱段：1 前舱、2 中舱、3 后舱 |
+| `side` | varchar(8) | NOT NULL，CHECK `LEFT`/`RIGHT` | 客舱左右侧 |
+| `row_no` | smallint | NOT NULL，CHECK > 0 | 展示行号 |
+| `position_no` | smallint | NOT NULL，CHECK > 0 | 同侧排序位置 |
+| `label` | varchar(16) | NULL | 页面显示标签，例如 `L01`、`R01` |
+| `enabled` | boolean | NOT NULL，默认 true | 是否参与展示 |
+| `created_at` | timestamptz | NOT NULL，默认 `now()` | 创建时间 |
+| `updated_at` | timestamptz | NOT NULL，默认 `now()` | 更新时间 |
+
+唯一约束：`side, row_no, position_no`。首期可以用 Flyway 种子生成 1–200 号舷窗的默认布局；后续如需按真实机型调整，应新增迁移修订布局。
+
+### 6.10 `smart_window_current_status`
+
+智慧舷窗最新状态表。每个 `window_id` 最多一行，通过接收 `smart_window_status` 后 upsert 维护，用于页面快速读取。
+
+| 字段 | PostgreSQL 类型 | 约束/默认值 | 来源字段/说明 |
+| --- | --- | --- | --- |
+| `window_id` | integer | PK，FK -> `cabin_window_layout.window_id` | 舷窗编号 |
+| `latest_record_id` | uuid | NULL，FK -> `data_record.id`，ON DELETE SET NULL | 最近一次状态来源记录 |
+| `brightness_level` | smallint | NOT NULL，CHECK 0～10 | 最新亮度等级 |
+| `connect_status` | boolean | NOT NULL | 最新连通性 |
+| `status` | varchar(16) | NOT NULL，CHECK(`NORMAL`,`FAULT`,`TEST`) | 最新状态 |
+| `event_at` | timestamptz | NOT NULL | 源状态时间 |
+| `updated_at` | timestamptz | NOT NULL，默认 `now()` | 平台更新时间 |
+
+索引：`event_at DESC`；`connect_status`；`status`。该表不允许页面直接修改，变更只来自 UDP 入库或后续受控的重算任务。
 
 ## 7. 完整 PostgreSQL DDL
 
@@ -857,6 +930,55 @@ CREATE INDEX idx_session_terminal_snapshot
 CREATE INDEX idx_session_status_snapshot
     ON session_summary (status, snapshot_at DESC);
 
+CREATE TABLE traffic_stat_snapshot (
+    id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    task_id varchar(64) NOT NULL,
+    flight_no varchar(20),
+    window_start timestamptz NOT NULL,
+    window_end timestamptz NOT NULL,
+    bucket_seconds integer NOT NULL,
+    application varchar(128),
+    direction varchar(16),
+    bytes_count bigint NOT NULL DEFAULT 0,
+    packet_count bigint NOT NULL DEFAULT 0,
+    terminal_count integer NOT NULL DEFAULT 0,
+    session_count integer NOT NULL DEFAULT 0,
+    sample_count integer NOT NULL DEFAULT 0,
+    avg_throughput_mbps numeric(12,3) NOT NULL DEFAULT 0,
+    peak_mbps numeric(12,3) NOT NULL DEFAULT 0,
+    packet_loss_rate numeric(8,5),
+    source_record_count integer NOT NULL DEFAULT 0,
+    calculated_at timestamptz NOT NULL DEFAULT now(),
+    created_at timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT ck_traffic_stat_window CHECK (window_end > window_start),
+    CONSTRAINT ck_traffic_stat_bucket CHECK (bucket_seconds > 0),
+    CONSTRAINT ck_traffic_stat_bytes CHECK (bytes_count >= 0),
+    CONSTRAINT ck_traffic_stat_packets CHECK (packet_count >= 0),
+    CONSTRAINT ck_traffic_stat_terminal_count CHECK (terminal_count >= 0),
+    CONSTRAINT ck_traffic_stat_session_count CHECK (session_count >= 0),
+    CONSTRAINT ck_traffic_stat_sample_count CHECK (sample_count >= 0),
+    CONSTRAINT ck_traffic_stat_avg CHECK (avg_throughput_mbps >= 0),
+    CONSTRAINT ck_traffic_stat_peak CHECK (peak_mbps >= 0),
+    CONSTRAINT ck_traffic_stat_loss CHECK (packet_loss_rate IS NULL OR packet_loss_rate BETWEEN 0 AND 1),
+    CONSTRAINT ck_traffic_stat_source_count CHECK (source_record_count >= 0)
+);
+
+CREATE UNIQUE INDEX uk_traffic_stat_bucket
+    ON traffic_stat_snapshot (
+        task_id,
+        window_start,
+        window_end,
+        COALESCE(application, ''),
+        COALESCE(direction, '')
+    );
+CREATE INDEX idx_traffic_stat_task_window
+    ON traffic_stat_snapshot (task_id, window_start DESC);
+CREATE INDEX idx_traffic_stat_application_window
+    ON traffic_stat_snapshot (application, window_start DESC);
+CREATE INDEX idx_traffic_stat_flight_window
+    ON traffic_stat_snapshot (flight_no, window_start DESC)
+    WHERE flight_no IS NOT NULL;
+
 CREATE TABLE smart_window_status (
     id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
     record_id uuid NOT NULL REFERENCES data_record(id) ON DELETE CASCADE,
@@ -881,6 +1003,45 @@ CREATE INDEX idx_window_id_event ON smart_window_status (window_id, event_at DES
 CREATE INDEX idx_window_zone_event ON smart_window_status (zone_id, event_at DESC);
 CREATE INDEX idx_window_status_event ON smart_window_status (status, event_at DESC);
 CREATE INDEX idx_window_connect_event ON smart_window_status (connect_status, event_at DESC);
+
+CREATE TABLE cabin_window_layout (
+    window_id integer PRIMARY KEY,
+    zone_id smallint NOT NULL,
+    side varchar(8) NOT NULL,
+    row_no smallint NOT NULL,
+    position_no smallint NOT NULL,
+    label varchar(16),
+    enabled boolean NOT NULL DEFAULT true,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT ck_layout_window_id CHECK (window_id BETWEEN 1 AND 200),
+    CONSTRAINT ck_layout_zone CHECK (zone_id BETWEEN 1 AND 3),
+    CONSTRAINT ck_layout_side CHECK (side IN ('LEFT', 'RIGHT')),
+    CONSTRAINT ck_layout_row CHECK (row_no > 0),
+    CONSTRAINT ck_layout_position CHECK (position_no > 0),
+    CONSTRAINT uk_layout_position UNIQUE (side, row_no, position_no)
+);
+
+CREATE INDEX idx_layout_zone_side_position
+    ON cabin_window_layout (zone_id, side, position_no);
+CREATE INDEX idx_layout_enabled
+    ON cabin_window_layout (enabled);
+
+CREATE TABLE smart_window_current_status (
+    window_id integer PRIMARY KEY REFERENCES cabin_window_layout(window_id) ON DELETE RESTRICT,
+    latest_record_id uuid REFERENCES data_record(id) ON DELETE SET NULL,
+    brightness_level smallint NOT NULL,
+    connect_status boolean NOT NULL,
+    status varchar(16) NOT NULL,
+    event_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT ck_current_window_brightness CHECK (brightness_level BETWEEN 0 AND 10),
+    CONSTRAINT ck_current_window_status CHECK (status IN ('NORMAL', 'FAULT', 'TEST'))
+);
+
+CREATE INDEX idx_current_window_event ON smart_window_current_status (event_at DESC);
+CREATE INDEX idx_current_window_connect ON smart_window_current_status (connect_status);
+CREATE INDEX idx_current_window_status ON smart_window_current_status (status);
 
 CREATE TABLE ife_633_behavior (
     id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
@@ -985,6 +1146,14 @@ CREATE TRIGGER trg_data_annotation_updated_at
 BEFORE UPDATE ON data_annotation
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
+CREATE TRIGGER trg_cabin_window_layout_updated_at
+BEFORE UPDATE ON cabin_window_layout
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_smart_window_current_updated_at
+BEFORE UPDATE ON smart_window_current_status
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 CREATE OR REPLACE FUNCTION prevent_audit_mutation()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -999,7 +1168,7 @@ BEFORE UPDATE OR DELETE ON audit_log
 FOR EACH ROW EXECUTE FUNCTION prevent_audit_mutation();
 ```
 
-## 8. 七类数据种子
+## 8. 七类数据与舷窗布局种子
 
 ```sql
 INSERT INTO data_type (
@@ -1044,6 +1213,40 @@ ON CONFLICT (code) DO UPDATE SET
     description = EXCLUDED.description;
 ```
 
+默认舷窗布局可用 Flyway 种子生成。首期模拟器固定 200 个舷窗，默认按 100 个左侧、100 个右侧映射；`zone_id` 按位置切分为前/中/后舱。真实机型布局确认后必须通过新增迁移调整，不在页面直接改表。
+
+```sql
+INSERT INTO cabin_window_layout (
+    window_id, zone_id, side, row_no, position_no, label
+)
+SELECT
+    window_id,
+    CASE
+        WHEN position_no <= 34 THEN 1
+        WHEN position_no <= 72 THEN 2
+        ELSE 3
+    END AS zone_id,
+    side,
+    position_no AS row_no,
+    position_no,
+    side_prefix || lpad(position_no::text, 2, '0') AS label
+FROM (
+    SELECT
+        gs AS window_id,
+        CASE WHEN gs <= 100 THEN 'LEFT' ELSE 'RIGHT' END AS side,
+        CASE WHEN gs <= 100 THEN 'L' ELSE 'R' END AS side_prefix,
+        CASE WHEN gs <= 100 THEN gs ELSE gs - 100 END AS position_no
+    FROM generate_series(1, 200) AS gs
+) layout_seed
+ON CONFLICT (window_id) DO UPDATE SET
+    zone_id = EXCLUDED.zone_id,
+    side = EXCLUDED.side,
+    row_no = EXCLUDED.row_no,
+    position_no = EXCLUDED.position_no,
+    label = EXCLUDED.label,
+    enabled = true;
+```
+
 不在迁移脚本中插入默认管理员密码。后端首次启动时读取 `BOOTSTRAP_ADMIN_USERNAME`、`BOOTSTRAP_ADMIN_PASSWORD`，生成 BCrypt 哈希后创建账号；账号存在时不得覆盖密码。
 
 ## 9. UDP 数据入库映射
@@ -1060,9 +1263,15 @@ ON CONFLICT (code) DO UPDATE SET
 
 所有类型完整原报文写入 `raw_payload`，并在同一事务中写入对应业务表。全部业务项解析成功时记录为 `PARSED`；原报文成功保存但部分业务项失败时记录为 `PARTIAL`；无法形成合法业务明细时记录为 `FAILED`。失败原因写入 `parse_error`，不得包含密码或完整原始报文。
 
+流量统计和智慧舷窗展示使用派生维护规则：
+
+- `traffic_stat_snapshot` 由定时任务或查询前轻量刷新从 `traffic_record`、`session_summary` 聚合生成；快照可以删除重算，不影响原始记录。
+- `smart_window_current_status` 在每次 `smart_window.status` 入库后按 `window_id` upsert。只有源记录时间 `event_at` 不早于当前值时才覆盖，避免乱序 UDP 包回写旧状态。
+- `packet_loss_rate` 在当前模拟器未提供丢包字段时保持 `NULL`；不得根据吞吐或包数臆造。
+
 ## 10. 常用查询示例
 
-### 9.1 数据管理分页基础查询
+### 10.1 数据管理分页基础查询
 
 ```sql
 SELECT
@@ -1093,7 +1302,7 @@ LIMIT :page_size OFFSET :offset;
 
 实际代码应使用参数绑定，不得拼接用户输入。
 
-### 9.2 标签筛选
+### 10.2 标签筛选
 
 记录必须匹配全部所选标签：
 
@@ -1107,7 +1316,7 @@ GROUP BY r.id
 HAVING count(DISTINCT rt.tag_id) = cardinality(:tag_ids);
 ```
 
-### 9.3 软删除
+### 10.3 软删除
 
 ```sql
 UPDATE data_record
@@ -1123,7 +1332,7 @@ WHERE id = :record_id
 
 ## 11. 7+7 天保留策略
 
-### 10.1 超过 7 天自动软删除
+### 11.1 超过 7 天自动软删除
 
 ```sql
 UPDATE data_record
@@ -1136,7 +1345,7 @@ WHERE is_deleted = false
   AND received_at < now() - interval '7 days';
 ```
 
-### 10.2 再保留 7 天后分批物理删除
+### 11.2 再保留 7 天后分批物理删除
 
 ```sql
 WITH doomed AS (
@@ -1152,7 +1361,7 @@ USING doomed d
 WHERE r.id = d.id;
 ```
 
-`data_record_tag`、`data_annotation` 和七张业务表通过外键级联删除；`audit_log` 不删除。应用定时任务循环执行批次，直到本轮无记录，不要在一个事务中删除无限量数据。
+`data_record_tag`、`data_annotation` 和七张业务表通过外键级联删除；`smart_window_current_status.latest_record_id` 在来源记录物理清理时置空；`traffic_stat_snapshot` 是可重算派生数据，可由保留任务按窗口清理；`audit_log` 不删除。应用定时任务循环执行批次，直到本轮无记录，不要在一个事务中删除无限量数据。
 
 ## 12. Flyway 拆分建议
 
@@ -1164,12 +1373,14 @@ WHERE r.id = d.id;
 | `V4__create_simulator_business_tables.sql` | 七张模拟器业务表及业务索引 |
 | `V5__create_core_indexes_and_triggers.sql` | 公共表索引、更新时间触发器、审计只追加触发器 |
 | `V6__seed_data_types.sql` | 七类数据种子 |
+| `V7__create_display_snapshot_tables.sql` | `traffic_stat_snapshot`、`cabin_window_layout`、`smart_window_current_status` |
+| `V8__seed_cabin_window_layout.sql` | 默认 200 个舷窗展示布局 |
 
 Flyway 校验失败时后端必须拒绝启动。开发、测试和部署环境使用同一套迁移，不维护另一份手工建表脚本。
 
 ## 13. 后续演进边界
 
-当前 15 表已经覆盖七类模拟器数据。只有满足下列条件才继续拆分或增加新表：
+当前 18 表已经覆盖七类模拟器数据、流量统计和智慧舷窗展示。只有满足下列条件才继续拆分或增加新表：
 
 - 需要频繁按 JSON 内部字段筛选或聚合。
 - 需要轨迹、统计、趋势或关系查询。
