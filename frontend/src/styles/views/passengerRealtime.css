@@ -31,6 +31,8 @@
 }
 
 .passenger-layout {
+  --window-dot-opacity: 0.5;
+  --window-dot-glow: 6px;
   --panel-offset: 4px;
   --panel-bottom: 0px;
   --left-panel-width: 440px;
@@ -76,11 +78,11 @@
 .passenger-panel {
   height: 100%;
   overflow: hidden;
-  border: 1px solid rgba(89, 120, 170, 0.2);
-  border-radius: 8px;
-  background: rgba(13, 20, 32, 0.95);
-  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(76, 113, 178, 0.12);
-  backdrop-filter: blur(10px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .panel-title {
@@ -284,7 +286,7 @@
   overflow: hidden;
   border: 0;
   border-radius: 0;
-  background: #3e4a6a;
+  background: transparent;
   box-shadow: none;
 }
 
@@ -599,7 +601,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: #3e4a6a url('/assets/background.svg') center / cover no-repeat;
+  background: transparent;
   box-shadow: none;
   pointer-events: none;
 }
@@ -634,6 +636,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  backdrop-filter: none;
 }
 
 .floating-panel-title {

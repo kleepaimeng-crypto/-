@@ -8,43 +8,89 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface PassengerRealtimeMapper {
-    String ALL_IFE = """
-            SELECT b.id, b.record_id, b.event_at, b.created_at, b.flight_no,
-                   b.passenger_id, b.seat_no, b.cabin_class, b.behavior_type,
-                   b.behavior_detail, 1 AS source_priority
-            FROM ife_633_behavior b
-            JOIN data_record r ON r.id = b.record_id
-            WHERE r.is_deleted = false
-            UNION ALL
-            SELECT b.id, b.record_id, b.event_at, b.created_at, b.flight_no,
-                   b.passenger_id, b.seat_no, b.cabin_class, b.behavior_type,
-                   b.behavior_detail, 2 AS source_priority
-            FROM ife_cockrell_behavior b
-            JOIN data_record r ON r.id = b.record_id
-            WHERE r.is_deleted = false
-            """;
-
     @Select("""
-            WITH all_ife AS (
-            """ + ALL_IFE + """
-            )
             SELECT flight_no
-            FROM all_ife
-            ORDER BY event_at DESC, created_at DESC, source_priority DESC, id DESC
+            FROM data_record
+            WHERE is_deleted = false
+              AND data_type_code IN ('IFE_633_BEHAVIOR', 'IFE_COCKRELL_BEHAVIOR')
+              AND flight_no IS NOT NULL
+              AND flight_no <> ''
+            ORDER BY received_at DESC
             LIMIT 1
             """)
     String findCurrentFlightNo();
 
     @Select("""
-            WITH all_ife AS (
-            """ + ALL_IFE + """
-            ), ranked AS (
-                SELECT *, row_number() OVER (
-                    PARTITION BY passenger_id
-                    ORDER BY event_at DESC, created_at DESC, source_priority DESC, id DESC
-                ) AS row_no
-                FROM all_ife
+            WITH latest_633_event AS (
+                SELECT event_at
+                FROM ife_633_behavior
                 WHERE flight_no = #{flightNo}
+                ORDER BY event_at DESC
+                LIMIT 1
+            ), previous_633_event AS (
+                SELECT event_at
+                FROM ife_633_behavior
+                WHERE flight_no = #{flightNo}
+                  AND event_at < (SELECT event_at FROM latest_633_event)
+                ORDER BY event_at DESC
+                LIMIT 1
+            ), latest_633 AS (
+                SELECT DISTINCT ON (b.passenger_id)
+                       b.id, b.record_id, b.event_at, b.created_at, b.flight_no,
+                       b.passenger_id, b.seat_no, b.cabin_class, b.behavior_type,
+                       b.behavior_detail, 1 AS source_priority
+                FROM ife_633_behavior b
+                JOIN data_record r ON r.id = b.record_id
+                WHERE r.is_deleted = false
+                  AND b.flight_no = #{flightNo}
+                  AND b.event_at >= COALESCE(
+                      (SELECT event_at FROM previous_633_event),
+                      (SELECT event_at FROM latest_633_event)
+                  )
+                ORDER BY b.passenger_id, b.event_at DESC, b.created_at DESC, b.id DESC
+            ), latest_cockrell_event AS (
+                SELECT event_at
+                FROM ife_cockrell_behavior
+                WHERE flight_no = #{flightNo}
+                ORDER BY event_at DESC
+                LIMIT 1
+            ), previous_cockrell_event AS (
+                SELECT event_at
+                FROM ife_cockrell_behavior
+                WHERE flight_no = #{flightNo}
+                  AND event_at < (SELECT event_at FROM latest_cockrell_event)
+                ORDER BY event_at DESC
+                LIMIT 1
+            ), latest_cockrell AS (
+                SELECT DISTINCT ON (b.passenger_id)
+                       b.id, b.record_id, b.event_at, b.created_at, b.flight_no,
+                       b.passenger_id, b.seat_no, b.cabin_class, b.behavior_type,
+                       b.behavior_detail, 2 AS source_priority
+                FROM ife_cockrell_behavior b
+                JOIN data_record r ON r.id = b.record_id
+                WHERE r.is_deleted = false
+                  AND b.flight_no = #{flightNo}
+                  AND b.event_at >= COALESCE(
+                      (SELECT event_at FROM previous_cockrell_event),
+                      (SELECT event_at FROM latest_cockrell_event)
+                  )
+                ORDER BY b.passenger_id, b.event_at DESC, b.created_at DESC, b.id DESC
+            ), latest_passengers AS (
+                SELECT DISTINCT ON (passenger_id) *
+                FROM (
+                    SELECT * FROM latest_633
+                    UNION ALL
+                    SELECT * FROM latest_cockrell
+                ) latest_by_source
+                ORDER BY passenger_id, event_at DESC, created_at DESC, source_priority DESC, id DESC
+            ), current_traffic_task AS (
+                SELECT t.task_id
+                FROM simulation_task t
+                JOIN data_record r ON r.id = t.record_id
+                WHERE r.is_deleted = false
+                  AND t.flight_no = #{flightNo}
+                ORDER BY t.snapshot_at DESC, t.created_at DESC, t.id DESC
+                LIMIT 1
             )
             SELECT
                 a.passenger_id,
@@ -80,19 +126,17 @@ public interface PassengerRealtimeMapper {
                 a.event_at,
                 traffic.window_end AS bandwidth_updated_at,
                 a.record_id AS source_record_id
-            FROM ranked a
+            FROM latest_passengers a
             LEFT JOIN LATERAL (
                 SELECT t.throughput_mbps, t.bytes_count, t.window_end
                 FROM traffic_record t
                 JOIN data_record r ON r.id = t.record_id
                 WHERE r.is_deleted = false
-                  AND r.flight_no = #{flightNo}
+                  AND t.task_id = (SELECT task_id FROM current_traffic_task)
                   AND t.seat_label = a.seat_no
                 ORDER BY t.window_end DESC, t.created_at DESC, t.id DESC
                 LIMIT 1
             ) traffic ON true
-            WHERE a.row_no = 1
             """)
     List<PassengerActivityRow> findLatestActivities(@Param("flightNo") String flightNo);
-
 }
