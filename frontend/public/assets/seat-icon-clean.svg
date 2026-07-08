@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 26 25" role="img" aria-label="Seat icon">
+  <title>Seat Icon</title>
+  <rect x="1.2" y="0.8" width="23.6" height="23.4" rx="4.2" fill="#4C84F6"/>
+  <path fill="#FFFFFF" d="M9.55 5.65c0-.55.45-1 1-1h5.05c.55 0 1 .45 1 1v8.05H9.55V5.65Z"/>
+  <path fill="#FFFFFF" d="M6.2 11.45c0-.45.36-.82.82-.82h2.15v3.7H6.2v-2.88Zm10.63-.82h2.15c.46 0 .82.37.82.82v2.88h-2.97v-3.7Z"/>
+  <path fill="#FFFFFF" d="M6.25 14.8h13.5c.43 0 .78.35.78.78v1.15c0 .43-.35.78-.78.78H6.25a.78.78 0 0 1-.78-.78v-1.15c0-.43.35-.78.78-.78Z"/>
+  <path fill="#FFFFFF" d="M6.55 17.1h2.15v4.15c0 .44-.36.8-.8.8h-.55a.8.8 0 0 1-.8-.8V17.1Zm10.75 0h2.15v4.15c0 .44-.36.8-.8.8h-.55a.8.8 0 0 1-.8-.8V17.1Z"/>
+  <path fill="#FFFFFF" opacity=".35" d="M7 15.55h12v.65H7z"/>
+</svg>

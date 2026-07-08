@@ -45,7 +45,7 @@
   min-height: 0;
   overflow: hidden;
   padding: var(--panel-offset);
-  background: #1f2535 url('/assets/background.svg') center / cover no-repeat;
+  background: #3e4a6a url('/assets/background.svg') center / cover no-repeat;
 }
 
 .passenger-left,
@@ -58,8 +58,8 @@
 .passenger-left,
 .passenger-right {
   position: absolute;
-  top: 20px;
-  bottom: var(--panel-bottom);
+  top: 18px;
+  bottom: 18px;
   z-index: 9;
 }
 
@@ -85,19 +85,16 @@
 
 .panel-title {
   display: flex;
-  min-height: 42px;
+  min-height: 44px;
   align-items: center;
   gap: 10px;
-  padding: 0 14px;
-  border-bottom: 1px solid rgba(92, 123, 172, 0.18);
-  background: linear-gradient(90deg, rgba(46, 96, 178, 0.48), rgba(18, 27, 42, 0.94));
+  padding: 0 14px 0 32px;
+  border: 0;
+  background: url('/assets/子标题组件.svg') center / 100% 100% no-repeat;
 }
 
 .panel-title span {
-  width: 4px;
-  height: 22px;
-  border-radius: 3px;
-  background: linear-gradient(#23e7ff, #4d6dff 48%, #ff8a00);
+  display: none;
 }
 
 .panel-title h2 {
@@ -109,35 +106,7 @@
 .passenger-panel--traffic {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.panel-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px 8px;
-}
-
-.panel-actions strong,
-.panel-actions small {
-  display: block;
-}
-
-.panel-actions strong {
-  color: #f5f8ff;
-  font-size: 18px;
-}
-
-.panel-actions small {
-  max-width: min(380px, calc(var(--left-panel-width) - 160px));
-  margin-top: 4px;
-  overflow: hidden;
-  color: #7f8ea8;
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  gap: 8px;
 }
 
 .mini-toggle {
@@ -158,21 +127,28 @@
 .media-card,
 .cockpit-card {
   position: relative;
-  margin: 0 12px;
-  padding: 12px 12px 14px;
+  margin: 0 10px;
+  padding: 10px;
   border: 1px solid rgba(83, 113, 161, 0.16);
   border-radius: 6px;
   background: #101824;
 }
 
 .media-card {
-  min-height: 246px;
+  min-height: 226px;
   overflow: hidden;
 }
 
+.panel-title__refresh {
+  margin-left: auto;
+  min-height: 28px;
+}
+
 .cockpit-card {
+  display: flex;
   flex: 1;
   min-height: 0;
+  flex-direction: column;
 }
 
 .media-card__heading,
@@ -181,7 +157,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+.cockpit-card__heading {
+  min-height: 44px;
+  padding: 0 12px 0 32px;
+  border-radius: 10px;
+  background: url('/assets/子标题组件.svg') center / 100% 100% no-repeat;
 }
 
 .media-card h3,
@@ -199,13 +182,13 @@
 
 .media-list {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .media-row {
   display: grid;
-  grid-template-columns: 74px minmax(72px, 1fr) 78px;
-  gap: 8px;
+  grid-template-columns: 50px minmax(72px, 1fr) 30px;
+  column-gap: 25px;
   align-items: center;
   color: #c9d4e7;
   font-size: 13px;
@@ -213,6 +196,7 @@
 
 .media-row span {
   overflow: hidden;
+  padding-left: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -234,7 +218,7 @@
 .media-row em {
   color: #70a9ff;
   font-style: normal;
-  text-align: right;
+  text-align: left;
 }
 
 .media-row.is-empty {
@@ -259,7 +243,9 @@
 .cockpit-monitor {
   position: relative;
   display: grid;
-  min-height: 190px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
   place-content: center;
   gap: 8px;
   overflow: hidden;
@@ -298,7 +284,7 @@
   overflow: hidden;
   border: 0;
   border-radius: 0;
-  background: #1f2535;
+  background: #3e4a6a;
   box-shadow: none;
 }
 
@@ -394,7 +380,7 @@
   margin: 0 auto;
   overflow: visible;
   border-radius: 0;
-  background: #1f2535;
+  background: #3e4a6a;
   box-shadow: none;
   isolation: isolate;
 }
@@ -435,6 +421,12 @@
   height: auto;
   overflow: visible;
   pointer-events: none;
+}
+
+.window-svg-inline {
+  position: relative;
+  z-index: 0;
+  opacity: 0;
 }
 
 .window-svg-layer .window-svg-node {
@@ -605,7 +597,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: #1f2535 url('/assets/background.svg') center / cover no-repeat;
+  background: #3e4a6a url('/assets/background.svg') center / cover no-repeat;
   box-shadow: none;
   pointer-events: none;
 }
@@ -629,13 +621,15 @@
   z-index: 9;
   top: 18px;
   right: 38px;
-  bottom: 32px;
+  bottom: 18px;
   display: flex;
   width: 470px;
   min-height: 0;
+  box-sizing: border-box;
   flex-direction: column;
   overflow: visible;
   border: 0;
+  border-radius: 0;
   background: transparent;
   box-shadow: none;
 }
@@ -643,23 +637,27 @@
 .floating-panel-title {
   display: flex;
   flex: 0 0 auto;
-  min-height: 40px;
+  width: var(--right-panel-width);
+  min-width: var(--right-panel-width);
+  max-width: var(--right-panel-width);
+  min-height: 44px;
+  box-sizing: border-box;
+  align-self: stretch;
   align-items: center;
   gap: 9px;
-  padding: 0 14px;
-  border: 1px solid rgba(62, 82, 116, 0.42);
+  padding: 0 14px 0 32px;
+  border: 0;
   border-radius: 10px;
-  background: #111923;
-  box-shadow:
-    0 10px 26px rgba(0, 0, 0, 0.32),
-    inset 0 1px 0 rgba(177, 207, 255, 0.08);
+  background-color: transparent;
+  background-image: url('/assets/子标题组件.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: none;
 }
 
 .floating-panel-title span {
-  width: 4px;
-  height: 18px;
-  border-radius: 3px;
-  background: linear-gradient(#22e3ff, #486eff 52%, #ff8a00);
+  display: none;
 }
 
 .floating-panel-title strong {
@@ -668,10 +666,15 @@
 }
 
 .watch-detail-list {
+  position: relative;
   flex: 1 1 auto;
+  width: 100%;
   min-height: 0;
-  margin-top: 8px;
+  box-sizing: border-box;
+  margin-top: 4px;
   padding: 0 0 8px;
+  border-radius: 10px;
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -686,6 +689,7 @@
   position: relative;
   display: block;
   width: 100%;
+  box-sizing: border-box;
   padding: 14px 12px 18px;
   border: 1px solid rgba(43, 58, 82, 0.88);
   border-radius: 10px;
@@ -702,7 +706,11 @@
 }
 
 .watch-detail-card + .watch-detail-card {
-  margin-top: 10px;
+  margin-top: 5px;
+}
+
+.watch-detail-card:first-child {
+  border-radius: 10px;
 }
 
 .watch-detail-card:hover,
@@ -720,7 +728,8 @@
 }
 
 .watch-detail-card:last-child {
-  border-bottom: 0;
+  border-bottom: 1px solid rgba(43, 58, 82, 0.88);
+  border-radius: 10px;
 }
 
 .watch-seat-line {
@@ -743,22 +752,17 @@
 }
 
 .seat-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  background:
-    linear-gradient(90deg, transparent 10px, rgba(255, 255, 255, 0.82) 10px 13px, transparent 13px),
-    linear-gradient(rgba(255, 255, 255, 0.82) 10px, transparent 10px 15px, rgba(255, 255, 255, 0.82) 15px 18px, transparent 18px),
-    #4f7fff;
-  box-shadow: 0 0 0 1px rgba(213, 226, 255, 0.72), 0 0 14px rgba(79, 127, 255, 0.38);
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  background: url('/assets/seat-icon-clean.svg') center / contain no-repeat;
+  box-shadow: none;
 }
 
 .watch-detail-card.is-active .seat-icon {
-  background:
-    linear-gradient(90deg, transparent 10px, rgba(255, 255, 255, 0.9) 10px 13px, transparent 13px),
-    linear-gradient(rgba(255, 255, 255, 0.9) 10px, transparent 10px 15px, rgba(255, 255, 255, 0.9) 15px 18px, transparent 18px),
-    #ff8a00;
-  box-shadow: 0 0 0 1px rgba(255, 231, 199, 0.78), 0 0 16px rgba(255, 138, 0, 0.46);
+  background: url('/assets/seat-icon-clean.svg') center / contain no-repeat;
+  filter: drop-shadow(0 0 6px rgba(255, 138, 0, 0.72));
+  box-shadow: none;
 }
 
 .watch-kind {

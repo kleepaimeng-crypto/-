@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { PassengerRealtimeSnapshotDto } from '../../api/types'
-import { barWidth, formatCount, formatDate } from '../../utils/displayFormatters'
+import { barWidth, formatCount } from '../../utils/displayFormatters'
 
 const props = defineProps<{
   autoRefresh: boolean
@@ -27,17 +27,10 @@ function maxCount(items: { count: number }[]): number {
     <header class="panel-title">
       <span></span>
       <h2>乘客影音统计</h2>
-    </header>
-
-    <div class="panel-actions">
-      <div>
-        <strong>当前影音类型排行</strong>
-        <small>更新时间：{{ formatDate(snapshot?.updatedAt) }}</small>
-      </div>
-      <button class="mini-toggle" @click="emit('toggleAutoRefresh')">
+      <button class="mini-toggle panel-title__refresh" @click="emit('toggleAutoRefresh')">
         {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
       </button>
-    </div>
+    </header>
 
     <section class="media-card">
       <div class="media-card__heading">

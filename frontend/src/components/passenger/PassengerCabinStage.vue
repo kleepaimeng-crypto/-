@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
 import type {
   PassengerActivityDto,
@@ -69,6 +69,7 @@ const watchListRef = ref<HTMLElement | null>(null)
 const selectedSeatLabelStyle = ref<Record<string, string>>({ opacity: '0' })
 const windowLabels = ref<WindowLabelView[]>([])
 const defaultCabinSectionApplied = ref(false)
+let watchScrollAnimationFrame: number | undefined
 
 const props = defineProps<{
   activities: PassengerActivityDto[]
@@ -384,17 +385,47 @@ function scrollWatchCardIntoView(seat: string): void {
     return
   }
 
-  const listRect = list.getBoundingClientRect()
-  const cardRect = card.getBoundingClientRect()
-  const targetTop = list.scrollTop
-    + cardRect.top
-    - listRect.top
-    - Math.max(0, (list.clientHeight - card.offsetHeight) / 2)
+  animateWatchListToCard(list, card)
+}
 
-  list.scrollTo({
-    top: Math.max(0, targetTop),
-    behavior: 'smooth',
-  })
+function watchCardTargetTop(list: HTMLElement, card: HTMLElement): number {
+  const centeredTop = card.offsetTop - Math.max(0, (list.clientHeight - card.offsetHeight) / 2)
+  const maxScrollTop = Math.max(0, list.scrollHeight - list.clientHeight)
+
+  return Math.max(0, Math.min(maxScrollTop, centeredTop))
+}
+
+function animateWatchListToCard(list: HTMLElement, card: HTMLElement): void {
+  if (watchScrollAnimationFrame !== undefined) {
+    window.cancelAnimationFrame(watchScrollAnimationFrame)
+  }
+
+  const startTop = list.scrollTop
+  const initialTargetTop = watchCardTargetTop(list, card)
+  const distance = initialTargetTop - startTop
+  const duration = Math.min(800, Math.max(320, Math.abs(distance) * 0.35))
+  const startedAt = performance.now()
+
+  const step = (now: number): void => {
+    if (watchListRef.value !== list || !card.isConnected) {
+      watchScrollAnimationFrame = undefined
+      return
+    }
+
+    const progress = Math.min(1, (now - startedAt) / duration)
+    const eased = 1 - Math.pow(1 - progress, 3)
+    list.scrollTop = startTop + distance * eased
+
+    if (progress < 1) {
+      watchScrollAnimationFrame = window.requestAnimationFrame(step)
+      return
+    }
+
+    list.scrollTop = watchCardTargetTop(list, card)
+    watchScrollAnimationFrame = undefined
+  }
+
+  watchScrollAnimationFrame = window.requestAnimationFrame(step)
 }
 
 function scrollSeatIntoAircraftView(seat: string, behavior: ScrollBehavior = 'smooth'): boolean {
@@ -567,6 +598,12 @@ watch(selectedSeat, () => {
 onMounted(() => {
   void loadSeatOverlaySvg()
   void loadWindowOverlaySvg()
+})
+
+onBeforeUnmount(() => {
+  if (watchScrollAnimationFrame !== undefined) {
+    window.cancelAnimationFrame(watchScrollAnimationFrame)
+  }
 })
 </script>
 
