@@ -90,6 +90,26 @@
   pointer-events: none;
 }
 
+.fixed-canvas-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0c1422;
+}
+
+.fixed-canvas-shell {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1920px;
+  min-width: 1920px;
+  max-width: none;
+  height: 1080px;
+  min-height: 1080px;
+  margin: 0;
+  transform-origin: center;
+}
+
 .workspace-state,
 .workspace-layout {
   position: relative;

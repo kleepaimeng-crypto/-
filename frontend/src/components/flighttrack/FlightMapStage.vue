@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import 'ol/ol.css'
 import Feature from 'ol/Feature'
+import GeoJSON from 'ol/format/GeoJSON'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
-import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
-import XYZ from 'ol/source/XYZ'
 import VectorSource from 'ol/source/Vector'
 import Icon from 'ol/style/Icon'
+import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import Style from 'ol/style/Style'
+import { fromLonLat } from 'ol/proj'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Coordinate } from 'ol/coordinate'
 import type { FeatureLike } from 'ol/Feature'
@@ -27,11 +28,15 @@ const props = defineProps<{
 const minZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MIN_ZOOM, 3)
 const maxTileZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MAX_ZOOM, 10)
 const initialZoom = 6
+const defaultMapZoom = 4
+const chinaMapCenter = fromLonLat([104.5, 35.5])
+const geoJsonBaseUrl = '/map/geojson'
+const geoJsonManifestUrl = `${geoJsonBaseUrl}/manifest.json`
+const geoJsonLoadConcurrency = 16
 const basePlaneZoom = 6
 const planeSourceSize = 512
 const planeMinSize = 36
 const planeMaxSize = 220
-const tileUrlTemplate = import.meta.env.VITE_OFFLINE_MAP_TILE_URL || '/offline-map/{z}/{x}/{y}.png'
 const mapContainer = ref<HTMLElement | null>(null)
 const mapReady = ref(false)
 const mapError = ref('')
@@ -44,6 +49,13 @@ let planeSource: VectorSource | undefined
 let mapViewInitialized = false
 let latestCoordinate: Coordinate | undefined
 let followingPlane = true
+
+type AdministrativeMapLevel = 'country' | 'province' | 'city' | 'county' | 'unknown'
+
+interface AdministrativeGeoJsonEntry {
+  path: string
+  level: AdministrativeMapLevel
+}
 
 onMounted(() => {
   setupMap()
@@ -70,9 +82,7 @@ function setupMap(): void {
       target,
       controls: [],
       layers: [
-        new TileLayer({
-          source: createOfflineTileSource(),
-        }),
+        createChinaMapLayer(),
         new VectorLayer({
           source: trackSource,
           style: trackStyle,
@@ -87,10 +97,10 @@ function setupMap(): void {
         }),
       ],
       view: new View({
-        center: [0, 0],
+        center: chinaMapCenter,
         maxZoom: maxTileZoom,
         minZoom,
-        zoom: initialZoom,
+        zoom: defaultMapZoom,
       }),
     })
     map.on('pointerdrag', stopFollowingPlane)
@@ -101,14 +111,123 @@ function setupMap(): void {
   }
 }
 
-function createOfflineTileSource(): XYZ {
-  return new XYZ({
-    minZoom,
-    maxZoom: maxTileZoom,
-    url: tileUrlTemplate,
-    wrapX: false,
+function createChinaMapLayer(): VectorLayer<VectorSource> {
+  const source = new VectorSource({
+  })
+  void loadAdministrativeGeoJson(source)
+  return new VectorLayer({
+    source,
+    style: chinaRegionStyle,
+    renderBuffer: 120,
+    updateWhileAnimating: true,
+    updateWhileInteracting: true,
   })
 }
+
+async function loadAdministrativeGeoJson(source: VectorSource): Promise<void> {
+  try {
+    const manifestResponse = await fetch(geoJsonManifestUrl)
+    if (!manifestResponse.ok) throw new Error(`manifest ${manifestResponse.status}`)
+    const entries = await manifestResponse.json() as AdministrativeGeoJsonEntry[]
+    const geoJsonFormat = new GeoJSON({
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
+    })
+    let failedCount = 0
+    let nextIndex = 0
+    async function loadNext(): Promise<void> {
+      const entry = entries[nextIndex++]
+      if (!entry) return
+      try {
+        const response = await fetch(`${geoJsonBaseUrl}/${encodeURI(entry.path)}`)
+        if (!response.ok) throw new Error(`${entry.path} ${response.status}`)
+        const payload = await response.json()
+        const features = geoJsonFormat.readFeatures(payload)
+        for (const feature of features) {
+          feature.set('mapLevel', entry.level, true)
+        }
+        source.addFeatures(features)
+      } catch {
+        failedCount += 1
+      }
+      await loadNext()
+    }
+    const workers = Array.from(
+      { length: Math.min(geoJsonLoadConcurrency, entries.length) },
+      () => loadNext(),
+    )
+    await Promise.all(workers)
+    if (failedCount > 0) {
+      mapError.value = `部分行政区 GeoJSON 加载失败：${failedCount} 个文件`
+    }
+  } catch {
+    mapError.value = '中国行政区 GeoJSON 加载失败'
+  }
+}
+
+function chinaRegionStyle(feature: FeatureLike): Style {
+  const level = feature.get('mapLevel') as AdministrativeMapLevel | undefined
+  return switchRegionStyle(level)
+}
+
+function switchRegionStyle(level: AdministrativeMapLevel | undefined): Style {
+  switch (level) {
+    case 'country':
+      return countryStyle
+    case 'province':
+      return provinceStyle
+    case 'city':
+      return cityStyle
+    case 'county':
+      return countyStyle
+    default:
+      return cityStyle
+  }
+}
+
+const countryStyle = new Style({
+  fill: new Fill({
+    color: 'rgba(23, 42, 59, 0.72)',
+  }),
+  stroke: new Stroke({
+    color: 'rgba(86, 220, 255, 0.56)',
+    lineJoin: 'round',
+    width: 1.4,
+  }),
+})
+
+const provinceStyle = new Style({
+  fill: new Fill({
+    color: 'rgba(23, 42, 59, 0.2)',
+  }),
+  stroke: new Stroke({
+    color: 'rgba(86, 220, 255, 0.34)',
+    lineJoin: 'round',
+    width: 0.9,
+  }),
+})
+
+const cityStyle = new Style({
+  fill: new Fill({
+    color: 'rgba(23, 42, 59, 0.05)',
+  }),
+  stroke: new Stroke({
+    color: 'rgba(86, 220, 255, 0.18)',
+    lineJoin: 'round',
+    width: 0.55,
+  }),
+})
+
+const countyStyle = new Style({
+  fill: new Fill({
+    color: 'rgba(23, 42, 59, 0.02)',
+  }),
+  stroke: new Stroke({
+    color: 'rgba(86, 220, 255, 0.08)',
+    lineJoin: 'round',
+    width: 0.35,
+  }),
+})
 
 function updateTrack(): void {
   if (!map || !trackFeature || !planeFeature) return

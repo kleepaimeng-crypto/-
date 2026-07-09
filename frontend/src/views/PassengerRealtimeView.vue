@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authSession } from '../auth/session'
+import FixedCanvasShell from '../components/FixedCanvasShell.vue'
 import PlatformBrand from '../components/PlatformBrand.vue'
 import PassengerCabinStage from '../components/passenger/PassengerCabinStage.vue'
 import PassengerTrafficPanel from '../components/passenger/PassengerTrafficPanel.vue'
 import { usePassengerRealtime } from '../composables/usePassengerRealtime'
-import { calculateFixedCanvasScale } from '../utils/fixedCanvas'
 
 const router = useRouter()
 const {
@@ -20,20 +19,6 @@ const {
   windowError,
   windowLoading,
 } = usePassengerRealtime()
-const canvasScale = ref(1)
-
-function updateCanvasScale(): void {
-  canvasScale.value = calculateFixedCanvasScale(window.innerWidth, window.innerHeight)
-}
-
-onMounted(() => {
-  updateCanvasScale()
-  window.addEventListener('resize', updateCanvasScale)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateCanvasScale)
-})
 
 async function logout(): Promise<void> {
   authSession.logout()
@@ -42,11 +27,7 @@ async function logout(): Promise<void> {
 </script>
 
 <template>
-  <div class="passenger-fixed-viewport">
-    <main
-      class="workspace-shell passenger-shell"
-      :style="{ transform: `translate(-50%, -50%) scale(${canvasScale})` }"
-    >
+  <FixedCanvasShell shell-class="passenger-shell">
       <header class="workspace-header">
       <PlatformBrand compact />
       <nav class="workspace-nav" aria-label="主导航">
@@ -89,6 +70,5 @@ async function logout(): Promise<void> {
         <span>部件号：XXXXXXXXXXXXXXXXX</span>
         <span>版本号：V0.1</span>
       </footer>
-    </main>
-  </div>
+  </FixedCanvasShell>
 </template>

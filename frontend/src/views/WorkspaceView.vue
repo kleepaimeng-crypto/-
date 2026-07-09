@@ -22,6 +22,7 @@ import type {
   ExportFormat,
   FileJobSummaryDto,
 } from '../api/types'
+import FixedCanvasShell from '../components/FixedCanvasShell.vue'
 import PlatformBrand from '../components/PlatformBrand.vue'
 
 const router = useRouter()
@@ -444,7 +445,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="workspace-shell">
+  <FixedCanvasShell shell-class="workspace-canvas-shell">
     <header class="workspace-header">
       <PlatformBrand compact />
       <nav class="workspace-nav" aria-label="主导航">
@@ -676,5 +677,5 @@ onBeforeUnmount(() => {
         <footer><button class="button button--ghost" @click="importOpen = false">取消</button><button class="button button--accent" :disabled="!importForm.file || actionLoading" @click="submitImport">创建任务</button></footer>
       </section>
     </div>
-  </main>
+  </FixedCanvasShell>
 </template>

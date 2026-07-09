@@ -331,7 +331,7 @@
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  background: #182233;
+  background: #242F3E;
 }
 
 .flight-ol-map {
@@ -348,7 +348,9 @@
 
 .flight-ol-map,
 .flight-ol-map .ol-viewport {
-  background: #202838;
+  background:
+    radial-gradient(circle at 52% 44%, rgba(86, 220, 255, 0.12), transparent 34%),
+    linear-gradient(180deg, #242F3E 0%, #182230 100%);
 }
 
 .flight-ol-map .ol-attribution,

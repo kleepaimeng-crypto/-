@@ -33,11 +33,14 @@
 .passenger-layout {
   --window-dot-opacity: 0.5;
   --window-dot-glow: 6px;
-  --panel-offset: 4px;
+  --panel-offset: 0px;
+  --side-panel-x-offset: 14px;
+  --side-panel-y-offset: 14px;
   --panel-bottom: 0px;
   --left-panel-width: 440px;
   --right-panel-width: 470px;
-  --cabin-map-width: 920px;
+  --cabin-map-width: 980px;
+  --cabin-center-offset: -26px;
   --aircraft-width: 614px;
   --window-layer-width: 200px;
   --window-dot-offset: 7px;
@@ -60,18 +63,18 @@
 .passenger-left,
 .passenger-right {
   position: absolute;
-  top: 18px;
-  bottom: 18px;
+  top: var(--side-panel-y-offset);
+  bottom: var(--side-panel-y-offset);
   z-index: 9;
 }
 
 .passenger-left {
-  left: var(--panel-offset);
+  left: var(--side-panel-x-offset);
   width: var(--left-panel-width);
 }
 
 .passenger-right {
-  right: var(--panel-offset);
+  right: var(--side-panel-x-offset);
   width: var(--right-panel-width);
 }
 
@@ -295,7 +298,7 @@
   z-index: 11;
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: calc(50% + var(--cabin-center-offset));
   width: var(--cabin-map-width);
   max-width: calc(100% - 48px);
   transform: translateX(-50%);
@@ -347,7 +350,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: calc(50% + var(--cabin-center-offset));
   z-index: 4;
   width: var(--cabin-map-width);
   max-width: calc(100% - 48px);
@@ -624,7 +627,7 @@
   position: absolute;
   z-index: 9;
   top: 18px;
-  right: 38px;
+  right: 28px;
   bottom: 18px;
   display: flex;
   width: 470px;
