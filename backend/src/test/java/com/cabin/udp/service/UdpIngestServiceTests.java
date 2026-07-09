@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.cabin.config.UdpProperties;
+import com.cabin.flighttrack.service.FlightSessionService;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
 import com.cabin.udp.entity.DataTypeConfig;
@@ -15,6 +16,7 @@ import com.cabin.udp.dto.UdpIngestOutcome;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,13 +30,22 @@ class UdpIngestServiceTests {
     );
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
+    private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
             objectMapper,
             parser,
-            currentFlightContextService
+            currentFlightContextService,
+            flightSessionService
     );
     private final OffsetDateTime receivedAt = OffsetDateTime.parse("2026-07-04T12:00:00+08:00");
+
+    UdpIngestServiceTests() {
+        when(flightSessionService.resolve(
+                org.mockito.ArgumentMatchers.any(DataRecord.class),
+                anyMap()
+        )).thenReturn(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+    }
 
     @Test
     void invalidJsonIsStoredAsFailedRawTextRecord() {

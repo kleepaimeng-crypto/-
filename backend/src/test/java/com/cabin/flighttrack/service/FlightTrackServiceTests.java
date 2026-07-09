@@ -26,8 +26,7 @@ class FlightTrackServiceTests {
 
     @Test
     void returnsNullWhenNoCurrentQarExists() {
-        when(mapper.findCurrentState()).thenReturn(null);
-        when(mapper.findLatestQarState(now.minusSeconds(300))).thenReturn(null);
+        when(mapper.findActiveSessionLatest()).thenReturn(null);
 
         assertThat(service.getCurrent()).isNull();
     }
@@ -35,7 +34,7 @@ class FlightTrackServiceTests {
     @Test
     void returnsNullWhenCurrentQarIsNotFlying() {
         FlightTrackPointRow row = row(now.minusSeconds(10), "80");
-        when(mapper.findCurrentState()).thenReturn(row);
+        when(mapper.findActiveSessionLatest()).thenReturn(row);
 
         assertThat(service.getCurrent()).isNull();
     }
@@ -48,8 +47,9 @@ class FlightTrackServiceTests {
         first.setLongitude(119.8);
         FlightTrackPointRow latest = row(now, "470");
         first.setRecordId(latest.getRecordId());
-        when(mapper.findCurrentState()).thenReturn(latest);
-        when(mapper.findTrack("CA4732", now.minusHours(24), now))
+        first.setFlightSessionId(latest.getFlightSessionId());
+        when(mapper.findActiveSessionLatest()).thenReturn(latest);
+        when(mapper.findTrack(latest.getFlightSessionId(), now.minusHours(24), now))
                 .thenReturn(List.of(first, latest));
 
         var result = service.getCurrent();
@@ -67,18 +67,11 @@ class FlightTrackServiceTests {
     }
 
     @Test
-    void fallsBackToQarSampleWhenStateTableIsStale() {
+    void returnsNullWhenActiveSessionIsStale() {
         FlightTrackPointRow stale = row(now.minusMinutes(10), "470");
-        FlightTrackPointRow latest = row(now.minusSeconds(30), "470");
-        when(mapper.findCurrentState()).thenReturn(stale);
-        when(mapper.findLatestQarState(now.minusSeconds(300))).thenReturn(latest);
-        when(mapper.findTrack("CA4732", latest.getSampleAt().minusHours(24), latest.getSampleAt()))
-                .thenReturn(List.of(latest));
+        when(mapper.findActiveSessionLatest()).thenReturn(stale);
 
-        var result = service.getCurrent();
-
-        assertThat(result).isNotNull();
-        assertThat(result.latestPoint().sampleAt()).isEqualTo(latest.getSampleAt());
+        assertThat(service.getCurrent()).isNull();
     }
 
     @Test
@@ -93,8 +86,10 @@ class FlightTrackServiceTests {
             rows.add(point);
         }
         latest = rows.getLast();
-        when(mapper.findCurrentState()).thenReturn(latest);
-        when(mapper.findTrack("CA4732", latest.getSampleAt().minusHours(24), latest.getSampleAt()))
+        UUID sessionId = latest.getFlightSessionId();
+        rows.forEach(point -> point.setFlightSessionId(sessionId));
+        when(mapper.findActiveSessionLatest()).thenReturn(latest);
+        when(mapper.findTrack(sessionId, latest.getSampleAt().minusHours(24), latest.getSampleAt()))
                 .thenReturn(rows);
 
         var result = service.getCurrent();
@@ -106,13 +101,11 @@ class FlightTrackServiceTests {
     }
 
     @Test
-    void startsTrackAtLatestSimulatorRunBoundary() {
+    void queriesOnlyTheActiveFlightSession() {
         FlightTrackPointRow latest = row(now, "470");
-        OffsetDateTime segmentStart = now.minusMinutes(20);
-        when(mapper.findCurrentState()).thenReturn(latest);
-        when(mapper.findCurrentSegmentStart("CA4732", now.minusHours(24), now))
-                .thenReturn(segmentStart);
-        when(mapper.findTrack("CA4732", segmentStart, now)).thenReturn(List.of(latest));
+        when(mapper.findActiveSessionLatest()).thenReturn(latest);
+        when(mapper.findTrack(latest.getFlightSessionId(), now.minusHours(24), now))
+                .thenReturn(List.of(latest));
 
         var result = service.getCurrent();
 
@@ -122,6 +115,7 @@ class FlightTrackServiceTests {
 
     private FlightTrackPointRow row(OffsetDateTime sampleAt, String groundSpeed) {
         FlightTrackPointRow row = new FlightTrackPointRow();
+        row.setFlightSessionId(UUID.randomUUID());
         row.setRecordId(UUID.randomUUID());
         row.setSampleAt(sampleAt);
         row.setSourceTimeText(sampleAt.toLocalTime().withNano(0).toString());

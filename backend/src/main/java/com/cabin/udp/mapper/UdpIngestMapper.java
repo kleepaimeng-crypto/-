@@ -61,6 +61,7 @@ public interface UdpIngestMapper {
     @Insert("""
             INSERT INTO qar_sample (
                 record_id,
+                flight_session_id,
                 sample_at,
                 source_time_text,
                 flight_no,
@@ -86,6 +87,7 @@ public interface UdpIngestMapper {
             )
             VALUES (
                 CAST(#{row.recordId} AS uuid),
+                CAST(#{row.flightSessionId} AS uuid),
                 #{row.sampleAt},
                 #{row.sourceTimeText},
                 #{row.flightNo},

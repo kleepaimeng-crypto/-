@@ -2,6 +2,7 @@ package com.cabin.udp.service;
 
 import com.cabin.common.exception.BusinessException;
 import com.cabin.common.response.ResponseCode;
+import com.cabin.flighttrack.service.FlightSessionService;
 import com.cabin.udp.dto.CurrentFlightContext;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
@@ -17,6 +18,7 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,17 +29,20 @@ public class UdpIngestService {
     private final ObjectMapper objectMapper;
     private final UdpPayloadParser parser;
     private final CurrentFlightContextService currentFlightContextService;
+    private final FlightSessionService flightSessionService;
 
     public UdpIngestService(
             ObjectProvider<UdpIngestMapper> mapperProvider,
             ObjectMapper objectMapper,
             UdpPayloadParser parser,
-            CurrentFlightContextService currentFlightContextService
+            CurrentFlightContextService currentFlightContextService,
+            FlightSessionService flightSessionService
     ) {
         this.mapperProvider = mapperProvider;
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.currentFlightContextService = currentFlightContextService;
+        this.flightSessionService = flightSessionService;
     }
 
     @Transactional
@@ -101,7 +106,11 @@ public class UdpIngestService {
         DataRecord record = currentFlightContextService.applyTo(parsed.record());
         mapper.insertDataRecord(record);
         for (Map<String, Object> row : parsed.businessRows()) {
-            insertBusinessRow(mapper, record.getDataTypeCode(), row);
+            if ("QAR".equals(record.getDataTypeCode())) {
+                insertQarRow(mapper, record, row);
+            } else {
+                insertBusinessRow(mapper, record.getDataTypeCode(), row);
+            }
         }
         CurrentFlightContext context = currentFlightContextService.updateFrom(record);
         if (context != null && context.hasRoute()) {
@@ -115,9 +124,19 @@ public class UdpIngestService {
         }
     }
 
+    private void insertQarRow(
+            UdpIngestMapper mapper,
+            DataRecord record,
+            Map<String, Object> row
+    ) {
+        UUID sessionId = flightSessionService.resolve(record, row);
+        row.put("flightSessionId", sessionId);
+        mapper.insertQarSample(row);
+        flightSessionService.updateLatest(sessionId, record, row);
+    }
+
     private void insertBusinessRow(UdpIngestMapper mapper, String dataTypeCode, Map<String, Object> row) {
         switch (dataTypeCode) {
-            case "QAR" -> mapper.insertQarSample(row);
             case "GROUND_TASK" -> mapper.insertSimulationTask(row);
             case "GROUND_TRAFFIC_RECORD" -> mapper.insertTrafficRecord(row);
             case "GROUND_SESSION_SUMMARY" -> mapper.insertSessionSummary(row);

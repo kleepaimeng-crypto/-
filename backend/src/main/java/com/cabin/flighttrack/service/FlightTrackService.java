@@ -58,26 +58,18 @@ public class FlightTrackService {
     public FlightTrackCurrentResponse getCurrent() {
         FlightTrackMapper mapper = mapper();
         OffsetDateTime cutoff = OffsetDateTime.now(clock).minusSeconds(FRESHNESS_SECONDS);
-        FlightTrackPointRow latest = mapper.findCurrentState();
-        if (latest == null || latest.getSampleAt() == null || latest.getSampleAt().isBefore(cutoff)) {
-            latest = mapper.findLatestQarState(cutoff);
-        }
+        FlightTrackPointRow latest = mapper.findActiveSessionLatest();
         if (latest == null || !isActive(latest)) {
+            return null;
+        }
+        if (latest.getSampleAt() == null || latest.getSampleAt().isBefore(cutoff)) {
             return null;
         }
 
         OffsetDateTime windowStart = latest.getSampleAt().minusHours(TRACK_WINDOW_HOURS);
-        OffsetDateTime segmentStart = mapper.findCurrentSegmentStart(
-                latest.getFlightNo(),
-                windowStart,
-                latest.getSampleAt()
-        );
-        if (segmentStart == null) {
-            segmentStart = windowStart;
-        }
         List<FlightTrackPointResponse> track = sampleTrack(mapper.findTrack(
-                latest.getFlightNo(),
-                segmentStart,
+                latest.getFlightSessionId(),
+                windowStart,
                 latest.getSampleAt()
         ))
                 .stream()

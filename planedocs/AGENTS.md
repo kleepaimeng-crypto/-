@@ -28,7 +28,7 @@
 | 编码 | UTF-8 |
 | 前端 | 当前项目 Vue 3 + Vite，不另起 React 项目 |
 | 后端 | 当前项目 Spring Boot + MyBatis + Flyway |
-| 数据库 | PostgreSQL，优先复用已有 `qar_sample` |
+| 数据库 | PostgreSQL，`flight_session` 管理飞行边界，`qar_sample` 保存轨迹点 |
 | 数据来源 | 模拟器 `qar.frame`，当前只有单架飞机 |
 | 地图 | 使用 `frontend/map/tiles_street` 的 EPSG:3857 XYZ 离线瓦片，前端用 OpenLayers 渲染 |
 | 缓存 | Redis 不是必需项；首期可不用 |
@@ -46,11 +46,11 @@ E:\developTool\anaconda3\envs\myenv\python.exe
 
 只实现当前项目需要的单机轨迹能力：
 
-- 当前单架飞机最新有效 QAR 快照。
-- 当前单架飞机最近轨迹点。
+- 当前活动飞行会话的最新有效 QAR 快照。
+- 当前 `flight_session_id` 的最近轨迹点。
 - 航班、起降机场、航司和飞机基础信息展示。
 - 地图飞机标记、轨迹线和参考图中的曲线面板。
-- 必要时新增 `qar_sample` 查询索引。
+- 必须使用会话索引查询轨迹，不得仅按航班号拼接。
 
 不得顺手迁移旧项目能力：
 
@@ -65,12 +65,13 @@ E:\developTool\anaconda3\envs\myenv\python.exe
 ## 4. 数据规则
 
 - `qar_sample` 是轨迹点事实表，不再新增重复轨迹事实表。
+- `flight_session` 是飞行会话和当前状态表；同一次飞行的 QAR 点共享同一会话 ID。
 - `data_record` 只作为元数据补充，不作为轨迹点来源。
 - 当前模拟器 QAR 机场代码是四字 ICAO，不要改成三字码。
 - `altitude_ft` 单位是 ft，不要在 API 或 UI 中误写为 meters。
 - `ground_speed_kt > 100` 视为飞行中。
 - 当前有效数据窗口默认最近 `5` 分钟。
-- 当前轨迹窗口默认最近 `24` 小时，并由后端抽样控制返回点数。
+- 当前轨迹窗口默认当前会话最近 `24` 小时，并由后端抽样控制返回点数。
 - 所有轨迹查询必须按 `sample_at` 升序返回给前端。
 - 经纬度为空的点不能用于地图绘制。
 - 航向优先使用 `track_angle_deg`；为空时用 `heading_deg`。
@@ -105,7 +106,7 @@ GET /api/flight-track/current
 
 ## 7. 数据库实现要求
 
-- 首期只补 `qar_sample` 查询索引即可。
+- 轨迹查询必须使用 `(flight_session_id, sample_at, frame_count, id)` 索引。
 - 若新增迁移，使用 Flyway 新版本文件，例如 `V7__add_flight_track_query_support.sql`。
 - 不要修改已发布迁移文件内容，除非用户明确要求重建数据库。
 - 不要给高频 QAR 表新增不必要外键。

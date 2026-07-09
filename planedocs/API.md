@@ -202,8 +202,8 @@
 
 - 从 `qar_sample` 中查询最近 `5` 分钟内最新一条有经纬度的 QAR。
 - 如果最新有效 QAR 的 `ground_speed_kt <= 100`，返回 `data: null` 或 `statusText = 未进入飞行状态`。推荐返回 `null`，前端展示空态。
-- 当前航班号取最新有效 QAR 的 `flight_no`。
-- 轨迹查询范围为同一 `flight_no` 最近 `8` 小时内有经纬度的点。
+- 当前航班取最近更新的 `ACTIVE flight_session`。
+- 轨迹查询范围为当前 `flight_session_id` 最近 `24` 小时内有经纬度的点。
 - `track` 按 `sample_at` 升序。
 - `latestPoint` 必须等于 `track` 最后一条。
 - 航司、机场展示名由后端映射补齐，映射缺失时返回原始代码。

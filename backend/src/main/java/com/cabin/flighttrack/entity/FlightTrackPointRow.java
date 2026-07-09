@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class FlightTrackPointRow {
+    private UUID flightSessionId;
     private UUID recordId;
     private OffsetDateTime sampleAt;
     private String sourceTimeText;
@@ -26,6 +27,14 @@ public class FlightTrackPointRow {
     private BigDecimal distanceToGoNm;
     private String destinationEtaText;
     private Long frameCount;
+
+    public UUID getFlightSessionId() {
+        return flightSessionId;
+    }
+
+    public void setFlightSessionId(UUID flightSessionId) {
+        this.flightSessionId = flightSessionId;
+    }
 
     public UUID getRecordId() {
         return recordId;
