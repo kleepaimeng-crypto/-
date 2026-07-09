@@ -336,3 +336,44 @@ export interface PassengerRealtimeSnapshotDto {
   mediaStatistics: PassengerMediaStatisticsDto
   passengerActivities: PassengerActivitiesDto
 }
+
+export interface FlightTrackPointDto {
+  sampleAt: string
+  sampleTimeText: string
+  frameCount: number
+  latitude: number
+  longitude: number
+  altitudeFt: number | null
+  groundSpeedKt: number | null
+  computedAirSpeedKt: number | null
+  trackAngleDeg: number | null
+  headingDeg: number | null
+  pitchDeg: number | null
+  rollDeg: number | null
+  distanceToGoNm: number | null
+  destinationEtaText: string | null
+}
+
+export interface FlightTrackInfoDto {
+  aircraftRegistrationNo: string | null
+  aircraftModel: string | null
+  airlineCode: string | null
+  airlineName: string | null
+  flightNo: string
+  originAirportCode: string
+  originAirportName: string
+  destinationAirportCode: string
+  destinationAirportName: string
+  statusText: string
+  lastUpdatedAt: string
+}
+
+export interface FlightTrackCurrentDto {
+  flight: FlightTrackInfoDto
+  latestPoint: FlightTrackPointDto
+  startAt: string
+  endAt: string
+  pollIntervalSeconds: number
+  freshnessSeconds: number
+  track: FlightTrackPointDto[]
+}

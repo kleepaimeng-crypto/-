@@ -1,210 +1,256 @@
-# 飞机实时轨迹展示 API 文档
+# 单机飞机实时轨迹 API 文档
 
-> 本文档基于 `docs/SREC.md` 和 `docs/schema.md`，只描述飞机实时轨迹展示可复用部分的接口契约。接口路径均为相对后端服务 baseURL 的路径；若部署层配置了 `/api` 前缀，应由网关或前端环境变量统一处理。
+> 本文档定义当前项目新增“飞机轨迹实时系统”所需接口。接口基于现有 QAR 入库表 `qar_sample`，只服务单架飞机实时展示，不兼容旧项目多机 `flightmap` API。
 
 ## 1. 通用约定
 
-### 1.1 响应格式
+### 1.1 Base URL
 
-所有接口返回统一响应对象：
+前端通过当前项目已有 HTTP 客户端访问后端。开发环境默认由 Vite 代理或环境变量统一处理 `/api` 前缀。
+
+本文接口路径按后端 Controller 路径描述：
+
+```text
+/api/flight-track
+```
+
+### 1.2 响应格式
+
+沿用当前项目统一响应对象：
 
 | 字段 | 类型 | 必填 | 说明 |
-|---|---|---:|---|
-| `code` | `string` | 是 | 状态码，`0000` 表示成功，`0001` 表示失败 |
-| `info` | `string` | 是 | 响应说明 |
+| --- | --- | ---: | --- |
+| `code` | `string` | 是 | 当前项目成功值为 `OK`，失败值为 `ResponseCode` 枚举名 |
+| `message` | `string` | 是 | 当前项目成功默认为 `success`，失败为错误说明 |
 | `data` | `object` / `array` / `null` | 否 | 业务数据 |
+| `details` | `array/null` | 否 | 参数校验等详细错误 |
+| `traceId` | `string/null` | 否 | 请求追踪 ID |
 
-成功示例：
+开发时应直接使用当前 `com.cabin.common.response.Response`，不要为了本模块单独改回旧项目的成功码和 `info` 字段。
 
-```json
-{
-  "code": "0000",
-  "info": "调用成功",
-  "data": {}
-}
-```
-
-失败示例：
+成功且有数据：
 
 ```json
 {
-  "code": "0001",
-  "info": "服务器内部错误: 数据库连接失败",
-  "data": null
+  "code": "OK",
+  "message": "success",
+  "data": {},
+  "traceId": "trace-id"
 }
 ```
 
-### 1.2 时间与单位
+成功但当前无活跃轨迹：
+
+```json
+{
+  "code": "OK",
+  "message": "success",
+  "data": null,
+  "traceId": "trace-id"
+}
+```
+
+### 1.3 时间与单位
 
 | 字段 | 约定 |
-|---|---|
-| `timeStamp` / `startTime` / `endTime` | Unix 秒 |
-| `startTimeReadable` / `endTimeReadable` | `yyyy-MM-dd HH:mm:ss`，后端本地时区 |
-| `latitude` / `longitude` | degrees |
-| `altitude` | `system_position` 来源为 meters |
-| `groundSpeed` | Knots |
-| `trueHeading` / `pitchAngle` / `rollAngle` | degrees |
-| `timeToGo` | 分钟，字符串形式返回，允许为空 |
-| `distanceToGo` | miles，字符串形式返回，允许为空 |
+| --- | --- |
+| `sampleAt`、`startAt`、`endAt` | ISO 8601 字符串，直接来自 `OffsetDateTime` 序列化 |
+| `sampleTimeText` | 前端展示用本地时间文本，格式建议 `HH:mm:ss` |
+| `latitude`、`longitude` | degrees |
+| `altitudeFt` | ft，来自 QAR `BARO COR ALT NO. 1` |
+| `groundSpeedKt` | kt，来自 QAR `GROUNDSPEED` |
+| `computedAirSpeedKt` | kt，来自 QAR `COMPUTED AIRSPEED` |
+| `trackAngleDeg`、`headingDeg`、`pitchDeg`、`rollDeg` | degrees 或 QAR 原始角度量 |
+| `distanceToGoNm` | NM |
 
-### 1.3 命名约定
+### 1.4 空值规则
 
-- 数据库字段使用下划线命名，例如 `air_id`、`time_stamp`。
-- API JSON 字段使用驼峰命名，例如 `airId`、`timeStamp`。
-- `airId` 表示飞机注册号/机尾号。
-- `flightNum` 表示航班号。
+- 当前无活跃 QAR：接口成功，`data: null`。
+- 单个指标缺失：字段返回 `null`，前端图表跳过该点或断线。
+- 最新点缺少经纬度：不视为可展示点，后端应继续寻找最近有效点；找不到则 `data: null`。
 
-## 2. DTO 结构
+## 2. DTO
 
-### 2.1 FlightPoint
+### 2.1 `FlightTrackPoint`
 
-轨迹点对象，来源于 `system_position`。
+轨迹点对象，来源于 `qar_sample`。
 
 | 字段 | 类型 | 必填 | 说明 |
-|---|---|---:|---|
-| `timeStamp` | `number` | 是 | 轨迹点时间戳，Unix 秒 |
+| --- | --- | ---: | --- |
+| `sampleAt` | `string` | 是 | QAR 采样时间 |
+| `sampleTimeText` | `string` | 是 | 图表横轴展示文本 |
+| `frameCount` | `number` | 是 | QAR 帧号 |
 | `latitude` | `number` | 是 | 纬度 |
 | `longitude` | `number` | 是 | 经度 |
-| `altitude` | `number` | 是 | 高度，meters |
-| `trueHeading` | `number` | 是 | 真航向，用于飞机图标旋转 |
-| `pitchAngle` | `number` | 是 | 俯仰角 |
-| `rollAngle` | `number` | 是 | 横滚角 |
-| `bodyPitchRate` | `number` | 是 | 俯仰率 |
-| `bodyRollRate` | `number` | 是 | 横滚率 |
-| `headingAngularRate` | `number` | 是 | 航向角速率 |
-| `groundSpeed` | `number` | 是 | 地速，Knots |
+| `altitudeFt` | `number/null` | 否 | 高度，ft |
+| `groundSpeedKt` | `number/null` | 否 | 地速，kt |
+| `computedAirSpeedKt` | `number/null` | 否 | 空速，kt |
+| `trackAngleDeg` | `number/null` | 否 | 真航迹角 |
+| `headingDeg` | `number/null` | 否 | 显示航向 |
+| `pitchDeg` | `number/null` | 否 | 俯仰量 |
+| `rollDeg` | `number/null` | 否 | 横滚量 |
+| `distanceToGoNm` | `number/null` | 否 | 剩余航程 |
+| `destinationEtaText` | `string/null` | 否 | 到达剩余时间文本 |
 
 示例：
 
 ```json
 {
-  "timeStamp": 1783476030,
-  "latitude": 30.6,
-  "longitude": 114.34,
-  "altitude": 3720,
-  "trueHeading": 146.5,
-  "pitchAngle": 2,
-  "rollAngle": 0.2,
-  "bodyPitchRate": 0.01,
-  "bodyRollRate": 0.01,
-  "headingAngularRate": 0.02,
-  "groundSpeed": 432
+  "sampleAt": "2026-07-08T10:02:30+08:00",
+  "sampleTimeText": "10:02:30",
+  "frameCount": 1517,
+  "latitude": 36.411113024,
+  "longitude": 120.09225375,
+  "altitudeFt": 35000,
+  "groundSpeedKt": 456,
+  "computedAirSpeedKt": 286,
+  "trackAngleDeg": 71.718,
+  "headingDeg": 72.1,
+  "pitchDeg": 1.2,
+  "rollDeg": 0.4,
+  "distanceToGoNm": 620,
+  "destinationEtaText": "0:26.2"
 }
 ```
 
-### 2.2 FlightSnapshot
+### 2.2 `FlightTrackInfo`
 
-活跃飞机快照对象，每架活跃飞机返回一条。
-
-| 字段 | 类型 | 必填 | 说明 |
-|---|---|---:|---|
-| `airId` | `string` | 是 | 飞机注册号/机尾号 |
-| `flightNum` | `string` | 否 | 航班号 |
-| `airlineName` | `string` | 否 | 航空公司名称 |
-| `orAirportCode` | `string` | 否 | 起飞机场代码 |
-| `orAirportIcao` | `string` | 否 | 起飞机场 ICAO，当前项目可能由代码拼接得到 |
-| `orAirportName` | `string` | 否 | 起飞机场名称 |
-| `desAirportCode` | `string` | 否 | 目的机场代码 |
-| `desAirportIcao` | `string` | 否 | 目的机场 ICAO，当前项目可能由代码拼接得到 |
-| `desAirportName` | `string` | 否 | 目的机场名称 |
-| `timeToGo` | `string` | 否 | 预计到达剩余时间 |
-| `distanceToGo` | `string` | 否 | 预计到达剩余距离 |
-| `latestPoint` | `FlightPoint` | 是 | 最新位置点 |
-
-### 2.3 FlightTrack
-
-完整航段轨迹对象。
+当前航班和飞机信息。
 
 | 字段 | 类型 | 必填 | 说明 |
-|---|---|---:|---|
-| `airId` | `string` | 是 | 飞机注册号/机尾号 |
-| `flightNum` | `string` | 否 | 航班号 |
-| `airlineName` | `string` | 否 | 航空公司名称 |
-| `orAirportCode` | `string` | 否 | 起飞机场代码 |
-| `orAirportIcao` | `string` | 否 | 起飞机场 ICAO |
-| `orAirportName` | `string` | 否 | 起飞机场名称 |
-| `desAirportCode` | `string` | 否 | 目的机场代码 |
-| `desAirportIcao` | `string` | 否 | 目的机场 ICAO |
-| `desAirportName` | `string` | 否 | 目的机场名称 |
-| `timeToGo` | `string` | 否 | 预计到达剩余时间 |
-| `distanceToGo` | `string` | 否 | 预计到达剩余距离 |
-| `startTime` | `number` | 是 | 航段开始 Unix 秒 |
-| `endTime` | `number` | 是 | 航段结束 Unix 秒 |
-| `startTimeReadable` | `string` | 是 | 航段开始时间文本 |
-| `endTimeReadable` | `string` | 是 | 航段结束时间文本 |
-| `track` | `FlightPoint[]` | 是 | 按 `timeStamp` 升序排列的轨迹点 |
+| --- | --- | ---: | --- |
+| `aircraftRegistrationNo` | `string/null` | 否 | 飞机注册号，来自 `data_record` 或配置 |
+| `aircraftModel` | `string/null` | 否 | 机型 |
+| `airlineCode` | `string/null` | 否 | 航司二字码 |
+| `airlineName` | `string/null` | 否 | 航司名称 |
+| `flightNo` | `string` | 是 | 当前航班号 |
+| `originAirportCode` | `string` | 是 | 起飞机场 ICAO |
+| `originAirportName` | `string` | 是 | 起飞机场展示名 |
+| `destinationAirportCode` | `string` | 是 | 目的机场 ICAO |
+| `destinationAirportName` | `string` | 是 | 目的机场展示名 |
+| `statusText` | `string` | 是 | 例如 `飞行中`、`未进入飞行状态` |
+| `lastUpdatedAt` | `string` | 是 | 最新有效点时间 |
 
-### 2.4 FlightSegment
+### 2.3 `FlightTrackCurrentResponse`
 
-历史回放可选接口使用的航段摘要对象。
+当前页面一次渲染所需的聚合数据。
 
 | 字段 | 类型 | 必填 | 说明 |
-|---|---|---:|---|
-| `airId` | `string` | 是 | 飞机注册号/机尾号 |
-| `flightNum` | `string` | 否 | 航班号 |
-| `airlineName` | `string` | 否 | 航空公司名称 |
-| `orAirportName` | `string` | 否 | 起飞机场名称 |
-| `desAirportName` | `string` | 否 | 目的机场名称 |
-| `startTime` | `number` | 是 | 航段开始 Unix 秒 |
-| `endTime` | `number` | 是 | 航段结束 Unix 秒 |
-| `startTimeReadable` | `string` | 是 | 航段开始时间文本 |
-| `endTimeReadable` | `string` | 是 | 航段结束时间文本 |
+| --- | --- | ---: | --- |
+| `flight` | `FlightTrackInfo` | 是 | 当前航班信息 |
+| `latestPoint` | `FlightTrackPoint` | 是 | 最新有效轨迹点 |
+| `startAt` | `string` | 是 | 当前轨迹窗口第一点时间 |
+| `endAt` | `string` | 是 | 当前轨迹窗口最后一点时间 |
+| `pollIntervalSeconds` | `number` | 是 | 建议前端轮询间隔，默认 `5` |
+| `freshnessSeconds` | `number` | 是 | 活跃新鲜度窗口，默认 `300` |
+| `track` | `FlightTrackPoint[]` | 是 | 按 `sampleAt` 升序排列 |
+
+示例：
+
+```json
+{
+  "flight": {
+    "aircraftRegistrationNo": "B-1012",
+    "aircraftModel": "Airbus A330-200",
+    "airlineCode": "CA",
+    "airlineName": "中国国际航空",
+    "flightNo": "CA4732",
+    "originAirportCode": "ZBAA",
+    "originAirportName": "北京首都国际机场",
+    "destinationAirportCode": "ZSHC",
+    "destinationAirportName": "杭州萧山国际机场",
+    "statusText": "飞行中",
+    "lastUpdatedAt": "2026-07-08T10:02:30+08:00"
+  },
+  "latestPoint": {
+    "sampleAt": "2026-07-08T10:02:30+08:00",
+    "sampleTimeText": "10:02:30",
+    "frameCount": 1517,
+    "latitude": 36.411113024,
+    "longitude": 120.09225375,
+    "altitudeFt": 35000,
+    "groundSpeedKt": 456,
+    "computedAirSpeedKt": 286,
+    "trackAngleDeg": 71.718,
+    "headingDeg": 72.1,
+    "pitchDeg": 1.2,
+    "rollDeg": 0.4,
+    "distanceToGoNm": 620,
+    "destinationEtaText": "0:26.2"
+  },
+  "startAt": "2026-07-08T09:54:30+08:00",
+  "endAt": "2026-07-08T10:02:30+08:00",
+  "pollIntervalSeconds": 5,
+  "freshnessSeconds": 300,
+  "track": []
+}
+```
 
 ## 3. 必需接口
 
-### 3.1 查询活跃飞机快照
-
-获取所有当前活跃飞机的最新位置快照。前端实时地图约每 5 秒轮询一次。
+### 3.1 查询当前单机实时轨迹
 
 | 项 | 内容 |
-|---|---|
+| --- | --- |
 | Method | `GET` |
-| Path | `/flightmap/active-tracks` |
+| Path | `/api/flight-track/current` |
 | Query | 无 |
-| Auth | 由宿主项目决定；本复用模块不强制定义 |
-| Success data | `FlightSnapshot[]` |
+| Auth | 沿用当前项目登录态要求 |
+| Success data | `FlightTrackCurrentResponse` 或 `null` |
 
 业务规则：
 
-- 后端优先返回内存缓存中的快照。
-- 缓存无可用数据时，查询 `system_position` 最近 10 分钟内每架飞机的最新位置。
-- 只返回 `groundSpeed > 100` 且未过期的飞机。
-- 无活跃飞机时，`data` 返回空数组。
+- 从 `qar_sample` 中查询最近 `5` 分钟内最新一条有经纬度的 QAR。
+- 如果最新有效 QAR 的 `ground_speed_kt <= 100`，返回 `data: null` 或 `statusText = 未进入飞行状态`。推荐返回 `null`，前端展示空态。
+- 当前航班号取最新有效 QAR 的 `flight_no`。
+- 轨迹查询范围为同一 `flight_no` 最近 `8` 小时内有经纬度的点。
+- `track` 按 `sample_at` 升序。
+- `latestPoint` 必须等于 `track` 最后一条。
+- 航司、机场展示名由后端映射补齐，映射缺失时返回原始代码。
 
 响应示例：
 
 ```json
 {
-  "code": "0000",
-  "info": "查询成功 (来自缓存)",
-  "data": [
-    {
-      "airId": "B-5688",
-      "flightNum": "MU6666",
-      "airlineName": "中国东方航空",
-      "orAirportCode": "PEK",
-      "orAirportIcao": "ZPEK",
-      "orAirportName": "北京首都国际机场",
-      "desAirportCode": "CAN",
-      "desAirportIcao": "ZCAN",
-      "desAirportName": "广州白云国际机场",
-      "timeToGo": "85",
-      "distanceToGo": "620",
-      "latestPoint": {
-        "timeStamp": 1783476030,
-        "latitude": 30.6,
-        "longitude": 114.34,
-        "altitude": 3720,
-        "trueHeading": 146.5,
-        "pitchAngle": 2,
-        "rollAngle": 0.2,
-        "bodyPitchRate": 0.01,
-        "bodyRollRate": 0.01,
-        "headingAngularRate": 0.02,
-        "groundSpeed": 432
-      }
-    }
-  ]
+  "code": "OK",
+  "message": "success",
+  "data": {
+    "flight": {
+      "aircraftRegistrationNo": "B-1012",
+      "aircraftModel": "Airbus A330-200",
+      "airlineCode": "CA",
+      "airlineName": "中国国际航空",
+      "flightNo": "CA4732",
+      "originAirportCode": "ZBAA",
+      "originAirportName": "北京首都国际机场",
+      "destinationAirportCode": "ZSHC",
+      "destinationAirportName": "杭州萧山国际机场",
+      "statusText": "飞行中",
+      "lastUpdatedAt": "2026-07-08T10:02:30+08:00"
+    },
+    "latestPoint": {
+      "sampleAt": "2026-07-08T10:02:30+08:00",
+      "sampleTimeText": "10:02:30",
+      "frameCount": 1517,
+      "latitude": 36.411113024,
+      "longitude": 120.09225375,
+      "altitudeFt": 35000,
+      "groundSpeedKt": 456,
+      "computedAirSpeedKt": 286,
+      "trackAngleDeg": 71.718,
+      "headingDeg": 72.1,
+      "pitchDeg": 1.2,
+      "rollDeg": 0.4,
+      "distanceToGoNm": 620,
+      "destinationEtaText": "0:26.2"
+    },
+    "startAt": "2026-07-08T09:54:30+08:00",
+    "endAt": "2026-07-08T10:02:30+08:00",
+    "pollIntervalSeconds": 5,
+    "freshnessSeconds": 300,
+    "track": []
+  },
+  "traceId": "trace-id"
 }
 ```
 
@@ -212,161 +258,69 @@
 
 ```json
 {
-  "code": "0000",
-  "info": "查询成功",
-  "data": []
+  "code": "OK",
+  "message": "success",
+  "data": null,
+  "traceId": "trace-id"
 }
 ```
 
-### 3.2 查询单机最新活跃航段完整轨迹
+## 4. 可选接口
 
-用户点击地图上的飞机后，获取该飞机最新活跃航段的完整轨迹点。
+以下接口不是首期必须项。只有当前端需要减少 payload 或排查数据时再实现。
 
-| 项 | 内容 |
-|---|---|
-| Method | `GET` |
-| Path | `/flightmap/active-tracks/{airId}/latest` |
-| Path 参数 | `airId`，飞机注册号/机尾号 |
-| Auth | 由宿主项目决定；本复用模块不强制定义 |
-| Success data | `FlightTrack` 或 `null` |
-
-业务规则：
-
-- 查询该飞机过去 8 小时内的 `system_position`。
-- 轨迹点按 `time_stamp` 升序排序。
-- 从后向前寻找最近一个 `groundSpeed < 100` 的中断点，中断点之后为最新活跃航段。
-- 如果最后一个点已经低于阈值，或没有任何位置点，返回 `data: null`。
-- 航班补充信息来自 `flight_status` 最新匹配记录。
-
-响应示例：
-
-```json
-{
-  "code": "0000",
-  "info": "调用成功",
-  "data": {
-    "airId": "B-5688",
-    "flightNum": "MU6666",
-    "airlineName": "中国东方航空",
-    "orAirportCode": "PEK",
-    "orAirportIcao": "ZPEK",
-    "orAirportName": "北京首都国际机场",
-    "desAirportCode": "CAN",
-    "desAirportIcao": "ZCAN",
-    "desAirportName": "广州白云国际机场",
-    "timeToGo": "85",
-    "distanceToGo": "620",
-    "startTime": 1783476010,
-    "endTime": 1783476030,
-    "startTimeReadable": "2026-07-08 10:00:10",
-    "endTimeReadable": "2026-07-08 10:00:30",
-    "track": [
-      {
-        "timeStamp": 1783476010,
-        "latitude": 30.58,
-        "longitude": 114.3,
-        "altitude": 3658,
-        "trueHeading": 145,
-        "pitchAngle": 2.1,
-        "rollAngle": 0.4,
-        "bodyPitchRate": 0.01,
-        "bodyRollRate": 0.02,
-        "headingAngularRate": 0.03,
-        "groundSpeed": 430
-      },
-      {
-        "timeStamp": 1783476030,
-        "latitude": 30.6,
-        "longitude": 114.34,
-        "altitude": 3720,
-        "trueHeading": 146.5,
-        "pitchAngle": 2,
-        "rollAngle": 0.2,
-        "bodyPitchRate": 0.01,
-        "bodyRollRate": 0.01,
-        "headingAngularRate": 0.02,
-        "groundSpeed": 432
-      }
-    ]
-  }
-}
-```
-
-未找到活跃航段示例：
-
-```json
-{
-  "code": "0000",
-  "info": "未找到指定飞机的活跃航段信息",
-  "data": null
-}
-```
-
-## 4. 可选扩展接口：历史回放
-
-以下接口属于本项目 `flightmap` 模块，但不是实时轨迹展示的最小闭环。若复用项目也需要历史回放，可按本节实现。
-
-### 4.1 查询历史航段列表
+### 4.1 查询当前单机快照
 
 | 项 | 内容 |
-|---|---|
+| --- | --- |
 | Method | `GET` |
-| Path | `/flightmap/history-tracks` |
-| Query | `airId`、`startTime`、`endTime` |
-| Success data | `FlightSegment[]` |
+| Path | `/api/flight-track/current/snapshot` |
+| Success data | `{ flight, latestPoint, pollIntervalSeconds, freshnessSeconds }` 或 `null` |
 
-Query 参数：
+用途：
 
-| 参数 | 类型 | 必填 | 格式 | 说明 |
-|---|---|---:|---|---|
-| `airId` | `string` | 是 | - | 飞机注册号/机尾号 |
-| `startTime` | `string` | 是 | `yyyy-MM-dd HH:mm:ss` | 查询开始时间 |
-| `endTime` | `string` | 是 | `yyyy-MM-dd HH:mm:ss` | 查询结束时间 |
+- 地图只需要最新飞机位置时使用。
+- 页面可先加载快照，再异步加载完整轨迹。
 
-说明：
-
-- 后端将时间字符串按 `Asia/Shanghai` 转为 Unix 秒。
-- 当前实现兼容单/双位小时、分钟、秒。
-- 返回数据不包含 `track` 轨迹点，仅用于让用户选择航段。
-
-### 4.2 查询历史航段详情
+### 4.2 查询当前单机轨迹点
 
 | 项 | 内容 |
-|---|---|
+| --- | --- |
 | Method | `GET` |
-| Path | `/flightmap/history-tracks/detail` |
-| Query | `airId`、`startTime`、`endTime` |
-| Success data | `FlightTrack` 或 `null` |
+| Path | `/api/flight-track/current/points` |
+| Query | `limit` 可选，默认后端控制 |
+| Success data | `FlightTrackPoint[]` |
 
-Query 参数：
+规则：
 
-| 参数 | 类型 | 必填 | 格式 | 说明 |
-|---|---|---:|---|---|
-| `airId` | `string` | 是 | - | 飞机注册号/机尾号 |
-| `startTime` | `number` | 是 | Unix 秒 | 航段开始时间，来自历史航段列表 |
-| `endTime` | `number` | 是 | Unix 秒 | 航段结束时间，来自历史航段列表 |
-
-说明：
-
-- 后端精确查询 `[startTime, endTime]` 范围内的位置点。
-- 返回 `FlightTrack.track`，按 `timeStamp` 升序排列。
-- 未找到航段时返回 `data: null`。
+- 仍以当前最新有效航班为准。
+- `limit` 只允许正整数，并应设置后端上限。
+- 返回按 `sampleAt` 升序排列。
 
 ## 5. 错误场景
 
-| 场景 | code | data | 处理建议 |
-|---|---|---|---|
-| 无活跃飞机 | `0000` | `[]` | 前端展示空地图或空态 |
-| 指定飞机没有活跃航段 | `0000` | `null` | 前端提示暂无活跃轨迹 |
-| 历史航段不存在 | `0000` | `null` | 前端提示未找到航段 |
-| 参数格式错误 | `0001` | `null` | 返回明确错误说明 |
-| 数据库异常 | `0001` | `null` | 记录日志并返回服务端错误 |
-| 缓存异常但数据库兜底成功 | `0000` | 正常数据 | 不影响前端展示 |
+| 场景 | 建议响应 | 处理 |
+| --- | --- | --- |
+| 没有 QAR 数据 | `code=OK, data=null` | 前端展示空态 |
+| 最新 QAR 超过新鲜度窗口 | `code=OK, data=null` | 前端提示等待模拟器数据 |
+| 最新 QAR 无经纬度 | `code=OK, data=null` | 后端可继续寻找最近有效点 |
+| 数据库不可用 | 当前项目数据库错误码 | 前端保留上一次成功数据 |
+| 参数非法 | 当前项目参数错误码 | 仅可选接口涉及 |
 
-## 6. 接口验收
+## 6. 前端消费建议
 
-- `GET /flightmap/active-tracks` 在无数据时返回 `code=0000` 和空数组。
-- 写入 `schema.md` 中的最小样例数据，并将 `time_stamp` 调整到当前时间附近后，活跃快照能返回 `B-5688`。
-- `GET /flightmap/active-tracks/B-5688/latest` 能返回按时间升序排列的 `track`。
-- `track` 中每个点都包含经纬度、航向、高度、速度和姿态角字段。
-- 任何接口失败时都返回统一响应对象，不直接返回裸字符串或 HTML 错误页。
+- 页面加载后立即请求 `/api/flight-track/current`。
+- 成功后用 `pollIntervalSeconds` 设置轮询间隔，默认不低于 `5` 秒。
+- `track` 为空或 `data: null` 时展示“等待 QAR 数据”。
+- 地图轨迹只画后端返回的真实 QAR 点，不做预测、不插值。
+- 地图飞机朝向优先由最后两个真实轨迹点计算，只有单点时再取 `trackAngleDeg`，为空时取 `headingDeg`。
+- 图表横轴使用 `sampleTimeText`。
+- 图表不要自行换算单位；高度展示为 ft，地速展示为 kt。
+
+## 7. 接口验收
+
+- 模拟器发送至少两帧有效 `qar.frame` 后，接口返回非空 `data`。
+- `track` 按时间升序，最后一点与 `latestPoint` 一致。
+- 返回字段能直接支撑参考图中的飞行状态、地图飞机、轨迹线和五组曲线。
+- 停止模拟器超过 `5` 分钟后，接口返回 `data: null`。
+- 接口不暴露数据库字段名，例如 `sample_at`、`ground_speed_kt` 不直接出现在 JSON 中。

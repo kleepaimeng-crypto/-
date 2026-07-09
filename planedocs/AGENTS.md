@@ -1,139 +1,150 @@
-# 飞机实时轨迹展示迁移开发约束
+# 单机飞机实时轨迹展示开发约束
 
-> 本文件给后续开发代理或开发者使用，限定“飞机实时轨迹展示”复用任务的技术栈、边界、目录和禁止事项。本文不要求创建 `TASKS.md` 或 `SLICES.md`。
+> 本文件限定 `planedocs` 对应功能的后续开发边界。目标是把当前项目已有 QAR 模拟数据做成单机飞机实时轨迹页面，而不是迁移旧项目完整 flightmap 系统。
 
-## 1. 语言与编码
+## 1. 必读顺序
 
-- 文档、注释和沟通默认使用简体中文。
-- 文件编码使用 UTF-8。
-- 读取项目文件时按 UTF-8 处理。
-- 不要为了迎合需求而改写事实；遇到文档、代码、数据库不一致时，必须明确指出依据和取舍。
+开发或改文档前按以下顺序阅读：
 
-## 2. 需求文档顺序
+1. `planedocs/SREC.md`：功能边界和当前项目事实来源。
+2. `planedocs/API.md`：接口路径、DTO 和空态规则。
+3. `planedocs/schema.md`：数据库复用方案和索引建议。
+4. 本文件：开发约束、禁止事项和验收清单。
 
-开发或迁移前必须先阅读以下文档：
+如文档冲突，优先级为：
 
-1. `docs/SREC.md`：飞机实时轨迹展示需求边界。
-2. `docs/API.md`：接口路径、参数、响应和错误场景。
-3. `docs/schema.md`：数据库表、字段、约束、关系、索引和示例数据。
-4. `docs/AGENTS.md`：开发约束和禁止事项。
+1. `SREC.md`
+2. `API.md`
+3. `schema.md`
+4. 当前项目源码事实
 
-若文档之间出现冲突，处理优先级如下：
+如果文档和源码不一致，必须明确指出依据，不要静默按旧项目假设实现。
 
-1. `docs/SREC.md` 定义功能边界。
-2. `docs/API.md` 定义接口行为。
-3. `docs/schema.md` 定义数据库结构。
-4. 当前项目源码只作为事实来源和参考实现，不自动扩大复用范围。
-
-## 3. 复用边界
-
-只实现或迁移以下能力：
-
-- 活跃飞机最新位置快照。
-- 单机最新活跃航段完整轨迹。
-- 轨迹点持久化表 `system_position`。
-- 飞行状态补充表 `flight_status`。
-- 后端用于航空公司、机场名称的映射能力。
-- 可选：历史航段列表和历史航段详情接口。
-
-不得顺手迁移以下模块：
-
-- 用户、角色、权限、JWT 登录。
-- 数据管理、Excel 导入导出、批量删除。
-- 系统日志、操作日志、数据日志。
-- 数据库备份恢复。
-- WiFi、卫星通信、设备状态、乘客网络、流量统计等非轨迹展示数据。
-- 前端静态图片资源、地图瓦片包、部署脚本，除非宿主项目明确需要。
-
-## 4. 技术栈约束
-
-后端推荐沿用：
+## 2. 当前项目约束
 
 | 项 | 约束 |
-|---|---|
-| 数据库 | PostgreSQL，按 `docs/schema.md` 建表 |
-| 缓存 | 可使用 Java 内存缓存；是否使用 Redis 由宿主项目决定 |
-| 时间戳 | 业务时间统一使用 Unix 秒 |
-| 响应格式 | 遵循 `docs/API.md` 的 `{ code, info, data }` |
-| 命名 | 数据库下划线，API JSON 驼峰 |
+| --- | --- |
+| 语言 | 沟通、文档、注释默认简体中文 |
+| 编码 | UTF-8 |
+| 前端 | 当前项目 Vue 3 + Vite，不另起 React 项目 |
+| 后端 | 当前项目 Spring Boot + MyBatis + Flyway |
+| 数据库 | PostgreSQL，优先复用已有 `qar_sample` |
+| 数据来源 | 模拟器 `qar.frame`，当前只有单架飞机 |
+| 地图 | 使用 `frontend/map/tiles_street` 的 EPSG:3857 XYZ 离线瓦片，前端用 OpenLayers 渲染 |
+| 缓存 | Redis 不是必需项；首期可不用 |
+| 轮询 | 前端不低于 5 秒 |
 
-前端或调用方推荐沿用：
+开发命令如需 Python，优先使用用户环境：
 
-| 项 | 约束 |
-|---|---|
-| 轮询间隔 | 不低于 5 秒 |
-| 地图绘制 | 使用 `longitude`、`latitude` 定位 |
-| 飞机朝向 | 优先使用 `trueHeading` |
-| 活跃判断 | 不在前端重复判定，后端只返回活跃飞机 |
-| 轨迹排序 | 前端接收后仍可按 `timeStamp` 升序兜底排序 |
+```powershell
+E:\developTool\anaconda3\envs\myenv\python.exe
+```
 
-## 5. 数据规则
+如果该环境不可用，再使用当前系统 `python`。
 
-- `system_position` 是轨迹点事实表，不要新建重复事实表。
-- `flight_status` 只用于补充航班业务信息，不作为实时轨迹点来源。
-- `system_position.data_id` 固定为 `217`。
-- `flight_status.data_id` 固定为 `210`。
-- `ground_speed > 100` Knots 表示活跃飞行状态。
-- 活跃快照数据库兜底查询只查最近 10 分钟，避免全表扫描。
-- 单机最新活跃航段查询默认只查过去 8 小时。
-- 位置点可能乱序到达，任何轨迹查询都必须按 `time_stamp` 升序。
-- 机场代码必须在入库或映射层统一，不能长期混用三字码和四字码。
+## 3. 必须遵守的复用边界
 
-## 6. API 实现要求
+只实现当前项目需要的单机轨迹能力：
 
-必需接口：
+- 当前单架飞机最新有效 QAR 快照。
+- 当前单架飞机最近轨迹点。
+- 航班、起降机场、航司和飞机基础信息展示。
+- 地图飞机标记、轨迹线和参考图中的曲线面板。
+- 必要时新增 `qar_sample` 查询索引。
 
-- `GET /flightmap/active-tracks`
-- `GET /flightmap/active-tracks/{airId}/latest`
+不得顺手迁移旧项目能力：
 
-可选接口：
+- 多架飞机列表和多机切换。
+- 旧项目 `system_position`、`flight_status` 事实表。
+- Redis 实时状态缓存。
+- 历史航段列表和历史回放，除非用户后续明确要求。
+- 用户、角色、权限、JWT 登录等旧项目模块。
+- 数据管理、Excel、日志、备份恢复等无关模块。
+- WiFi、卫星通信、乘客网络、流量统计等非轨迹模块。
 
-- `GET /flightmap/history-tracks`
-- `GET /flightmap/history-tracks/detail`
+## 4. 数据规则
 
-接口实现必须满足：
+- `qar_sample` 是轨迹点事实表，不再新增重复轨迹事实表。
+- `data_record` 只作为元数据补充，不作为轨迹点来源。
+- 当前模拟器 QAR 机场代码是四字 ICAO，不要改成三字码。
+- `altitude_ft` 单位是 ft，不要在 API 或 UI 中误写为 meters。
+- `ground_speed_kt > 100` 视为飞行中。
+- 当前有效数据窗口默认最近 `5` 分钟。
+- 当前轨迹窗口默认最近 `24` 小时，并由后端抽样控制返回点数。
+- 所有轨迹查询必须按 `sample_at` 升序返回给前端。
+- 经纬度为空的点不能用于地图绘制。
+- 航向优先使用 `track_angle_deg`；为空时用 `heading_deg`。
 
-- 返回字段与 `docs/API.md` 一致。
-- 无活跃飞机返回空数组，不返回错误。
-- 未找到单机活跃航段返回成功响应和 `data: null`。
-- 后端异常返回 `code=0001`，并提供明确 `info`。
-- 不直接暴露数据库字段名给前端，除非字段本身就是 API 契约。
+## 5. API 实现要求
+
+首期必需接口：
+
+```text
+GET /api/flight-track/current
+```
+
+实现要求：
+
+- 返回字段与 `API.md` 一致。
+- 无当前有效 QAR 时返回成功响应和 `data: null`。
+- 不把 `sample_at`、`ground_speed_kt` 等数据库下划线字段直接暴露给前端。
+- 机场、航司映射缺失时返回原始代码或“未知”，不报错。
+- 后端异常沿用当前项目统一错误响应。
+- Controller、Service、Mapper 放在独立 flight track 相关包中，不塞进 passenger 模块。
+
+## 6. 前端实现要求
+
+- 新增页面应接入当前 Vue Router 和现有平台导航。
+- 页面名称建议 `FlightTrackView.vue`，样式建议独立放在 `frontend/src/styles/views/flightTrack.css`。
+- 地图和图表页面应以真实接口数据驱动，不用静态截图冒充 UI。
+- 图表数据来自接口 `track`，不要前端自造轨迹点。
+- 页面不可见时暂停轮询。
+- 请求失败时保留上一次成功数据并提示错误。
+- `data: null` 时展示空态，不要让页面白屏。
+- 参考图是布局和信息层级参考，不要求逐像素复刻。
 
 ## 7. 数据库实现要求
 
-- 后端可以直接按 `docs/schema.md` 建表。
-- 必须创建 `system_position(air_id, time_stamp DESC)` 等价索引。
-- 必须创建 `flight_status(flight_num, time_stamp DESC)` 等价索引。
-- 不建议给 `system_position` 和 `flight_status` 建硬外键。
-- 高频写入场景应做幂等或唯一约束处理，避免同一飞机、同一航班、同一秒重复位置点。
-- 若宿主项目使用 TimescaleDB，可在 `system_position.time_stamp` 或派生时间列上做时序优化，但不得改变 API 字段契约。
+- 首期只补 `qar_sample` 查询索引即可。
+- 若新增迁移，使用 Flyway 新版本文件，例如 `V7__add_flight_track_query_support.sql`。
+- 不要修改已发布迁移文件内容，除非用户明确要求重建数据库。
+- 不要给高频 QAR 表新增不必要外键。
+- 不要把机场/航司字典表做成首期必需项。静态映射足够时不要建表。
 
-## 8. 开发与修改原则
+## 8. 代码修改原则
 
-- 优先做最小可用闭环：建表、写入位置和状态、查活跃快照、查单机轨迹。
-- 不添加未被 `SREC.md` 要求的配置项、抽象层或业务模块。
-- 不重命名 `airId`、`flightNum`、`latestPoint`、`track` 等 API 字段。
-- 不把历史回放做成实时展示的必需依赖。
-- 不把航空公司和机场字典强制建表；最小方案允许后端映射。
-- 若要扩展字段，必须保持现有字段向后兼容。
+- 遵循 `andrej-karpathy-skills:karpathy-guidelines`：先明确假设，做最小闭环，避免过度抽象。
+- 修改范围要小，优先新增 flight track 模块，不重构无关代码。
+- 只清理自己改动产生的无用代码，不清理旧的无关死代码。
+- 测试随风险添加：后端至少覆盖查询服务和 DTO 映射；前端至少跑现有类型检查或构建。
+- 如果地图 SDK 或离线瓦片资源缺失，要记录为实施前置条件，不要硬编码不可用路径。
 
 ## 9. 禁止事项
 
 - 禁止批量删除文件或目录。
-- 禁止使用 `del /s`、`rd /s`、`rmdir /s`、`Remove-Item -Recurse`、`rm -rf`。
+- 禁止使用：
+  - `del /s`
+  - `rd /s`
+  - `rmdir /s`
+  - `Remove-Item -Recurse`
+  - `rm -rf`
 - 需要删除文件时，只能一次删除一个明确路径的文件。
 - 不要修改与飞机实时轨迹展示无关的模块。
-- 不要把当前项目的大 SQL 历史数据作为迁移必需内容。
-- 不要在没有确认单位的情况下混用 ft 和 meters；`system_position.altitude` 按 meters，`flight_status.altitude` 按 ft。
+- 不要把旧项目 Redis、多机数据结构或历史回放作为首期依赖。
+- 不要混用 ft 和 meters。
+- 不要把前端地图页面做成纯静态图片。
 
 ## 10. 验收清单
 
-- 已按 `docs/schema.md` 创建 `system_position` 和 `flight_status`。
-- 已写入最小样例数据或等价测试数据。
-- `GET /flightmap/active-tracks` 可返回活跃飞机快照。
-- `GET /flightmap/active-tracks/{airId}/latest` 可返回完整 `track`。
-- `track` 中轨迹点按 `timeStamp` 升序。
-- 快照中 `latestPoint` 为该飞机最新有效位置点。
-- 数据库查询命中索引，没有对 `system_position` 做无时间范围的全表扫描。
-- 缺失飞行状态时，轨迹位置仍能展示。
-- 缺失航空公司或机场映射时，接口仍返回原始代码或“未知”，不报错。
+后续实现完成时至少验证：
+
+- 模拟器 `qar.frame` 能持续入库 `qar_sample`。
+- `GET /api/flight-track/current` 在有数据时返回当前单机轨迹。
+- 停止模拟器超过 `5` 分钟后接口返回 `data: null`。
+- `track` 按 `sampleAt` 升序。
+- `latestPoint` 等于 `track` 最后一条。
+- 前端能展示飞机、轨迹线、飞行状态卡片和曲线面板。
+- 飞机图标朝向优先由最后两个真实轨迹点计算；单点时使用 `trackAngleDeg` 或 `headingDeg`。
+- 高度单位展示为 ft，地速单位展示为 kt。
+- 不新增旧项目 `system_position`、`flight_status`。
+- 不影响现有登录、数据管理、乘客实时动态和模拟器其他接口。

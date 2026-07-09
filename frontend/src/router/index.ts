@@ -23,6 +23,12 @@ export const router = createRouter({
       component: () => import('../views/PassengerRealtimeView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/flight-track',
+      name: 'flight-track',
+      component: () => import('../views/FlightTrackView.vue'),
+      meta: { requiresAuth: true },
+    },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

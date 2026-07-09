@@ -1,173 +1,169 @@
-# 飞机实时轨迹展示可复用需求说明
+# 单机飞机实时轨迹展示需求说明
 
-> 说明：本项目未发现现成 `SPEC.md`。本文件按现有文档、流程图、前后端实现和 SQL 结构提取“飞机实时轨迹展示”部分需求，作为后续 `schema.md` 的需求依据。
+> 本文档用于把旧项目的飞机轨迹演示改造成当前“前中后舱网联数据分析平台”的可实施方案。当前项目已有 Vue 3 前端、Spring Boot 后端、PostgreSQL 数据库和本地 UDP 模拟器。轨迹数据以模拟器 `qar.frame` 为事实来源，不再按旧项目的多机 `system_position`/`flight_status` 方案迁移。
 
-## 1. 目标
+## 1. 背景与目标
 
-飞机实时轨迹展示用于在地图上展示当前活跃飞机的位置、朝向、速度、高度和最新航段轨迹。该能力应能从其他项目的数据接入层复用，只要求新项目持续写入飞机位置点和飞行状态数据，不绑定本项目的登录、数据管理、日志、备份和其他 UDP 业务表。
+当前项目的模拟器已经按单架飞机生成连续 QAR 数据，并通过 UDP `8090` 端口发送 `qar.frame`。后端现有 `UdpPayloadParser` 会解析 QAR 字段，写入 `data_record` 和 `qar_sample`。因此飞机实时轨迹展示应复用现有 QAR 入库链路。
 
-## 2. 复用范围
+目标是在平台中新增“飞机轨迹实时系统”页面，参考 `docs/前中后舱网联数据平台 2.png`：
 
-纳入范围：
+- 中央为离线地图或地图底图上的单架飞机实时位置、航向和轨迹线。
+- 左侧展示飞行状态卡片、经纬度曲线、海拔高度与地速曲线。
+- 右侧展示航向、横滚、俯仰等姿态或方向曲线。
+- 顶部导航与现有平台品牌、登录态和页面布局保持一致。
+- 后端提供单机当前快照和当前航段轨迹 API，前端轮询刷新。
 
-- 接收或导入系统位置数据，形成按飞机和时间排序的轨迹点。
-- 接收或导入飞行状态数据，补充航班号、航空公司、起飞机场、目的机场、预计到达时间和剩余距离。
-- 提供活跃飞机最新位置快照，用于地图上绘制飞机标记。
-- 用户点击某架飞机后，提供该飞机最新活跃航段的完整轨迹点。
-- 支持内存缓存优先、数据库兜底的实时查询策略。
+## 2. 范围
 
-不纳入范围：
+### 2.1 纳入范围
 
-- 用户登录、权限、审计日志、数据导入导出、数据库备份。
-- WiFi、卫星通信、设备状态、乘客网络、流量统计等非轨迹展示数据。
-- 地图瓦片、飞机图标、航空公司图片等静态前端资源。
-- `TASKS.md`、`SLICES.md` 等开发切片文档。
+- 从 `qar_sample` 查询当前单架飞机最新位置。
+- 从 `qar_sample` 查询当前航段轨迹点，并按时间升序返回。
+- 从 `data_record` 或 `qar_sample` 补齐飞机注册号、机型、航司、航班号、起降机场。
+- 为前端提供图表所需的经纬度、高度、地速、航向、横滚、俯仰等时间序列字段。
+- 前端实现一个单机实时轨迹大屏页面，并接入平台导航。
+- 地图使用 `frontend/map/tiles_street` 下的 EPSG:3857 XYZ 离线瓦片，前端通过 OpenLayers 渲染底图、飞机点和轨迹线。
 
-## 3. 事实来源
+### 2.2 不纳入范围
 
-- `PROJECT_GUIDE.md`：确认后端使用 Spring Boot、PostgreSQL、Redis，`flightmap` 模块提供实时航班地图和历史航迹查询。
-- `SLAICD.md`：确认 `flight_status` 与 `system_position` 的原始下发字段。
-- `飞行轨迹展示.png`：确认前端轮询活跃快照、点击飞机后查询完整轨迹的流程。
-- `FlightMapController.java` / `FlightMapServiceImpl.java`：确认接口、活跃判断、航段提取和缓存兜底逻辑。
-- `FlightSnapshotDTO.java` / `FlightTrackDTO.java` / `FlightPointDTO.java` / `FlightSegmentDTO.java`：确认前端响应字段。
-- `SystemPosition.java` / `FlightStatus.java` / `aviation.sql`：确认现有数据库字段。
-- `RearchMap.vue` / `FlightTracking.js`：确认实时地图实际消费字段。
+- 多架飞机同时展示。
+- 旧项目 Redis 缓存、`system_position`、`flight_status`、历史多航段回放的整套迁移。
+- 飞机调度、航班计划、航司/机场后台维护。
+- 登录、权限、数据管理、乘客实时动态、舷窗、IFE、流量统计等无关模块改造。
+- 大规模地图瓦片制作与部署。当前只接入项目已有 `map` 目录，不新增瓦片生产流程。
 
-## 4. 数据来源
+## 3. 当前事实来源
 
-实时轨迹展示只依赖两类数据：
+| 来源 | 当前项目位置 | 用途 |
+| --- | --- | --- |
+| QAR 模拟器 | `simulator/udp_simulator/flight_model.py` | 生成单架飞机的连续位置、速度、高度、航向等数据 |
+| UDP 接入 | `backend/src/main/java/com/cabin/udp/service/UdpIngestService.java` | 接收并持久化模拟器数据 |
+| QAR 解析 | `backend/src/main/java/com/cabin/udp/service/UdpPayloadParser.java` | 把 `qar.frame` 解析为 `qar_sample` 行 |
+| QAR 表 | `backend/src/main/resources/db/migration/V4__create_simulator_business_tables.sql` | 当前轨迹展示的事实表 |
+| 前端平台 | `frontend/src/router/index.ts`、`frontend/src/views` | 新增页面和导航入口 |
 
-| 数据 | 当前表名 | data_id | 作用 |
-|---|---|---:|---|
-| 系统位置数据 | `system_position` | `217` / `0xD9` | 轨迹点事实表，提供经纬度、高度、航向、姿态角、速度和时间戳 |
-| 飞行状态数据 | `flight_status` | `210` / `0xD2` | 航班补充信息，提供航班号、起降机场、剩余时间、剩余距离等 |
+## 4. QAR 字段映射
 
-`PROJECT_GUIDE.md` 中个别 data_id 描述与实体和 SQL 不一致。复用时以实体、Mapper 和 SQL 为准：`system_position.data_id = 217`，`flight_status.data_id = 210`。
+轨迹展示只依赖 `qar.frame` 已有字段，不要求模拟器新增新协议。
 
-## 5. 核心业务规则
+| 展示/接口字段 | QAR 原始字段 | 当前表字段 | 说明 |
+| --- | --- | --- | --- |
+| `flightNo` | `FLIGHT NUMBER` | `qar_sample.flight_no` | 航班号 |
+| `originAirportCode` | `ORIGIN` | `qar_sample.origin` | 起飞机场，当前为四字 ICAO |
+| `destinationAirportCode` | `DESTINATION` | `qar_sample.destination` | 目的机场，当前为四字 ICAO |
+| `sampleAt` | `time` + 接收日期 | `qar_sample.sample_at` | 采样时间 |
+| `latitude` | `PRES POSN LAT - FMC` | `qar_sample.latitude` | 纬度 |
+| `longitude` | `PRES POSN LONG - FMC` | `qar_sample.longitude` | 经度 |
+| `altitudeFt` | `BARO COR ALT NO. 1` | `qar_sample.altitude_ft` | 高度，单位 ft |
+| `groundSpeedKt` | `GROUNDSPEED` | `qar_sample.ground_speed_kt` | 地速，单位 kt |
+| `trackAngleDeg` | `TRACK ANGLE TRUE - FMC` | `qar_sample.track_angle_deg` | 真航迹角，地图飞机朝向优先使用 |
+| `headingDeg` | `CAPT DISPLAY HEADING` | `qar_sample.heading_deg` | 显示航向，可用于曲线对比 |
+| `pitchDeg` | `BODY PITCH RATE` | `qar_sample.pitch_deg` | 当前字段名来自模拟协议，展示时标为“俯仰”或“俯仰量” |
+| `rollDeg` | `BODY ROLL RATE` | `qar_sample.roll_deg` | 当前字段名来自模拟协议，展示时标为“横滚”或“横滚量” |
+| `distanceToGoNm` | `DISTANCE TO GO` | `qar_sample.distance_to_go_nm` | 剩余航程，单位 NM |
+| `destinationEtaText` | `DESTINATION ETA` | `qar_sample.destination_eta_text` | 到达剩余时间文本 |
+| `frameCount` | `frameCount` | `qar_sample.frame_count` | 帧序号，可辅助排查乱序 |
 
-### 5.1 活跃飞机快照
+## 5. 单机业务规则
 
-- 前端约每 5 秒请求一次活跃飞机快照。
-- 后端优先从内存缓存读取每架飞机最新快照。
-- 缓存无数据或数据不可用时，后端从 `system_position` 查询每架飞机最近一条位置点。
-- 当前实现的数据库兜底新鲜度窗口为最近 10 分钟。
-- 当前实现的活跃速度阈值为地速 `ground_speed > 100` Knots。
-- 最新位置点低于或等于阈值、时间戳缺失、超出新鲜度窗口时，不应出现在活跃飞机列表中。
+### 5.1 当前航班选择
 
-### 5.2 最新活跃航段
+当前项目模拟器约束为单架飞机、单一全局航班上下文，因此后端默认选择最近一条有效 `qar_sample` 对应的航班作为当前航班。
 
-- 用户点击地图上的飞机后，前端按 `airId` 请求该飞机最新活跃航段。
-- 当前实现查询该飞机过去 8 小时内的全部位置点，并按 `time_stamp` 升序排序。
-- 后端从最新点向前查找最近一个 `ground_speed < 100` Knots 的中断点。
-- 中断点之后的点构成最新活跃航段；如果最后一个点已经低于阈值，则认为没有活跃航段。
-- 航段开始时间取第一条轨迹点 `time_stamp`，结束时间取最后一条轨迹点 `time_stamp`。
+如果未来数据库中存在多个历史航班，当前航班按以下顺序确定：
 
-### 5.3 航班状态补充
+1. 查询最近 `5` 分钟内最新一条有效 QAR。
+2. 若没有新鲜数据，返回成功响应和 `data: null`。
+3. 当前航班号取该 QAR 的 `flight_no`。
+4. 当前轨迹查询只返回同一 `flight_no` 的点。
 
-- 快照和轨迹展示需要用 `flight_status` 补充航班信息。
-- 当前实现主要按 `flight_num` 查询最新飞行状态；若没有匹配状态，仍应返回位置数据和基础航班号。
-- `flight_num` 可为空字符串，但不建议为 `NULL`。
-- 航空公司名称由航班号前两位映射得到。
-- 机场名称由机场代码映射得到。
-- 当前代码中的机场映射使用 PEK、PVG、CAN 等三字码；SLA 文档描述为四字码。复用时必须在入库或映射层统一机场代码体系，避免同一字段混用三字码和四字码。
+### 5.2 活跃判断
 
-## 6. 数据字段契约
+- `sample_at` 在最近 `5` 分钟内。
+- `latitude`、`longitude` 不为空且在合法范围内。
+- `ground_speed_kt > 100` 视为飞行中；若速度为空或低于阈值，页面展示空态或“未进入飞行状态”。
+- 前端不重复判定活跃状态，只消费后端返回。
 
-### 6.1 轨迹点
+### 5.3 轨迹窗口
 
-轨迹点来自 `system_position`，展示层至少需要以下字段：
+- 当前航段默认查询最近 `8` 小时内同一 `flight_no` 的 QAR 点。
+- 轨迹点必须按 `sample_at` 升序返回。
+- 如果需要切分航段，后端可从最新点向前查找最近一次 `ground_speed_kt <= 100` 的中断点，中断点之后为当前航段。
+- 当前阶段可以先按“最近 24 小时 + 同一航班 + 有经纬度 + 抽样”形成轨迹，不强制实现复杂航段切分。
 
-| 字段 | 说明 |
-|---|---|
-| `airId` | 飞机注册号/机尾号 |
-| `flightNum` | 航班号 |
-| `timeStamp` | 轨迹点时间戳，Unix 秒 |
-| `latitude` | 纬度，单位 degrees |
-| `longitude` | 经度，单位 degrees |
-| `altitude` | 高度，系统位置数据中为 meters |
-| `trueHeading` | 真航向，单位 degrees，用于飞机图标旋转 |
-| `pitchAngle` | 俯仰角，单位 degrees |
-| `rollAngle` | 横滚角，单位 degrees |
-| `bodyPitchRate` | 俯仰率 |
-| `bodyRollRate` | 横滚率 |
-| `headingAngularRate` | 航向角速率 |
-| `groundSpeed` | 地速，单位 Knots，用于活跃判断和速度图表 |
+### 5.4 机场和航司名称
 
-### 6.2 活跃快照
+- QAR 使用四字 ICAO，例如 `ZBAA`、`ZSPD`、`ZGGG`、`ZUUU`、`ZSHC`。
+- 最小方案在后端使用静态映射返回中文机场名称。
+- 航司优先来自 `data_record.airline_code`，其次可由航班号前两位推断。
+- 映射缺失时返回原始代码，不报错。
 
-活跃快照每架飞机一条，至少包含：
+## 6. 前端展示要求
 
-| 字段 | 说明 |
-|---|---|
-| `airId` | 飞机注册号/机尾号 |
-| `flightNum` | 航班号 |
-| `airlineName` | 航空公司名称，由后端映射 |
-| `orAirportCode` | 起飞机场代码 |
-| `orAirportName` | 起飞机场名称，由后端映射 |
-| `desAirportCode` | 目的机场代码 |
-| `desAirportName` | 目的机场名称，由后端映射 |
-| `timeToGo` | 预计到达剩余时间，分钟，允许为空 |
-| `distanceToGo` | 预计到达剩余距离，miles，允许为空 |
-| `latestPoint` | 最新轨迹点 |
+### 6.1 页面结构
 
-### 6.3 完整轨迹
+页面命名建议：
 
-完整轨迹用于点击飞机后的详情展示，至少包含：
+- 路由：`/flight-track`
+- 页面：`FlightTrackView.vue`
+- API 文件：`frontend/src/api/flightTrack.ts`
+- 样式：`frontend/src/styles/views/flightTrack.css`
 
-| 字段 | 说明 |
-|---|---|
-| `airId` | 飞机注册号/机尾号 |
-| `flightNum` | 航班号 |
-| `airlineName` | 航空公司名称 |
-| `orAirportCode` / `orAirportName` | 起飞机场代码和名称 |
-| `desAirportCode` / `desAirportName` | 目的机场代码和名称 |
-| `timeToGo` | 预计到达剩余时间 |
-| `distanceToGo` | 预计到达剩余距离 |
-| `startTime` | 航段开始 Unix 秒 |
-| `endTime` | 航段结束 Unix 秒 |
-| `track` | 按时间升序排列的轨迹点数组 |
+参考图只定义信息层级，不要求像素级复刻。页面应和现有平台视觉一致：
 
-## 7. 接口行为
+- 顶部保留平台品牌和导航。
+- 当前导航高亮“飞机轨迹实时系统”。
+- 中央地图占主要视口。
+- 左右信息面板贴边布局，避免遮挡飞机主视图。
+- 单架飞机和轨迹线使用 OpenLayers 矢量图层绘制。轨迹线只连接后端返回的真实 QAR 点，不绘制预测线，不插值补点。
 
-### 7.1 查询活跃飞机快照
+### 6.2 图表
 
-- 方法：`GET`
-- 路径：`/flightmap/active-tracks`
-- 入参：无
-- 返回：活跃飞机快照数组。
-- 空数据：返回空数组，不应返回错误。
-- 失败场景：数据库异常、缓存异常且数据库兜底失败时返回服务端错误。
+图表数据来自同一份轨迹点：
 
-### 7.2 查询单机最新活跃航段
+| 面板 | 曲线 |
+| --- | --- |
+| 经纬度 | `latitude`、`longitude` |
+| 海拔高度与地速 | `altitudeFt`、`groundSpeedKt` |
+| 航向 | `trackAngleDeg`、`headingDeg` |
+| 横滚 | `rollDeg` |
+| 俯仰 | `pitchDeg` |
 
-- 方法：`GET`
-- 路径：`/flightmap/active-tracks/{airId}/latest`
-- 入参：`airId`，飞机注册号/机尾号。
-- 返回：完整轨迹对象。
-- 空数据：未找到活跃航段时返回 `null` 或等价空对象，由前端按空态处理。
+图表横轴使用 `sampleAt` 的本地时间文本。数据点过多时前端可抽样，但不得改变最新点。
 
-## 8. 性能要求
+### 6.3 轮询
 
-- 活跃快照查询必须优先走内存缓存。
-- 数据库兜底查询不得全表扫描，应限制时间窗口，并依赖 `system_position(air_id, time_stamp)` 或等价索引。
-- 单机轨迹查询必须按 `air_id + time_stamp` 使用索引。
-- `flight_status` 查询最新状态必须按 `flight_num + time_stamp` 使用索引。
-- 前端轮询间隔建议不低于 5 秒；高并发项目应增加缓存或推送机制。
+- 前端默认每 `5` 秒请求一次当前轨迹。
+- 页面不可见时暂停轮询。
+- 请求失败时保留上一次成功数据，并展示轻量错误提示。
+- 若后端返回 `data: null`，展示空态，不清空整个页面结构。
 
-## 9. 数据质量要求
+## 7. 后端能力要求
 
-- `time_stamp` 使用 Unix 秒，代表机载数据发送时间。
-- `received_at` 使用地面系统接收时间，用于排查延迟和乱序。
-- 经纬度允许为空，但为空的轨迹点不能用于地图绘制。
-- `ground_speed` 为空时按非活跃处理。
-- 同一飞机、同一航班、同一时间戳的重复位置点应通过唯一约束或入库去重控制。
-- 位置点可能乱序到达，查询轨迹时必须按 `time_stamp` 升序排序。
+最小闭环只需要一个聚合接口：
 
-## 10. 验收标准
+- `GET /api/flight-track/current`
 
-- 数据库存在 `system_position` 和 `flight_status` 后，后端可按 `schema.md` 建表并写入最小样例数据。
-- 写入至少 2 个同一飞机、地速大于 100 Knots 的位置点后，活跃快照能返回该飞机最新位置。
-- 点击该飞机后，能返回过去 8 小时内按时间升序排列的最新活跃航段。
-- 轨迹点包含经纬度、航向、速度、高度和姿态角，前端可绘制飞机标记、轨迹线和速度/高度图表。
-- 缺失飞行状态时，位置轨迹仍可展示；缺失机场或航空公司映射时，后端可返回原始代码或“未知”。
+如果前端后续需要分离快照和轨迹，可增加：
+
+- `GET /api/flight-track/current/snapshot`
+- `GET /api/flight-track/current/points`
+
+后端实现建议：
+
+- 新增 `flight` 或 `flighttrack` 包，避免混入乘客实时动态模块。
+- 使用 MyBatis 查询 `qar_sample` 和 `data_record`。
+- 不引入 Redis 作为必需依赖。单机、10 秒一帧的模拟数据用数据库查询即可满足演示。
+- 可选使用 Java 内存缓存保存最近一次聚合结果，TTL 不超过轮询间隔。
+
+## 8. 验收标准
+
+- 启动模拟器持续发送 `qar.frame` 后，`qar_sample` 持续新增有效轨迹点。
+- `GET /api/flight-track/current` 返回当前航班信息、最新点和按时间升序的轨迹点。
+- 没有 QAR 数据或数据超过 `5` 分钟时，接口返回成功且 `data: null`。
+- 前端页面能显示单架飞机、轨迹线、航班卡片和五组图表。
+- 飞机图标朝向优先使用 `trackAngleDeg`。
+- 起降机场显示中文名称；映射缺失时显示原始 ICAO。
+- 不新增旧项目的 `system_position`、`flight_status`，不把 Redis 作为必需组件。
+- 不影响现有数据管理、登录、乘客实时动态和模拟器其他接口。
