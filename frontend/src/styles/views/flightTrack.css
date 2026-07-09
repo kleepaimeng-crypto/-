@@ -91,20 +91,20 @@
 }
 
 .flight-status-card {
-  height: 238px;
+  height: 286px;
 }
 
 .flight-status-card__body {
-  padding: 12px;
+  padding: 8px 10px 10px;
 }
 
 .flight-number-line {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
+  grid-template-columns: minmax(116px, auto) minmax(0, 1fr) minmax(84px, auto);
+  gap: 10px;
   align-items: center;
   min-height: 48px;
-  padding: 0 10px 10px;
+  padding: 0 8px 8px;
   border-bottom: 1px solid rgba(79, 101, 139, 0.4);
 }
 
@@ -113,13 +113,14 @@
   font-family: Consolas, monospace;
   font-size: 30px;
   line-height: 1;
+  letter-spacing: 0.01em;
 }
 
 .flight-number-line span,
 .flight-number-line em {
   overflow: hidden;
   color: #c4cede;
-  font-size: 14px;
+  font-size: 13px;
   font-style: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -127,10 +128,10 @@
 
 .route-line {
   display: grid;
-  grid-template-columns: 1fr 130px 1fr;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+  gap: 10px;
   align-items: center;
-  padding: 12px 10px;
+  padding: 12px 8px 11px;
 }
 
 .route-line div:last-child {
@@ -140,16 +141,16 @@
 .route-line strong {
   display: block;
   color: #f7f9ff;
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1;
 }
 
 .route-line span {
   display: block;
-  margin-top: 8px;
+  margin-top: 7px;
   overflow: hidden;
   color: #7d8da4;
-  font-size: 12px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -193,13 +194,13 @@
 .flight-status-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
   margin: 0;
 }
 
 .flight-status-grid div {
   min-width: 0;
-  padding: 8px 10px;
+  padding: 7px 8px;
   border: 1px solid rgba(81, 103, 140, 0.32);
   background: rgba(22, 33, 50, 0.82);
 }
@@ -211,14 +212,15 @@
 
 .flight-status-grid dt {
   color: #7f8da3;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .flight-status-grid dd {
   overflow: hidden;
-  margin-top: 5px;
+  margin-top: 4px;
   color: #d8e2f1;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -238,7 +240,11 @@
 }
 
 .flight-chart {
-  height: 300px;
+  height: 308px;
+}
+
+.flight-left-stack .flight-chart {
+  height: 318px;
 }
 
 .flight-chart__legend {
@@ -268,8 +274,8 @@
 
 .flight-chart__body {
   position: relative;
-  height: 258px;
-  padding: 12px 12px 8px;
+  height: calc(100% - 42px);
+  padding: 3px 6px 3px;
 }
 
 .flight-chart__body svg {
@@ -278,12 +284,26 @@
   height: 100%;
 }
 
-.flight-chart__body text {
+.flight-chart__body .chart-x-label {
   fill: #a1aec2;
-  font-size: 10px;
+  font-size: 9px;
   transform: rotate(-45deg);
   transform-box: fill-box;
   transform-origin: center;
+}
+
+.flight-chart__body .chart-y-label {
+  fill: #8f9db3;
+  font-size: 9px;
+  dominant-baseline: middle;
+}
+
+.flight-chart__body .chart-y-label--left {
+  text-anchor: end;
+}
+
+.flight-chart__body .chart-y-label--right {
+  text-anchor: start;
 }
 
 .chart-grid-line {
@@ -293,12 +313,24 @@
   stroke-width: 0.8;
 }
 
+.chart-axis-line {
+  fill: none;
+  stroke: rgba(133, 153, 190, 0.46);
+  stroke-width: 0.9;
+}
+
 .chart-series-line {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2;
   filter: drop-shadow(0 0 8px currentColor);
+}
+
+.chart-series-point {
+  opacity: 0.74;
+  stroke: rgba(12, 19, 31, 0.72);
+  stroke-width: 0.8;
 }
 
 .flight-chart__axis {

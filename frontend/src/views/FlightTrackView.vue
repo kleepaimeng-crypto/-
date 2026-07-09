@@ -14,7 +14,7 @@ const router = useRouter()
 const { autoRefresh, current, error, loading, reload, toggleAutoRefresh } = useFlightTrack()
 const canvasScale = ref(1)
 const mapStage = ref<InstanceType<typeof FlightMapStage> | null>(null)
-const chartPoints = computed(() => samplePoints(current.value?.track ?? [], 80))
+const chartPoints = computed(() => latestRollingPoints(current.value?.track ?? [], 16))
 
 const positionSeries = [
   { key: 'latitude' as const, label: '纬度', color: '#8279ff' },
@@ -31,13 +31,19 @@ const headingSeries = [
 const rollSeries = [{ key: 'rollDeg' as const, label: '横滚量', color: '#8279ff' }]
 const pitchSeries = [{ key: 'pitchDeg' as const, label: '俯仰量', color: '#8279ff' }]
 
-function samplePoints(points: FlightTrackPointDto[], maxCount: number): FlightTrackPointDto[] {
-  if (points.length <= maxCount) return points
-  const step = Math.ceil(points.length / maxCount)
-  const sampled = points.filter((_, index) => index % step === 0)
-  const latest = points.at(-1)
-  if (latest && sampled.at(-1) !== latest) sampled.push(latest)
-  return sampled
+function latestRollingPoints(points: FlightTrackPointDto[], maxCount: number): FlightTrackPointDto[] {
+  const ordered = [...points].sort(comparePointTime)
+  return ordered.slice(-maxCount)
+}
+
+function comparePointTime(left: FlightTrackPointDto, right: FlightTrackPointDto): number {
+  const leftTime = Date.parse(left.sampleAt)
+  const rightTime = Date.parse(right.sampleAt)
+  if (Number.isFinite(leftTime) && Number.isFinite(rightTime) && leftTime !== rightTime) {
+    return leftTime - rightTime
+  }
+  if (left.sampleAt !== right.sampleAt) return left.sampleAt.localeCompare(right.sampleAt)
+  return left.frameCount - right.frameCount
 }
 
 function updateCanvasScale(): void {
@@ -112,16 +118,21 @@ onBeforeUnmount(() => {
             title="航向角"
             :points="chartPoints"
             :series="headingSeries"
+            :scale-padding="0.72"
           />
           <FlightChartPanel
             title="横滚角"
             :points="chartPoints"
             :series="rollSeries"
+            :scale-padding="0.72"
+            :axis-decimals="1"
           />
           <FlightChartPanel
             title="俯仰角"
             :points="chartPoints"
             :series="pitchSeries"
+            :scale-padding="0.72"
+            :axis-decimals="1"
           />
         </aside>
 
