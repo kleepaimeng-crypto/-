@@ -203,61 +203,41 @@
   display: flex;
   justify-self: end;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: #b8c3d4;
   white-space: nowrap;
 }
 
 .workspace-header__account > span:not(.account-dot) {
-  display: none;
+  display: inline;
+  color: #d5deeb;
+  font-size: 14px;
 }
 
 .account-dot {
-  position: relative;
-  display: inline-flex;
-  width: 28px;
-  height: 28px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(130, 148, 181, 0.32);
+  width: 7px;
+  height: 7px;
+  border: 0;
   border-radius: 50%;
-  background: #111824;
-  box-shadow: none;
-}
-
-.account-dot::before {
-  width: 8px;
-  height: 12px;
-  border-radius: 1px;
-  background: #dfe7f1;
-  content: "";
-}
-
-.account-dot::after {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 3px;
-  height: 3px;
-  border-top: 1px solid #111824;
-  border-right: 1px solid #111824;
-  background: #aab6c8;
-  content: "";
+  background: #45ee93;
+  box-shadow: 0 0 10px rgba(69, 238, 147, 0.76);
 }
 
 .text-action {
   min-height: 28px;
-  margin-left: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  margin-left: 4px;
+  padding: 0 16px;
+  border: 1px solid rgba(110, 129, 162, 0.34);
+  border-radius: 15px;
+  background: #111927;
   color: #dce3ed;
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
 
 .text-action:hover {
-  background: transparent;
+  border-color: rgba(255, 145, 36, 0.62);
+  background: rgba(255, 138, 0, 0.1);
   color: #ffb35b;
 }
 
