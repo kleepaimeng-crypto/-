@@ -1,7 +1,7 @@
 # Copy this location block into the production frontend server.
-# Synchronize frontend/map/tiles_street to /opt/cabin/maps/tiles_street separately.
-location ~ ^/offline-map/(\d+)/(\d+)/(\d+)\.png$ {
-    alias /opt/cabin/maps/tiles_street/$1/$2/$3.png;
+# Synchronize frontend/map to /opt/cabin/maps separately.
+location ~ ^/offline-map/([A-Za-z0-9_-]+)/(\d+)/(\d+)/(\d+)\.png$ {
+    alias /opt/cabin/maps/$1/$2/$3/$4.png;
     access_log off;
     log_not_found off;
     expires 30d;

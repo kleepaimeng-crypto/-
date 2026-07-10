@@ -1,6 +1,7 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
+import { authSession } from '../auth/session'
 import WorkspaceView from './WorkspaceView.vue'
 
 const dataApi = vi.hoisted(() => ({
@@ -20,6 +21,7 @@ const fileApi = vi.hoisted(() => ({
 
 vi.mock('vue-router', () => ({
   useRouter: () => ({ replace: vi.fn() }),
+  useRoute: () => ({ query: {} }),
 }))
 vi.mock('../api/dataRecords', () => dataApi)
 vi.mock('../api/fileJobs', () => fileApi)
@@ -29,6 +31,13 @@ let wrapper: VueWrapper | undefined
 
 describe('WorkspaceView filters', () => {
   beforeEach(() => {
+    authSession.state.user = {
+      id: 'admin-id',
+      username: 'admin',
+      email: 'admin@example.com',
+      roleCode: 'ADMIN',
+    }
+    authSession.state.initialized = true
     dataApi.getDataOptions.mockResolvedValue({
       dataTypes: [],
       airlines: [],
@@ -46,6 +55,7 @@ describe('WorkspaceView filters', () => {
   afterEach(() => {
     wrapper?.unmount()
     wrapper = undefined
+    authSession.state.user = null
   })
 
   it('keeps route and date pickers collapsed in the single filter row initially', async () => {
@@ -121,10 +131,67 @@ describe('WorkspaceView filters', () => {
       receivedTo: '2026-07-07T00:00:00+08:00',
     }))
   })
+
+  it('disables edit and delete actions for normal users', async () => {
+    authSession.state.user = {
+      id: 'user-id',
+      username: 'viewer',
+      email: 'viewer@example.com',
+      roleCode: 'USER',
+    }
+    dataApi.getDataRecords.mockResolvedValueOnce({
+      items: [recordItem()],
+      page: 1,
+      pageSize: 20,
+      total: 1,
+      totalPages: 1,
+    })
+    wrapper = mount(WorkspaceView)
+    await settleRequests()
+
+    const actions = wrapper.findAll('.row-action')
+    expect(actions).toHaveLength(2)
+    expect(actions[0]?.attributes('disabled')).toBeDefined()
+    expect(actions[1]?.attributes('disabled')).toBeDefined()
+
+    await actions[0]?.trigger('click')
+    await actions[1]?.trigger('click')
+    expect(wrapper.find('.dialog-panel').exists()).toBe(false)
+    expect(dataApi.updateRecordMetadata).not.toHaveBeenCalled()
+    expect(dataApi.deleteDataRecord).not.toHaveBeenCalled()
+
+    await wrapper.find('.selection-cell input[type="checkbox"]').trigger('change')
+    await nextTick()
+    const batchButton = wrapper.find('.batch-action')
+    expect(batchButton.attributes('disabled')).toBeDefined()
+    await batchButton.trigger('click')
+    expect(wrapper.find('.dialog-panel').exists()).toBe(false)
+  })
 })
 
 async function settleRequests(): Promise<void> {
   await Promise.resolve()
   await Promise.resolve()
   await nextTick()
+}
+
+function recordItem() {
+  return {
+    id: 'record-id',
+    aircraftRegistrationNo: 'B-TEST-001',
+    aircraftModel: 'A320',
+    airlineCode: 'CA',
+    flightNo: 'CA123',
+    origin: 'ZBAA',
+    destination: 'ZSPD',
+    sourceDevice: { code: 'SIM-QAR', name: 'SIM-QAR' },
+    dataType: { code: 'QAR', name: 'QAR 飞行数据' },
+    sentAt: '2026-07-09T17:29:03+08:00',
+    receivedAt: '2026-07-09T17:29:04+08:00',
+    payloadCount: 1,
+    parseStatus: 'PARSED',
+    tags: [],
+    deleted: false,
+    version: 1,
+  }
 }

@@ -21,7 +21,7 @@ export interface UserDto {
   id: string
   username: string
   email: string | null
-  roleCode: 'ADMIN'
+  roleCode: UserRole
 }
 
 export interface LoginResponseDto {
@@ -37,6 +37,22 @@ export interface PageDto<T> {
   pageSize: number
   total: number
   totalPages: number
+}
+
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'USER'
+export type UserStatus = 'ACTIVE' | 'PENDING' | 'FROZEN' | 'DELETED'
+
+export interface UserSummaryDto {
+  id: string
+  username: string
+  email: string | null
+  roleCode: UserRole
+  status: UserStatus
+  lastLoginAt: string | null
+  version: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
 }
 
 export type DataTypeCode =

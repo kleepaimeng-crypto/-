@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             if (!"ACTIVE".equals(user.getStatus())) {
-                SecurityResponseWriter.write(response, objectMapper, ResponseCode.ACCOUNT_DISABLED, "管理员账号已禁用");
+                SecurityResponseWriter.write(response, objectMapper, ResponseCode.ACCOUNT_DISABLED, "账号当前不可用");
                 return;
             }
 

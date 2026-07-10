@@ -21,8 +21,8 @@
 }
 
 .passenger-shell > .workspace-header {
-  height: 62px;
-  min-height: 62px;
+  height: 70px;
+  min-height: 70px;
 }
 
 .passenger-shell > .workspace-footer {
@@ -46,7 +46,7 @@
   --window-dot-offset: 7px;
   --cabin-bg: #202838;
   position: relative;
-  height: 990px;
+  height: 982px;
   min-height: 0;
   overflow: hidden;
   padding: var(--panel-offset);

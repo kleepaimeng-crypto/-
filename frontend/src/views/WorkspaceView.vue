@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { authSession } from '../auth/session'
 import { ApiClientError } from '../api/http'
 import {
@@ -26,6 +26,7 @@ import FixedCanvasShell from '../components/FixedCanvasShell.vue'
 import PlatformBrand from '../components/PlatformBrand.vue'
 
 const router = useRouter()
+const route = useRoute()
 const EMPTY_OPTIONS: DataOptionsDto = {
   dataTypes: [], airlines: [], aircraftModels: [], aircraftRegistrations: [], devices: [], airports: [], tags: [],
 }
@@ -74,7 +75,7 @@ const deleteOpen = ref(false)
 const importOpen = ref(false)
 const activeRecord = ref<DataRecordListItemDto | null>(null)
 const actionError = ref('')
-const actionNotice = ref('')
+const actionNotice = ref(route.query.denied === 'users' ? '当前账号无权访问用户管理。' : '')
 const deleteReason = ref('')
 const batchDeleting = ref(false)
 const editForm = reactive<MetadataUpdatePayload>({
@@ -102,6 +103,10 @@ const dateLabel = computed(() => {
 })
 const canAutoRefresh = computed(() => page.value === 1 && selectedIds.value.length === 0
   && !detailOpen.value && !editOpen.value && !deleteOpen.value && !importOpen.value)
+const canManageData = computed(() => {
+  const roleCode = authSession.state.user?.roleCode
+  return roleCode === 'SUPER_ADMIN' || roleCode === 'ADMIN'
+})
 const pageNumbers = computed(() => {
   const start = Math.max(1, page.value - 1)
   const end = Math.min(totalPages.value, start + 2)
@@ -260,6 +265,7 @@ async function openDetail(record: DataRecordListItemDto): Promise<void> {
 }
 
 function openEdit(record: DataRecordListItemDto): void {
+  if (!canManageData.value) return
   activeRecord.value = record
   Object.assign(editForm, {
     aircraftRegistrationNo: record.aircraftRegistrationNo,
@@ -276,7 +282,7 @@ function openEdit(record: DataRecordListItemDto): void {
 }
 
 async function submitEdit(): Promise<void> {
-  if (!activeRecord.value || !editForm.aircraftRegistrationNo.trim() || !editForm.sourceDeviceCode.trim()) return
+  if (!canManageData.value || !activeRecord.value || !editForm.aircraftRegistrationNo.trim() || !editForm.sourceDeviceCode.trim()) return
   actionLoading.value = true
   actionError.value = ''
   try {
@@ -291,6 +297,7 @@ async function submitEdit(): Promise<void> {
 }
 
 function openDelete(record: DataRecordListItemDto): void {
+  if (!canManageData.value) return
   activeRecord.value = record
   batchDeleting.value = false
   deleteReason.value = ''
@@ -299,7 +306,7 @@ function openDelete(record: DataRecordListItemDto): void {
 }
 
 function openBatchDelete(): void {
-  if (selectedIds.value.length === 0) return
+  if (!canManageData.value || selectedIds.value.length === 0) return
   activeRecord.value = null
   batchDeleting.value = true
   deleteReason.value = ''
@@ -308,7 +315,7 @@ function openBatchDelete(): void {
 }
 
 async function submitDelete(): Promise<void> {
-  if ((!activeRecord.value && !batchDeleting.value) || !deleteReason.value.trim()) return
+  if (!canManageData.value || (!activeRecord.value && !batchDeleting.value) || !deleteReason.value.trim()) return
   actionLoading.value = true
   actionError.value = ''
   try {
@@ -453,7 +460,11 @@ onBeforeUnmount(() => {
         <button class="workspace-nav__item" @click="router.push('/flight-track')">飞机轨迹实时系统</button>
         <button class="workspace-nav__item" disabled>飞机轨迹回放系统</button>
         <button class="workspace-nav__item" disabled>数据统计</button>
-        <button class="workspace-nav__item" disabled>用户管理</button>
+        <button
+          v-if="authSession.state.user?.roleCode === 'SUPER_ADMIN'"
+          class="workspace-nav__item"
+          @click="router.push('/users')"
+        >用户管理</button>
         <button class="workspace-nav__item" @click="router.push('/passenger-realtime')">乘客实时动态</button>
       </nav>
       <div class="workspace-header__account">
@@ -542,8 +553,8 @@ onBeforeUnmount(() => {
                 <td>{{ formatDate(record.sentAt) }}</td>
                 <td>{{ formatDate(record.receivedAt) }}</td>
                 <td class="actions-cell">
-                  <button class="row-action" @click="openEdit(record)">编辑</button>
-                  <button class="row-action row-action--danger" @click="openDelete(record)">删除</button>
+                  <button class="row-action" :disabled="!canManageData" @click="openEdit(record)">编辑</button>
+                  <button class="row-action row-action--danger" :disabled="!canManageData" @click="openDelete(record)">删除</button>
                 </td>
               </tr>
             </tbody>
@@ -558,7 +569,7 @@ onBeforeUnmount(() => {
           <div class="table-footer__summary">
             <span>总计 <strong>{{ total }}</strong> 条</span>
             <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
-            <button v-if="selectedIds.length" class="batch-action" @click="openBatchDelete">批量删除</button>
+            <button v-if="selectedIds.length" class="batch-action" :disabled="!canManageData" @click="openBatchDelete">批量删除</button>
             <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
           </div>
           <select v-model="pageSize" @change="applyFilters">

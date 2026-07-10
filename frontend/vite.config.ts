@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import type { Plugin, ViteDevServer } from 'vite'
 
 const configDir = dirname(fileURLToPath(import.meta.url))
-const offlineMapRoot = resolve(configDir, 'map/tiles_street')
+const offlineMapRoot = resolve(configDir, 'map')
 
 function offlineMapPlugin(): Plugin {
   return {
@@ -19,19 +19,22 @@ function offlineMapPlugin(): Plugin {
         next: () => void,
       ) => {
         const url = req.url || ''
-        const match = url.match(/^\/(\d+)\/(\d+)\/(\d+)\.png(?:\?.*)?$/)
+        const match = url.match(/^\/([A-Za-z0-9_-]+)\/(\d+)\/(\d+)\/(\d+)\.png(?:\?.*)?$/)
         if (!match) {
           next()
           return
         }
-        const [, z, x, y] = match
-        const tilePath = resolve(offlineMapRoot, z, x, `${y}.png`)
+        const [, tileSet, z, x, y] = match
+        const tilePath = resolve(offlineMapRoot, tileSet, z, x, `${y}.png`)
         if (!tilePath.startsWith(offlineMapRoot) || !existsSync(tilePath)) {
           res.statusCode = 404
+          res.setHeader('Cache-Control', 'no-store')
           res.end()
           return
         }
         res.setHeader('Content-Type', 'image/png')
+        res.setHeader('Cache-Control', 'no-store')
+        res.setHeader('X-Content-Type-Options', 'nosniff')
         createReadStream(tilePath).pipe(res)
       })
     },
@@ -44,6 +47,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [vue(), offlineMapPlugin()],
     server: {
+      watch: {
+        ignored: ['**/map/**'],
+      },
       proxy: {
         '/api': {
           target: env.VITE_DEV_PROXY_TARGET || 'http://localhost:8080',

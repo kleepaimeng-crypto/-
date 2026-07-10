@@ -1,7 +1,7 @@
 /* Data management workspace view */
 .workspace-layout {
   display: grid;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 98px);
   min-height: 0;
   grid-template-columns: minmax(0, 1fr) 552px;
   gap: 18px;
@@ -10,7 +10,7 @@
 }
 
 .workspace-canvas-shell .workspace-layout {
-  height: 990px;
+  height: 982px;
 }
 
 .workspace-primary,
@@ -506,14 +506,22 @@
   margin-left: 0;
 }
 
-.row-action:hover {
+.row-action:hover:not(:disabled) {
   border-color: rgba(61, 214, 255, 0.48);
   color: #e4f8ff;
 }
 
-.row-action--danger:hover {
+.row-action--danger:hover:not(:disabled) {
   border-color: rgba(225, 91, 100, 0.55);
   color: #ef8b92;
+}
+
+.row-action:disabled,
+.batch-action:disabled {
+  border-color: rgba(105, 128, 164, 0.18);
+  background: rgba(23, 34, 53, 0.5);
+  color: rgba(185, 196, 212, 0.42);
+  cursor: not-allowed;
 }
 
 .table-state {

@@ -21,8 +21,8 @@
 }
 
 .flight-shell > .workspace-header {
-  height: 62px;
-  min-height: 62px;
+  height: 70px;
+  min-height: 70px;
 }
 
 .flight-shell > .workspace-footer {
@@ -32,7 +32,7 @@
 
 .flight-layout {
   position: relative;
-  height: 990px;
+  height: 982px;
   overflow: hidden;
   background:
     radial-gradient(circle at 22% 6%, rgba(103, 140, 190, 0.26), transparent 22%),

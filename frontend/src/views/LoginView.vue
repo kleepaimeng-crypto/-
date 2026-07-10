@@ -15,7 +15,7 @@ const formRef = ref<FormInstance>()
 const form = reactive<LoginForm>({ username: '', password: '' })
 const rules: FormRules<LoginForm> = {
   username: [
-    { required: true, message: '请输入管理员账号', trigger: 'blur' },
+    { required: true, message: '请输入用户账号', trigger: 'blur' },
     { max: 64, message: '账号长度不能超过 64 个字符', trigger: 'blur' },
   ],
   password: [
@@ -62,7 +62,7 @@ function resolveLoginError(error: unknown): { title: string; detail: string } {
   if (error.code === 'UNAUTHORIZED') {
     return {
       title: '账号或密码不正确',
-      detail: '请核对管理员账号和密码。',
+      detail: '请核对用户账号和密码。',
     }
   }
 

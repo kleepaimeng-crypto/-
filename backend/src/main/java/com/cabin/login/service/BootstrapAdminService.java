@@ -54,7 +54,7 @@ public class BootstrapAdminService implements ApplicationRunner {
         user.setUsername(username);
         user.setPasswordHash(passwordEncoder.encode(properties.password()));
         user.setEmail(blankToNull(properties.email()));
-        user.setRoleCode("ADMIN");
+        user.setRoleCode("SUPER_ADMIN");
         user.setStatus("ACTIVE");
         mapper.insert(user);
         log.info("Bootstrap admin created: {}", username);

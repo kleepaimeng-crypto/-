@@ -83,7 +83,7 @@
 
 .workspace-shell::before {
   position: absolute;
-  inset: 62px 0 28px;
+  inset: 70px 0 28px;
   z-index: 0;
   background: var(--workspace-backdrop);
   content: "";
@@ -128,15 +128,39 @@
   z-index: 20;
   top: 0;
   display: grid;
-  min-height: 62px;
+  min-height: 70px;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 22px;
   align-items: center;
-  padding: 6px 24px;
-  border-bottom: 1px solid rgba(70, 118, 201, 0.42);
-  background: rgba(27, 39, 59, 0.96);
-  box-shadow: 0 12px 40px rgba(3, 8, 16, 0.24);
-  backdrop-filter: blur(16px);
+  padding: 0 30px;
+  border-bottom: 0;
+  background: #1f2535;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.workspace-header::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 30px;
+  height: 1px;
+  background: rgba(70, 118, 201, 0.32);
+  content: "";
+  pointer-events: none;
+}
+
+.workspace-header .platform-brand {
+  position: relative;
+  width: 482px;
+  height: 70px;
+  justify-self: start;
+  background: url('/assets/主表头.svg') left center / 100% 100% no-repeat;
+}
+
+.workspace-header .platform-brand__mark,
+.workspace-header .platform-brand__text {
+  visibility: hidden;
 }
 
 .workspace-nav {
@@ -179,25 +203,62 @@
   display: flex;
   justify-self: end;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   color: #b8c3d4;
   white-space: nowrap;
 }
 
+.workspace-header__account > span:not(.account-dot) {
+  display: none;
+}
+
 .account-dot {
-  width: 7px;
-  height: 7px;
+  position: relative;
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(130, 148, 181, 0.32);
   border-radius: 50%;
-  background: #51ef9d;
-  box-shadow: 0 0 10px rgba(81, 239, 157, 0.7);
+  background: #111824;
+  box-shadow: none;
+}
+
+.account-dot::before {
+  width: 8px;
+  height: 12px;
+  border-radius: 1px;
+  background: #dfe7f1;
+  content: "";
+}
+
+.account-dot::after {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 3px;
+  height: 3px;
+  border-top: 1px solid #111824;
+  border-right: 1px solid #111824;
+  background: #aab6c8;
+  content: "";
 }
 
 .text-action {
-  margin-left: 8px;
+  min-height: 28px;
+  margin-left: 0;
+  padding: 0;
   border: 0;
   background: transparent;
-  color: #f0f3f8;
+  color: #dce3ed;
   cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.text-action:hover {
+  background: transparent;
+  color: #ffb35b;
 }
 
 .workspace-footer {
