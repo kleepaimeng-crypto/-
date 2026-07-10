@@ -241,7 +241,7 @@
 
 | 字段名 | 类型 | 说明 | 取值 | 必填 |
 | --- | --- | --- | --- | --- |
-| `windowId` | int | 舷窗编号 | `1~200` | 是 |
+| `windowId` | int | 舷窗编号 | `1~116` | 是 |
 | `zoneId` | int | 舱位区域 | `1=前舱`，`2=中舱`，`3=后舱` | 是 |
 | `brightnessLevel` | int | 明暗挡位 | `0~10`，0 最暗，10 最亮 | 是 |
 | `connectStatus` | bool | 连通性状态 | `1=连通`，`0=不连通` | 是 |
@@ -300,7 +300,7 @@
 | 字段名 | 数据类型 | 长度 | 说明 | 取值/示例 | 必填 |
 | --- | --- | --- | --- | --- | --- |
 | `pnr` | string | 16 | 订座编码 | `ABC123` | 是 |
-| `seatNo` | string | 8 | 座位号 | `12A`、`05F` | 是 |
+| `seatNo` | string | 8 | 座位号 | `A12`、`F32` | 是 |
 | `cabinClass` | string | 8 | 舱位等级 | `ECONOMY`、`FIRST` | 是 |
 | `deviceId` | string | 24 | 终端设备 ID | `SVDU-01-05`、`ANDROID-1234` | 是 |
 | `userId` | string | 32 | 乘客标识 | `PAX-00001` | 是 |
@@ -478,7 +478,7 @@
 | 字段名 | 数据类型 | 长度 | 说明 | 取值/示例 | 必填 |
 | --- | --- | --- | --- | --- | --- |
 | `pnr` | string | 16 | 订座编码 | `ABC123` | 是 |
-| `seatNo` | string | 8 | 座位号 | `12A`、`05F` | 是 |
+| `seatNo` | string | 8 | 座位号 | `A12`、`F32` | 是 |
 | `cabinClass` | string | 8 | 舱位等级 | `ECONOMY`、`FIRST` | 是 |
 | `deviceId` | string | 24 | 终端设备 ID | `SVDU-01-05`、`ANDROID-1234` | 是 |
 | `userId` | string | 32 | 乘客标识 | `PAX-00001` | 是 |

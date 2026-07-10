@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { authSession } from '../auth/session'
 import { ApiClientError } from '../api/http'
 import {
@@ -22,9 +22,11 @@ import type {
   ExportFormat,
   FileJobSummaryDto,
 } from '../api/types'
+import FixedCanvasShell from '../components/FixedCanvasShell.vue'
 import PlatformBrand from '../components/PlatformBrand.vue'
 
 const router = useRouter()
+const route = useRoute()
 const EMPTY_OPTIONS: DataOptionsDto = {
   dataTypes: [], airlines: [], aircraftModels: [], aircraftRegistrations: [], devices: [], airports: [], tags: [],
 }
@@ -52,7 +54,6 @@ const page = ref(1)
 const pageSize = ref<20 | 50 | 100>(20)
 const total = ref(0)
 const totalPages = ref(0)
-const autoRefresh = ref(true)
 const openFilterPanel = ref<'route' | 'date' | null>(null)
 const routeFilterRef = ref<HTMLElement | null>(null)
 const dateFilterRef = ref<HTMLElement | null>(null)
@@ -74,7 +75,7 @@ const deleteOpen = ref(false)
 const importOpen = ref(false)
 const activeRecord = ref<DataRecordListItemDto | null>(null)
 const actionError = ref('')
-const actionNotice = ref('')
+const actionNotice = ref(route.query.denied === 'users' ? '当前账号无权访问用户管理。' : '')
 const deleteReason = ref('')
 const batchDeleting = ref(false)
 const editForm = reactive<MetadataUpdatePayload>({
@@ -100,8 +101,12 @@ const dateLabel = computed(() => {
   if (!filters.receivedFrom && !filters.receivedTo) return '日期'
   return `${displayDate(filters.receivedFrom) || '开始'} — ${displayDate(filters.receivedTo) || '结束'}`
 })
-const canAutoRefresh = computed(() => autoRefresh.value && page.value === 1 && selectedIds.value.length === 0
+const canAutoRefresh = computed(() => page.value === 1 && selectedIds.value.length === 0
   && !detailOpen.value && !editOpen.value && !deleteOpen.value && !importOpen.value)
+const canManageData = computed(() => {
+  const roleCode = authSession.state.user?.roleCode
+  return roleCode === 'SUPER_ADMIN' || roleCode === 'ADMIN'
+})
 const pageNumbers = computed(() => {
   const start = Math.max(1, page.value - 1)
   const end = Math.min(totalPages.value, start + 2)
@@ -260,6 +265,7 @@ async function openDetail(record: DataRecordListItemDto): Promise<void> {
 }
 
 function openEdit(record: DataRecordListItemDto): void {
+  if (!canManageData.value) return
   activeRecord.value = record
   Object.assign(editForm, {
     aircraftRegistrationNo: record.aircraftRegistrationNo,
@@ -276,7 +282,7 @@ function openEdit(record: DataRecordListItemDto): void {
 }
 
 async function submitEdit(): Promise<void> {
-  if (!activeRecord.value || !editForm.aircraftRegistrationNo.trim() || !editForm.sourceDeviceCode.trim()) return
+  if (!canManageData.value || !activeRecord.value || !editForm.aircraftRegistrationNo.trim() || !editForm.sourceDeviceCode.trim()) return
   actionLoading.value = true
   actionError.value = ''
   try {
@@ -291,6 +297,7 @@ async function submitEdit(): Promise<void> {
 }
 
 function openDelete(record: DataRecordListItemDto): void {
+  if (!canManageData.value) return
   activeRecord.value = record
   batchDeleting.value = false
   deleteReason.value = ''
@@ -299,7 +306,7 @@ function openDelete(record: DataRecordListItemDto): void {
 }
 
 function openBatchDelete(): void {
-  if (selectedIds.value.length === 0) return
+  if (!canManageData.value || selectedIds.value.length === 0) return
   activeRecord.value = null
   batchDeleting.value = true
   deleteReason.value = ''
@@ -308,7 +315,7 @@ function openBatchDelete(): void {
 }
 
 async function submitDelete(): Promise<void> {
-  if ((!activeRecord.value && !batchDeleting.value) || !deleteReason.value.trim()) return
+  if (!canManageData.value || (!activeRecord.value && !batchDeleting.value) || !deleteReason.value.trim()) return
   actionLoading.value = true
   actionError.value = ''
   try {
@@ -445,16 +452,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="workspace-shell">
+  <FixedCanvasShell shell-class="workspace-canvas-shell">
     <header class="workspace-header">
       <PlatformBrand compact />
       <nav class="workspace-nav" aria-label="主导航">
         <button class="workspace-nav__item is-active">数据管理</button>
-        <button class="workspace-nav__item" disabled>飞机轨迹实时系统</button>
+        <button class="workspace-nav__item" @click="router.push('/flight-track')">飞机轨迹实时系统</button>
         <button class="workspace-nav__item" disabled>飞机轨迹回放系统</button>
         <button class="workspace-nav__item" disabled>数据统计</button>
-        <button class="workspace-nav__item" disabled>用户管理</button>
-        <button class="workspace-nav__item" disabled>乘客实时动态</button>
+        <button
+          v-if="authSession.state.user?.roleCode === 'SUPER_ADMIN'"
+          class="workspace-nav__item"
+          @click="router.push('/users')"
+        >用户管理</button>
+        <button class="workspace-nav__item" @click="router.push('/passenger-realtime')">乘客实时动态</button>
       </nav>
       <div class="workspace-header__account">
         <span class="account-dot"></span>
@@ -518,23 +529,12 @@ onBeforeUnmount(() => {
           <button class="button button--import" @click="importOpen = true">CSV 数据导入</button>
         </section>
 
-        <div class="table-toolbar">
-          <div>
-            <span class="section-kicker">DATA CATALOG</span>
-            <strong>数据目录</strong>
-            <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
-            <button v-if="selectedIds.length" class="batch-action" @click="openBatchDelete">批量删除</button>
-            <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
-          </div>
-          <label class="refresh-toggle">
-            <input v-model="autoRefresh" type="checkbox" />
-            <span></span>
-            5 秒自动刷新
-          </label>
-        </div>
-
-        <section class="data-table-wrap" :class="{ 'is-loading': loading }">
+        <section class="data-table-wrap" :class="{ 'is-loading': loading, 'is-extended-page': pageSize > 20 }">
           <table class="data-table">
+            <colgroup>
+              <col class="data-table__selection-column" />
+              <col span="5" />
+            </colgroup>
             <thead>
               <tr>
                 <th class="selection-cell"><input type="checkbox" :checked="allSelected" @change="toggleAll" /></th>
@@ -542,21 +542,19 @@ onBeforeUnmount(() => {
                 <th><button class="sort-button" @click="changeSort('dataType')">数据类型 <span>{{ sort.by === 'dataType' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
                 <th><button class="sort-button" @click="changeSort('sentAt')">数据发送时间 <span>{{ sort.by === 'sentAt' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
                 <th><button class="sort-button" @click="changeSort('receivedAt')">数据接收时间 <span>{{ sort.by === 'receivedAt' ? (sort.direction === 'asc' ? '↑' : '↓') : '↕' }}</span></button></th>
-                <th>解析状态</th>
                 <th class="actions-cell">操作</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="record in records" :key="record.id" :class="{ 'is-selected': selectedIds.includes(record.id) }">
                 <td class="selection-cell"><input type="checkbox" :checked="selectedIds.includes(record.id)" @change="toggleRecord(record.id)" /></td>
-                <td><button class="record-link" @click="openDetail(record)">{{ record.aircraftRegistrationNo }}</button><small>{{ record.flightNo || '无航班号' }}</small></td>
-                <td><span class="type-name">{{ record.dataType.name }}</span><small>{{ record.sourceDevice.name }}</small></td>
+                <td><button class="record-link" @click="openDetail(record)">{{ record.aircraftRegistrationNo }}</button></td>
+                <td><span class="type-name">{{ record.dataType.name }}</span></td>
                 <td>{{ formatDate(record.sentAt) }}</td>
                 <td>{{ formatDate(record.receivedAt) }}</td>
-                <td><span class="status-badge" :class="`is-${record.parseStatus.toLowerCase()}`">{{ record.parseStatus }}</span></td>
                 <td class="actions-cell">
-                  <button class="row-action" @click="openEdit(record)">编辑</button>
-                  <button class="row-action row-action--danger" @click="openDelete(record)">删除</button>
+                  <button class="row-action" :disabled="!canManageData" @click="openEdit(record)">编辑</button>
+                  <button class="row-action row-action--danger" :disabled="!canManageData" @click="openDelete(record)">删除</button>
                 </td>
               </tr>
             </tbody>
@@ -568,7 +566,12 @@ onBeforeUnmount(() => {
         </section>
 
         <footer class="table-footer">
-          <div>总计 <strong>{{ total }}</strong> 条</div>
+          <div class="table-footer__summary">
+            <span>总计 <strong>{{ total }}</strong> 条</span>
+            <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
+            <button v-if="selectedIds.length" class="batch-action" :disabled="!canManageData" @click="openBatchDelete">批量删除</button>
+            <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
+          </div>
           <select v-model="pageSize" @change="applyFilters">
             <option :value="20">20 条/页</option><option :value="50">50 条/页</option><option :value="100">100 条/页</option>
           </select>
@@ -581,8 +584,9 @@ onBeforeUnmount(() => {
       </div>
 
       <aside class="workspace-inspector">
-        <section class="inspector-section export-config">
-          <header><span>01</span><h2>数据导出</h2></header>
+        <div class="inspector-section-group">
+          <header><h2>数据导出</h2></header>
+          <section class="inspector-section export-config">
           <div class="export-block">
             <label>数据类型</label>
             <div class="radio-grid">
@@ -596,10 +600,12 @@ onBeforeUnmount(() => {
           </div>
           <button class="export-button" :disabled="actionLoading" @click="submitExport">{{ actionLoading ? '提交中…' : '创建导出任务' }}</button>
           <p v-if="actionError" class="inline-error">{{ actionError }}</p>
-        </section>
+          </section>
+        </div>
 
-        <section class="inspector-section history-section">
-          <header><span>02</span><h2>导出历史</h2><button @click="loadHistories">刷新</button></header>
+        <div class="inspector-section-group">
+          <header><h2>导出历史</h2><button @click="loadHistories">刷新</button></header>
+          <section class="inspector-section history-section">
           <div class="history-head"><span>创建时间</span><span>数据类型</span><span>状态</span></div>
           <div v-if="exportHistory.length" class="history-list">
             <div v-for="job in exportHistory.slice(0, 6)" :key="job.id" class="history-row">
@@ -607,10 +613,12 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div v-else class="history-empty">{{ historyError || '暂无导出记录' }}</div>
-        </section>
+          </section>
+        </div>
 
-        <section class="inspector-section history-section">
-          <header><span>03</span><h2>导入历史</h2></header>
+        <div class="inspector-section-group">
+          <header><h2>导入历史</h2></header>
+          <section class="inspector-section history-section">
           <div class="history-head"><span>创建时间</span><span>数据类型</span><span>状态</span></div>
           <div v-if="importHistory.length" class="history-list">
             <div v-for="job in importHistory.slice(0, 6)" :key="job.id" class="history-row">
@@ -618,7 +626,8 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div v-else class="history-empty">{{ historyError || '暂无导入记录' }}</div>
-        </section>
+          </section>
+        </div>
       </aside>
     </section>
 
@@ -685,5 +694,5 @@ onBeforeUnmount(() => {
         <footer><button class="button button--ghost" @click="importOpen = false">取消</button><button class="button button--accent" :disabled="!importForm.file || actionLoading" @click="submitImport">创建任务</button></footer>
       </section>
     </div>
-  </main>
+  </FixedCanvasShell>
 </template>

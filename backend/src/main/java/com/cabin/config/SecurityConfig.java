@@ -39,6 +39,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info", "/actuator/flyway").permitAll()
+                .requestMatchers("/api/v1/users/**").hasRole("SUPER_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/data-records/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/data-records/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/data-records/batch-delete").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/data-records/*/restore").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/data-records/tags/batch").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

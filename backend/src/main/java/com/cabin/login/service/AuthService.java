@@ -45,7 +45,7 @@ public class AuthService {
         }
         if (!"ACTIVE".equals(user.getStatus())) {
             auditLogService.recordLoginFailure(username, "account_disabled", requestIp);
-            throw new BusinessException(ResponseCode.ACCOUNT_DISABLED, "管理员账号已禁用");
+            throw new BusinessException(ResponseCode.ACCOUNT_DISABLED, "账号当前不可用");
         }
 
         appUserMapper().updateLastLoginAt(user.getId());

@@ -1,10 +1,12 @@
 package com.cabin.udp.mapper;
 
 import com.cabin.udp.entity.DataRecord;
+import java.time.OffsetDateTime;
 import java.util.Map;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UdpIngestMapper {
@@ -59,6 +61,7 @@ public interface UdpIngestMapper {
     @Insert("""
             INSERT INTO qar_sample (
                 record_id,
+                flight_session_id,
                 sample_at,
                 source_time_text,
                 flight_no,
@@ -84,6 +87,7 @@ public interface UdpIngestMapper {
             )
             VALUES (
                 CAST(#{row.recordId} AS uuid),
+                CAST(#{row.flightSessionId} AS uuid),
                 #{row.sampleAt},
                 #{row.sourceTimeText},
                 #{row.flightNo},
@@ -327,5 +331,31 @@ public interface UdpIngestMapper {
             )
             """)
     int insertIfeCockrellBehavior(@Param("row") Map<String, Object> row);
+
+    @Update("""
+            UPDATE data_record
+            SET flight_no = COALESCE(flight_no, #{flightNo}),
+                origin = COALESCE(origin, #{origin}),
+                destination = COALESCE(destination, #{destination}),
+                airline_code = COALESCE(airline_code, #{airlineCode,jdbcType=VARCHAR}),
+                version = version + 1
+            WHERE ingest_method = 'UDP'
+              AND source_system_code = 'SIMULATOR'
+              AND received_at >= #{startedAt}
+              AND (flight_no IS NULL OR upper(flight_no) = upper(#{flightNo}))
+              AND (
+                  flight_no IS NULL OR
+                  origin IS NULL OR
+                  destination IS NULL OR
+                  airline_code IS NULL
+              )
+            """)
+    int backfillMissingFlightContext(
+            @Param("flightNo") String flightNo,
+            @Param("origin") String origin,
+            @Param("destination") String destination,
+            @Param("airlineCode") String airlineCode,
+            @Param("startedAt") OffsetDateTime startedAt
+    );
 }
 

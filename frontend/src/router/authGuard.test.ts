@@ -17,4 +17,12 @@ describe('authGuardDestination', () => {
     expect(authGuardDestination(true, true, '/')).toBe(true)
     expect(authGuardDestination(false, false, '/login')).toBe(true)
   })
+
+  it('protects role-specific routes', () => {
+    expect(authGuardDestination(true, true, '/users', 'SUPER_ADMIN', 'ADMIN')).toEqual({
+      name: 'workspace',
+      query: { denied: 'users' },
+    })
+    expect(authGuardDestination(true, true, '/users', 'SUPER_ADMIN', 'SUPER_ADMIN')).toBe(true)
+  })
 })

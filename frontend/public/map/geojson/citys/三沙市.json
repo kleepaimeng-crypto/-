@@ -1,0 +1,1 @@
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"西沙区","adcode":460301,"renderKind":"label"},"geometry":{"type":"Point","coordinates":[117.7362,15.11763]}},{"type":"Feature","properties":{"name":"南沙区","adcode":460302,"renderKind":"label"},"geometry":{"type":"Point","coordinates":[114.31095,7.74385]}}]}

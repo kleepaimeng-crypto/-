@@ -23,6 +23,6 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException {
-        SecurityResponseWriter.write(response, objectMapper, ResponseCode.ACCOUNT_DISABLED, "管理员账号已禁用");
+        SecurityResponseWriter.write(response, objectMapper, ResponseCode.ACCESS_DENIED, "无权访问该资源");
     }
 }

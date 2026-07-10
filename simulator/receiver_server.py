@@ -28,7 +28,7 @@ class ReceiverState:
         self.last_seen: dict[str, float] = {}
         self.flight_state: dict[str, Any] = {}
         self.windows: dict[int, dict[str, Any]] = {}
-        self.user_media: dict[str, dict[str, list[str]]] = {}
+        self.user_current_behaviors: dict[str, dict[str, Any]] = {}
         self.last_errors: list[str] = []
 
     def update(self, message_type: str, payload: Any) -> None:
@@ -49,14 +49,17 @@ class ReceiverState:
         with self.lock:
             video_counter: Counter[str] = Counter()
             music_counter: Counter[str] = Counter()
-            for media in self.user_media.values():
-                video_counter.update(media.get("video", []))
-                music_counter.update(media.get("music", []))
+            for current in self.user_current_behaviors.values():
+                behavior_type = current.get("behaviorType")
+                if behavior_type == "MOVIE_PLAY":
+                    video_counter.update(current.get("types", []))
+                elif behavior_type == "MUSIC_PLAY":
+                    music_counter.update(current.get("types", []))
 
             rows: dict[int, list[dict[str, Any]]] = defaultdict(list)
             for window_id, window in sorted(self.windows.items()):
-                row = ((window_id - 1) // 4) + 1
-                rows[row].append(window)
+                side_sequence = window_id if window_id <= 58 else window_id - 58
+                rows[side_sequence].append(window)
 
             return {
                 "uptimeSeconds": int(time.time() - self.started_at),
@@ -72,7 +75,7 @@ class ReceiverState:
                     }
                     for row, values in sorted(rows.items())
                 ],
-                "userMediaCount": len(self.user_media),
+                "userMediaCount": len(self.user_current_behaviors),
                 "lastErrors": list(self.last_errors[-10:]),
             }
 
@@ -97,12 +100,17 @@ class ReceiverState:
             user_id = pax_info.get("userId")
             if not user_id:
                 continue
-            media = self.user_media.setdefault(user_id, {"video": [], "music": []})
             behavior_type = behavior.get("behaviorType")
             if behavior_type == "MOVIE_PLAY":
-                media["video"] = self._split_types(behavior.get("contentType", ""))
+                types = self._split_types(behavior.get("contentType", ""))
             elif behavior_type == "MUSIC_PLAY":
-                media["music"] = self._split_types(behavior.get("musicType", ""))
+                types = self._split_types(behavior.get("musicType", ""))
+            else:
+                types = []
+            self.user_current_behaviors[user_id] = {
+                "behaviorType": behavior_type,
+                "types": types,
+            }
 
     def _items_from_payload(self, payload: Any) -> list[dict[str, Any]]:
         if isinstance(payload, dict):
@@ -375,7 +383,7 @@ DASHBOARD_HTML = r"""<!doctype html>
       </div>
     </section>
     <section>
-      <h2>每排舷窗状态</h2>
+        <h2>左右舷窗状态</h2>
       <div id="windowTable"></div>
     </section>
   </main>
@@ -497,4 +505,3 @@ DASHBOARD_HTML = r"""<!doctype html>
 
 if __name__ == "__main__":
     main()
-

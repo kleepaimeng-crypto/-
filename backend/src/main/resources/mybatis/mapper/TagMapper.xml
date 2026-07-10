@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.data.mapper.TagMapper">
+    <select id="findTags" resultType="com.cabin.data.entity.TagRow">
+        SELECT id, name, color, enabled, version, created_by
+        FROM tag
+        WHERE #{includeDisabled} = true OR enabled = true
+        ORDER BY enabled DESC, name
+    </select>
+
+    <select id="findById" resultType="com.cabin.data.entity.TagRow">
+        SELECT id, name, color, enabled, version, created_by
+        FROM tag
+        WHERE id = #{tagId,jdbcType=OTHER}
+    </select>
+
+    <insert id="insertTag" parameterType="com.cabin.data.entity.TagRow">
+        INSERT INTO tag (id, name, color, enabled, created_by)
+        VALUES (
+            #{id,jdbcType=OTHER},
+            #{name},
+            #{color},
+            #{enabled},
+            #{createdBy,jdbcType=OTHER}
+        )
+    </insert>
+
+    <update id="updateTag">
+        UPDATE tag
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="color != null">color = #{color},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+            version = version + 1
+        </set>
+        WHERE id = #{tagId,jdbcType=OTHER}
+          AND version = #{expectedVersion}
+    </update>
+
+    <update id="disableTag">
+        UPDATE tag
+        SET enabled = false,
+            version = version + 1
+        WHERE id = #{tagId,jdbcType=OTHER}
+          AND enabled = true
+    </update>
+
+    <select id="countEnabledTags" resultType="int">
+        SELECT count(*)
+        FROM tag
+        WHERE enabled = true
+          AND id IN
+        <foreach collection="tagIds" item="tagId" open="(" close=")" separator=",">
+            #{tagId,jdbcType=OTHER}
+        </foreach>
+    </select>
+
+    <select id="countTags" resultType="int">
+        SELECT count(*)
+        FROM tag
+        WHERE id IN
+        <foreach collection="tagIds" item="tagId" open="(" close=")" separator=",">
+            #{tagId,jdbcType=OTHER}
+        </foreach>
+    </select>
+
+    <select id="countActiveRecords" resultType="int">
+        SELECT count(*)
+        FROM data_record
+        WHERE is_deleted = false
+          AND id IN
+        <foreach collection="recordIds" item="recordId" open="(" close=")" separator=",">
+            #{recordId,jdbcType=OTHER}
+        </foreach>
+    </select>
+
+    <insert id="insertRecordTags">
+        INSERT INTO data_record_tag (record_id, tag_id, created_by)
+        SELECT r.id, t.id, #{createdBy,jdbcType=OTHER}
+        FROM data_record r
+        CROSS JOIN tag t
+        WHERE r.is_deleted = false
+          AND t.enabled = true
+          AND r.id IN
+        <foreach collection="recordIds" item="recordId" open="(" close=")" separator=",">
+            #{recordId,jdbcType=OTHER}
+        </foreach>
+          AND t.id IN
+        <foreach collection="tagIds" item="tagId" open="(" close=")" separator=",">
+            #{tagId,jdbcType=OTHER}
+        </foreach>
+        ON CONFLICT (record_id, tag_id) DO NOTHING
+    </insert>
+
+    <delete id="deleteRecordTags">
+        DELETE FROM data_record_tag rt
+        USING data_record r
+        WHERE rt.record_id = r.id
+          AND r.is_deleted = false
+          AND rt.record_id IN
+        <foreach collection="recordIds" item="recordId" open="(" close=")" separator=",">
+            #{recordId,jdbcType=OTHER}
+        </foreach>
+          AND rt.tag_id IN
+        <foreach collection="tagIds" item="tagId" open="(" close=")" separator=",">
+            #{tagId,jdbcType=OTHER}
+        </foreach>
+    </delete>
+</mapper>

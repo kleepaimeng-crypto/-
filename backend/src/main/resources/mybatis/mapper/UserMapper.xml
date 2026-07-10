@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.user.mapper.UserMapper">
+    <sql id="userColumns">
+        id, username, password_hash, email, role_code, status, last_login_at,
+        version, created_at, updated_at, deleted_at
+    </sql>
+
+    <select id="countUsers" resultType="long">
+        SELECT count(*) FROM app_user
+    </select>
+
+    <select id="findUsers" resultType="com.cabin.user.entity.UserRow">
+        SELECT <include refid="userColumns"/>
+        FROM app_user
+        ORDER BY
+        <choose>
+            <when test="sortBy == 'username'">lower(username)</when>
+            <when test="sortBy == 'roleCode'">
+                CASE role_code
+                    WHEN 'SUPER_ADMIN' THEN 1
+                    WHEN 'ADMIN' THEN 2
+                    WHEN 'USER' THEN 3
+                    ELSE 4
+                END
+            </when>
+            <when test="sortBy == 'email'">lower(email)</when>
+            <when test="sortBy == 'status'">status</when>
+            <otherwise>created_at</otherwise>
+        </choose>
+        <choose>
+            <when test="sortDirection == 'asc'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        NULLS LAST, id
+        LIMIT #{pageSize}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultType="com.cabin.user.entity.UserRow">
+        SELECT <include refid="userColumns"/>
+        FROM app_user
+        WHERE id = #{userId,jdbcType=OTHER}
+    </select>
+
+    <select id="countByUsername" resultType="int">
+        SELECT count(*)
+        FROM app_user
+        WHERE lower(username) = lower(#{username})
+        <if test="excludeUserId != null">
+            AND id != #{excludeUserId,jdbcType=OTHER}
+        </if>
+    </select>
+
+    <select id="countByEmail" resultType="int">
+        SELECT count(*)
+        FROM app_user
+        WHERE email IS NOT NULL
+          AND lower(email) = lower(#{email})
+        <if test="excludeUserId != null">
+            AND id != #{excludeUserId,jdbcType=OTHER}
+        </if>
+    </select>
+
+    <insert id="insertUser" parameterType="com.cabin.user.entity.UserRow">
+        INSERT INTO app_user (
+            id, username, password_hash, email, role_code, status
+        )
+        VALUES (
+            #{id,jdbcType=OTHER}, #{username}, #{passwordHash}, #{email},
+            #{roleCode}, #{status}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE app_user
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="roleCode != null">role_code = #{roleCode},</if>
+            <if test="status != null">status = #{status},</if>
+            version = version + 1
+        </set>
+        WHERE id = #{userId,jdbcType=OTHER}
+          AND version = #{expectedVersion}
+          AND status != 'DELETED'
+    </update>
+
+    <update id="softDeleteUser">
+        UPDATE app_user
+        SET status = 'DELETED',
+            deleted_at = now(),
+            deleted_by = #{operatorId,jdbcType=OTHER},
+            delete_reason = #{reason},
+            version = version + 1
+        WHERE id = #{userId,jdbcType=OTHER}
+          AND version = #{expectedVersion}
+          AND status != 'DELETED'
+    </update>
+
+    <select id="lockActiveSuperAdminIds" resultType="java.util.UUID">
+        SELECT id
+        FROM app_user
+        WHERE role_code = 'SUPER_ADMIN'
+          AND status = 'ACTIVE'
+        ORDER BY id
+        FOR UPDATE
+    </select>
+</mapper>

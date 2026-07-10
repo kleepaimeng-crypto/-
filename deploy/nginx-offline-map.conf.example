@@ -1,0 +1,9 @@
+# Copy this location block into the production frontend server.
+# Synchronize frontend/map to /opt/cabin/maps separately.
+location ~ ^/offline-map/([A-Za-z0-9_-]+)/(\d+)/(\d+)/(\d+)\.png$ {
+    alias /opt/cabin/maps/$1/$2/$3/$4.png;
+    access_log off;
+    log_not_found off;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000, immutable";
+}
