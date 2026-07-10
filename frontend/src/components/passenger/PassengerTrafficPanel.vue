@@ -24,15 +24,16 @@ function maxCount(items: { count: number }[]): number {
 
 <template>
   <section class="passenger-panel passenger-panel--traffic">
-    <header class="panel-title">
-      <span></span>
-      <h2>乘客影音统计</h2>
-      <button class="mini-toggle panel-title__refresh" @click="emit('toggleAutoRefresh')">
-        {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
-      </button>
-    </header>
+    <div class="passenger-media-group">
+      <header class="panel-title">
+        <span></span>
+        <h2>乘客影音统计</h2>
+        <button class="mini-toggle panel-title__refresh" @click="emit('toggleAutoRefresh')">
+          {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
+        </button>
+      </header>
 
-    <section class="media-card">
+      <section class="media-card">
       <div class="media-card__heading">
         <h3>当前观看视频：{{ formatCount(snapshot?.mediaStatistics.videoTotalCount) }}人</h3>
       </div>
@@ -50,9 +51,9 @@ function maxCount(items: { count: number }[]): number {
       <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
       <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
       <div v-else-if="!snapshot?.mediaStatistics.videoRanking.length" class="media-state">当前暂无视频观看乘客</div>
-    </section>
+      </section>
 
-    <section class="media-card">
+      <section class="media-card">
       <div class="media-card__heading">
         <h3>当前收听音乐：{{ formatCount(snapshot?.mediaStatistics.musicTotalCount) }}人</h3>
       </div>
@@ -70,7 +71,8 @@ function maxCount(items: { count: number }[]): number {
       <div v-if="loading && !snapshot" class="media-state">读取影音统计中</div>
       <div v-else-if="error && !snapshot" class="media-state media-state--error">{{ error }}</div>
       <div v-else-if="!snapshot?.mediaStatistics.musicRanking.length" class="media-state">当前暂无音乐收听乘客</div>
-    </section>
+      </section>
+    </div>
 
     <section class="cockpit-card">
       <div class="cockpit-card__heading">
