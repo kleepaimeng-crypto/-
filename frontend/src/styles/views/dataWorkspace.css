@@ -632,36 +632,57 @@
 }
 
 .inspector-section {
+  flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
   border: 1px solid var(--workspace-line);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--workspace-panel);
 }
 
-.inspector-section > header {
+.inspector-section-group {
   display: flex;
-  min-height: 43px;
+  min-height: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inspector-section-group > header {
+  position: relative;
+  display: flex;
+  height: 44px;
+  flex: 0 0 44px;
   align-items: center;
-  gap: 10px;
-  padding: 0 13px;
-  border-bottom: 1px solid rgba(100, 124, 161, 0.18);
-  background: #0e1622;
+  padding: 0 14px 0 26px;
+  overflow: hidden;
+  border: 1px solid rgba(58, 80, 116, 0.76);
+  border-radius: 10px;
+  background: #111722;
 }
 
-.inspector-section > header span {
-  color: #3fd0ef;
-  font-family: Consolas, monospace;
-  font-size: 9px;
+.inspector-section-group > header::before {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: min(440px, calc(100% + 2px));
+  height: 44px;
+  border-radius: 10px;
+  background: url('/assets/子标题组件.svg') left top / 440px 44px no-repeat;
+  content: "";
+  pointer-events: none;
 }
 
-.inspector-section > header h2 {
+.inspector-section-group > header h2 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   color: #ecf2fb;
   font-size: 16px;
 }
 
-.inspector-section > header button {
+.inspector-section-group > header button {
+  position: relative;
+  z-index: 1;
   margin-left: auto;
   border: 0;
   background: transparent;

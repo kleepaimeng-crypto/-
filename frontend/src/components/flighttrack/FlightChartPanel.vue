@@ -35,7 +35,7 @@ const chart = computed(() => {
   const height = 246
   const left = 44
   const right = props.series.length > 1 ? 42 : 12
-  const top = 12
+  const top = 20
   const bottom = 34
   const plotWidth = width - left - right
   const plotHeight = height - top - bottom
@@ -89,7 +89,7 @@ const chart = computed(() => {
       const end = coords.at(-1)
       return { ...serie, commands, end, points: coords }
     }),
-    labels: timeLabels(props.points, xFor, 4, left + 10, width - right - 10),
+    labels: timeLabels(props.points, xFor, 4, left + 18, width - right - 18),
   }
 })
 
@@ -143,12 +143,12 @@ function timeLabels(
   const step = Math.max(1, Math.ceil(points.length / maxCount))
   return points
     .filter((_, index) => index % step === 0)
-    .map((point) => ({ text: compactTimeText(point.sampleTimeText), x: clamp(xFor(point), minX, maxX) }))
+    .map((point) => ({ text: fullTimeText(point.sampleTimeText), x: clamp(xFor(point), minX, maxX) }))
 }
 
-function compactTimeText(value: string): string {
+function fullTimeText(value: string): string {
   const parts = value.split(':')
-  if (parts.length >= 2) return `${parts.at(-2)}:${parts.at(-1)}`
+  if (parts.length >= 3) return parts.slice(-3).join(':')
   return value
 }
 
@@ -167,14 +167,14 @@ function clamp(value: number, min: number, max: number): number {
 </script>
 
 <template>
-  <section class="flight-panel flight-chart">
+  <div class="flight-panel-group flight-chart-panel">
     <header class="flight-panel__title">
-      <span></span>
       <strong>{{ title }}</strong>
       <div class="flight-chart__legend">
         <i v-for="item in series" :key="item.key" :style="{ color: item.color }">{{ item.label }}</i>
       </div>
     </header>
+    <section class="flight-panel flight-chart">
     <div class="flight-chart__body">
       <span class="flight-chart__axis flight-chart__axis--left">{{ leftLabel }}</span>
       <span class="flight-chart__axis flight-chart__axis--right">{{ rightLabel }}</span>
@@ -251,5 +251,6 @@ function clamp(value: number, min: number, max: number): number {
       </svg>
       <div v-if="points.length === 0" class="flight-chart__empty">等待 QAR 轨迹点</div>
     </div>
-  </section>
+    </section>
+  </div>
 </template>

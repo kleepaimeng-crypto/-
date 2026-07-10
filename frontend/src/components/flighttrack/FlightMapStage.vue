@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const minZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MIN_ZOOM, 3)
 const maxTileZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MAX_ZOOM, 10)
-const initialZoom = 5
+const initialZoom = 9
 const defaultMapZoom = 4
 const chinaMapCenter = fromLonLat([104.5, 35.5])
 const geoJsonBaseUrl = '/map/geojson'
@@ -69,6 +69,12 @@ interface AdministrativeGeoJsonEntry {
   path: string
   level: AdministrativeMapLevel
   bbox?: [number, number, number, number]
+}
+
+interface AdministrativeGeoJsonManifest {
+  version?: number
+  optimized?: boolean
+  entries: AdministrativeGeoJsonEntry[]
 }
 
 class AdministrativeMapLoader {
@@ -145,10 +151,12 @@ class AdministrativeMapLoader {
           if (!response.ok) throw new Error(`manifest ${response.status}`)
           return response.json() as Promise<AdministrativeGeoJsonEntry[]>
         })
-        .then((entries) => {
-          this.manifest = entries
-          return entries
-        })
+      .then((payload: AdministrativeGeoJsonEntry[] | AdministrativeGeoJsonManifest) => {
+        const entries = Array.isArray(payload) ? payload : payload.entries
+        if (!Array.isArray(entries)) throw new Error('Invalid administrative GeoJSON manifest')
+        this.manifest = entries
+        return entries
+      })
     }
     return this.manifestPromise
   }
@@ -299,10 +307,11 @@ function currentViewBbox(): [number, number, number, number] | null {
 
 function chinaRegionStyle(feature: FeatureLike): Style | Style[] {
   const level = feature.get('mapLevel') as AdministrativeMapLevel | undefined
+  if (feature.get('renderKind') === 'label') {
+    return administrativeLabelStyle(feature, level) ?? hiddenStyle
+  }
   const baseStyle = switchRegionStyle(level)
-  if (baseStyle === hiddenStyle) return hiddenStyle
-  const labelStyle = administrativeLabelStyle(feature, level)
-  return labelStyle ? [baseStyle, labelStyle] : baseStyle
+  return baseStyle
 }
 
 function switchRegionStyle(level: AdministrativeMapLevel | undefined): Style {
@@ -327,7 +336,7 @@ const countryStyle = new Style({
     color: 'rgba(23, 42, 59, 0.42)',
   }),
   stroke: new Stroke({
-    color: 'rgba(86, 220, 255, 0.46)',
+    color: 'rgba(86, 220, 255, 0.25)',
     lineJoin: 'round',
     width: 1.45,
   }),
@@ -338,9 +347,9 @@ const provinceStyle = new Style({
     color: 'rgba(23, 42, 59, 0)',
   }),
   stroke: new Stroke({
-    color: 'rgba(86, 220, 255, 0.32)',
+    color: 'rgba(86, 220, 255, 0.46)',
     lineJoin: 'round',
-    width: 0.8,
+    width: 1.35,
   }),
 })
 
@@ -349,9 +358,9 @@ const cityStyle = new Style({
     color: 'rgba(23, 42, 59, 0)',
   }),
   stroke: new Stroke({
-    color: 'rgba(86, 220, 255, 0.22)',
+    color: 'rgba(86, 220, 255, 0.18)',
     lineJoin: 'round',
-    width: 0.55,
+    width: 0.5,
   }),
 })
 

@@ -584,8 +584,9 @@ onBeforeUnmount(() => {
       </div>
 
       <aside class="workspace-inspector">
-        <section class="inspector-section export-config">
-          <header><span>01</span><h2>数据导出</h2></header>
+        <div class="inspector-section-group">
+          <header><h2>数据导出</h2></header>
+          <section class="inspector-section export-config">
           <div class="export-block">
             <label>数据类型</label>
             <div class="radio-grid">
@@ -599,10 +600,12 @@ onBeforeUnmount(() => {
           </div>
           <button class="export-button" :disabled="actionLoading" @click="submitExport">{{ actionLoading ? '提交中…' : '创建导出任务' }}</button>
           <p v-if="actionError" class="inline-error">{{ actionError }}</p>
-        </section>
+          </section>
+        </div>
 
-        <section class="inspector-section history-section">
-          <header><span>02</span><h2>导出历史</h2><button @click="loadHistories">刷新</button></header>
+        <div class="inspector-section-group">
+          <header><h2>导出历史</h2><button @click="loadHistories">刷新</button></header>
+          <section class="inspector-section history-section">
           <div class="history-head"><span>创建时间</span><span>数据类型</span><span>状态</span></div>
           <div v-if="exportHistory.length" class="history-list">
             <div v-for="job in exportHistory.slice(0, 6)" :key="job.id" class="history-row">
@@ -610,10 +613,12 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div v-else class="history-empty">{{ historyError || '暂无导出记录' }}</div>
-        </section>
+          </section>
+        </div>
 
-        <section class="inspector-section history-section">
-          <header><span>03</span><h2>导入历史</h2></header>
+        <div class="inspector-section-group">
+          <header><h2>导入历史</h2></header>
+          <section class="inspector-section history-section">
           <div class="history-head"><span>创建时间</span><span>数据类型</span><span>状态</span></div>
           <div v-if="importHistory.length" class="history-list">
             <div v-for="job in importHistory.slice(0, 6)" :key="job.id" class="history-row">
@@ -621,7 +626,8 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div v-else class="history-empty">{{ historyError || '暂无导入记录' }}</div>
-        </section>
+          </section>
+        </div>
       </aside>
     </section>
 

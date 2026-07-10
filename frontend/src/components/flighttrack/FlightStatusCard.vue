@@ -13,12 +13,12 @@ function valueText(value: string | number | null | undefined, suffix = ''): stri
 </script>
 
 <template>
-  <section class="flight-panel flight-status-card">
+  <div class="flight-panel-group flight-status-panel">
     <header class="flight-panel__title">
-      <span></span>
       <strong>飞行状态信息</strong>
     </header>
 
+    <section class="flight-panel flight-status-card">
     <div v-if="current" class="flight-status-card__body">
       <div class="flight-number-line">
         <strong>{{ current.flight.flightNo }}</strong>
@@ -54,5 +54,6 @@ function valueText(value: string | number | null | undefined, suffix = ''): stri
       <strong>暂无活跃飞行</strong>
       <span>启动模拟器并等待 QAR 入库后显示当前航班。</span>
     </div>
-  </section>
+    </section>
+  </div>
 </template>
