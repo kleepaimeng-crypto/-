@@ -15,6 +15,9 @@
 
 .user-titlebar {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  column-gap: 20px;
   height: 44px;
   flex: 0 0 44px;
   min-height: 44px;
@@ -45,6 +48,8 @@
 }
 
 .user-titlebar h2 {
+  grid-column: 1;
+  align-self: center;
   margin: 0 0 0 28px;
   color: #f2f6ff;
   font-size: 16px;
@@ -53,13 +58,12 @@
 
 .user-add-button {
   display: inline-flex;
-  flex: 0 0 116px;
+  grid-column: 2;
   align-self: stretch;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-left: auto;
-  width: 116px;
+  width: 132px;
   height: 44px;
   min-height: 44px;
   padding: 0;
