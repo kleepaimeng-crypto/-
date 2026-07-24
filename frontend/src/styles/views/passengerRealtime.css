@@ -402,6 +402,7 @@
   position: relative;
   z-index: 1;
   width: var(--cabin-map-width);
+  aspect-ratio: 800 / 4076;
   margin: 0 auto;
   overflow: visible;
   border-radius: 0;
@@ -420,10 +421,11 @@
   display: block;
   width: 100%;
   max-width: none;
-  height: auto;
+  height: 100%;
   border-radius: 0;
+  object-fit: fill;
   filter: none;
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
   opacity: 1;
   user-select: none;
 }
@@ -566,7 +568,7 @@
   opacity: 0;
   cursor: pointer;
   outline: none;
-  pointer-events: all;
+  pointer-events: painted;
   transition: opacity 0.12s ease;
 }
 

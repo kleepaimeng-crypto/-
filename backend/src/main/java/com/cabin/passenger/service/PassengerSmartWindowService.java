@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PassengerSmartWindowService {
-    private static final int EXPECTED_WINDOW_COUNT = 116;
+    private static final int EXPECTED_WINDOW_COUNT = 118;
 
     private final ObjectProvider<PassengerSmartWindowMapper> mapperProvider;
 

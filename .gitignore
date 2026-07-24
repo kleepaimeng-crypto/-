@@ -30,3 +30,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 frontend/map/tiles_street.zip
+docs/Ubuntu远程服务器部署指南.md
+docs/Windows远程服务器Jar部署指南.md

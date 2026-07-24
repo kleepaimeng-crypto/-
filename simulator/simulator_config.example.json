@@ -1,8 +1,8 @@
 {
   "udpHost": "127.0.0.1",
-  "passengerCount": 237,
-  "windowCount": 116,
-  "windowRows": 58,
+  "passengerCount": 282,
+  "windowCount": 118,
+  "windowRows": 59,
   "ifePageSize": 50,
   "randomSeed": 20260703,
   "ports": {

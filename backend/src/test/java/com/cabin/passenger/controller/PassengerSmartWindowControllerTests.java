@@ -33,8 +33,8 @@ class PassengerSmartWindowControllerTests {
         when(service.getLatestSnapshot()).thenReturn(new SmartWindowSnapshotResponse(
                 true,
                 true,
-                116,
-                116,
+                118,
+                118,
                 List.of(),
                 recordId,
                 updatedAt,
@@ -47,7 +47,7 @@ class PassengerSmartWindowControllerTests {
                 .andExpect(jsonPath("$.code").value("OK"))
                 .andExpect(jsonPath("$.data.hasData").value(true))
                 .andExpect(jsonPath("$.data.complete").value(true))
-                .andExpect(jsonPath("$.data.actualCount").value(116))
+                .andExpect(jsonPath("$.data.actualCount").value(118))
                 .andExpect(jsonPath("$.data.windows[0].windowId").value(1))
                 .andExpect(jsonPath("$.data.windows[0].brightnessLevel").value(7));
     }

@@ -57,7 +57,7 @@ def create_scenario(passenger_count: int, window_rows: int, rng: random.Random) 
         destination=destination,
         scenario_start_time=now,
         simulated_now=now,
-        aircraft_model="Airbus A330-200",
+        aircraft_model="COMAC C929-700",
         passenger_count=passenger_count,
         window_rows=window_rows,
     )

@@ -29,7 +29,7 @@ class PassengerSmartWindowServiceTests {
         assertThat(result.windows()).isEmpty();
         assertThat(result.complete()).isFalse();
         assertThat(result.actualCount()).isZero();
-        assertThat(result.missingWindowIds()).hasSize(116);
+        assertThat(result.missingWindowIds()).hasSize(118);
         assertThat(result.summary().averageBrightness()).isNull();
     }
 
@@ -46,7 +46,7 @@ class PassengerSmartWindowServiceTests {
         assertThat(result.sourceRecordId()).isEqualTo(recordId);
         assertThat(result.actualCount()).isZero();
         assertThat(result.missingWindowIds()).containsExactlyElementsOf(
-                java.util.stream.IntStream.rangeClosed(1, 116).boxed().toList()
+                java.util.stream.IntStream.rangeClosed(1, 118).boxed().toList()
         );
     }
 
@@ -64,13 +64,13 @@ class PassengerSmartWindowServiceTests {
 
         assertThat(result.hasData()).isTrue();
         assertThat(result.complete()).isTrue();
-        assertThat(result.expectedCount()).isEqualTo(116);
-        assertThat(result.actualCount()).isEqualTo(116);
+        assertThat(result.expectedCount()).isEqualTo(118);
+        assertThat(result.actualCount()).isEqualTo(118);
         assertThat(result.missingWindowIds()).isEmpty();
         assertThat(result.sourceRecordId()).isEqualTo(recordId);
-        assertThat(result.windows()).hasSize(116);
+        assertThat(result.windows()).hasSize(118);
         assertThat(result.windows()).extracting(item -> item.windowId())
-                .containsExactlyElementsOf(java.util.stream.IntStream.rangeClosed(1, 116).boxed().toList());
+                .containsExactlyElementsOf(java.util.stream.IntStream.rangeClosed(1, 118).boxed().toList());
         assertThat(result.summary().averageBrightness()).isEqualByComparingTo(new BigDecimal("5.0"));
         assertThat(result.summary().disconnectedCount()).isEqualTo(1);
         assertThat(result.summary().faultCount()).isEqualTo(1);
@@ -89,8 +89,8 @@ class PassengerSmartWindowServiceTests {
 
         assertThat(result.hasData()).isTrue();
         assertThat(result.complete()).isFalse();
-        assertThat(result.actualCount()).isEqualTo(114);
-        assertThat(result.windows()).hasSize(114);
+        assertThat(result.actualCount()).isEqualTo(116);
+        assertThat(result.windows()).hasSize(116);
         assertThat(result.missingWindowIds()).containsExactly(17, 68);
         assertThat(result.summary().averageBrightness()).isEqualByComparingTo(new BigDecimal("5.0"));
     }
@@ -107,13 +107,13 @@ class PassengerSmartWindowServiceTests {
         assertThat(result.hasData()).isTrue();
         assertThat(result.actualCount()).isEqualTo(1);
         assertThat(result.windows()).hasSize(1);
-        assertThat(result.missingWindowIds()).hasSize(115).doesNotContain(1);
+        assertThat(result.missingWindowIds()).hasSize(117).doesNotContain(1);
     }
 
     private List<SmartWindowRow> completeRows() {
         List<SmartWindowRow> rows = new ArrayList<>();
         OffsetDateTime timestamp = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
-        for (int windowId = 1; windowId <= 116; windowId++) {
+        for (int windowId = 1; windowId <= 118; windowId++) {
             SmartWindowRow row = new SmartWindowRow();
             row.setWindowId(windowId);
             row.setZoneId(zoneId(windowId));
@@ -127,9 +127,9 @@ class PassengerSmartWindowServiceTests {
     }
 
     private int zoneId(int windowId) {
-        int sideSequence = windowId <= 58 ? windowId : windowId - 58;
-        if (sideSequence <= 17) return 1;
-        if (sideSequence <= 37) return 2;
+        int sideSequence = windowId <= 59 ? windowId : windowId - 59;
+        if (sideSequence <= 20) return 1;
+        if (sideSequence <= 39) return 2;
         return 3;
     }
 

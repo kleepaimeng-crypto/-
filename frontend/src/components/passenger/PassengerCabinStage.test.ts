@@ -59,8 +59,8 @@ describe('PassengerCabinStage activity list', () => {
     const windowDisplay: PassengerSmartWindowSnapshotDto = {
       hasData: true,
       complete: false,
-      expectedCount: 116,
-      actualCount: 114,
+      expectedCount: 118,
+      actualCount: 116,
       missingWindowIds: [17, 68],
       sourceRecordId: '00000000-0000-4000-8000-000000000002',
       updatedAt: '2026-07-08T09:00:00+08:00',
@@ -79,7 +79,7 @@ describe('PassengerCabinStage activity list', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('舷窗数据不完整：114/116')
+    expect(wrapper.text()).toContain('舷窗数据不完整：116/118')
     expect(wrapper.text()).toContain('缺失 17、68')
   })
 })

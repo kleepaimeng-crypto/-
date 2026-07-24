@@ -38,14 +38,14 @@ class PassengerRealtimeControllerTests {
                 true,
                 updatedAt,
                 new MediaStatisticsResponse(1, List.of(new MediaRankResponse("奇幻", 1)), 0, List.of()),
-                new PassengerActivitiesResponse(237, List.of(activity))
+                new PassengerActivitiesResponse(282, List.of(activity))
         ));
 
         mockMvc.perform(get("/api/v1/passenger-realtime/snapshot"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("OK"))
                 .andExpect(jsonPath("$.data.mediaStatistics.videoRanking[0].count").value(1))
-                .andExpect(jsonPath("$.data.passengerActivities.total").value(237))
+                .andExpect(jsonPath("$.data.passengerActivities.total").value(282))
                 .andExpect(jsonPath("$.data.passengerActivities.items[0].seatNo").value("A11"));
     }
 }

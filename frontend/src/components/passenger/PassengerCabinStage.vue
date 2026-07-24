@@ -8,6 +8,8 @@ import type {
 } from '../../api/types'
 import { formatBytes, formatDate, formatMbps } from '../../utils/displayFormatters'
 import {
+  C929_WINDOW_COUNT,
+  isFirstRowWindow,
   windowSide,
   windowVisualBrightness,
   windowZone,
@@ -51,11 +53,13 @@ interface WindowLabelView {
 const seatNodeSelector = 'g[id^="Business-Seat-"], g[id^="Economy-Seat-"]'
 const seatIdPattern = /\bid="(?:Business|Economy)-Seat-([A-Z][0-9]+)"/g
 const windowNodeSelector = 'g[id^="Window-"]'
-const cabinBlueprintUrl = '/assets/CA_332-1%201.svg'
+const cabinBlueprintUrl = '/assets/C929-700-Black.jpg?v=20260724-hd-v1'
+const seatOverlayUrl = '/assets/C929_set.svg?v=20260724-front-seat-fit-v2'
+const windowOverlayUrl = '/assets/C929_windows.svg?v=20260724'
 const cabinSections: CabinSection[] = [
-  { key: 'front', label: '前舱', anchorSeat: 'C11', fallbackRatio: 0.08 },
-  { key: 'middle', label: '中舱', anchorSeat: 'D14', fallbackRatio: 0.34 },
-  { key: 'rear', label: '后舱', anchorSeat: 'D43', fallbackRatio: 0.7 },
+  { key: 'front', label: '前舱', anchorSeat: 'A11', fallbackRatio: 0.08 },
+  { key: 'middle', label: '中舱', anchorSeat: 'A31', fallbackRatio: 0.43 },
+  { key: 'rear', label: '后舱', anchorSeat: 'D44', fallbackRatio: 0.72 },
 ]
 
 const selectedSeat = ref('D48')
@@ -257,7 +261,7 @@ function extractWindowId(groupId: string): number | null {
   const match = /^Window-(\d{3})$/.exec(groupId)
   if (!match?.[1]) return null
   const windowId = Number(match[1])
-  return Number.isInteger(windowId) && windowId >= 1 && windowId <= 116 ? windowId : null
+  return Number.isInteger(windowId) && windowId >= 1 && windowId <= C929_WINDOW_COUNT ? windowId : null
 }
 
 function refreshWindowLayer(): void {
@@ -305,7 +309,7 @@ function syncWindowLayer(): void {
       ? `brightness(${windowVisualBrightness(item.brightnessLevel)})`
       : 'brightness(0.35) grayscale(1)'
 
-    if (!item && !missing) return
+    if ((!item && !missing) || !isFirstRowWindow(windowId)) return
 
     try {
       const box = group.getBBox()
@@ -571,7 +575,7 @@ function applyDefaultCabinSection(): void {
 
 async function loadSeatOverlaySvg(): Promise<void> {
   try {
-    const response = await fetch('/assets/plane-seat-overlay-renamed.svg', { cache: 'force-cache' })
+    const response = await fetch(seatOverlayUrl, { cache: 'no-store' })
 
     if (!response.ok) {
       return
@@ -585,7 +589,7 @@ async function loadSeatOverlaySvg(): Promise<void> {
 
 async function loadWindowOverlaySvg(): Promise<void> {
   try {
-    const response = await fetch('/assets/airplane_windows.svg', { cache: 'force-cache' })
+    const response = await fetch(windowOverlayUrl, { cache: 'no-store' })
     if (!response.ok) return
     windowOverlaySvg.value = await response.text()
   } catch {

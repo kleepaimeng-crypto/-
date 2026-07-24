@@ -1,0 +1,1416 @@
+<svg width="800" height="4076" viewBox="0 0 800 4076" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>C929-700 seat interaction overlay</title>
+  <desc>282 individually addressable seats aligned to C929-700 1.svg.</desc>
+  <g id="C929-Seats" data-seat-count="282">
+  <g id="Business-Seat-A11" data-seat-no="A11" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 206.43 685.02 H 257.88 Q 263.53 685.02 263.53 690.67 V 735.87 Q 263.53 741.52 257.88 741.52 H 206.43 Q 200.78 741.52 200.78 735.87 V 690.67 Q 200.78 685.02 206.43 685.02 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 210.82 729.09 Q 232.16 736.44 253.49 729.09" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 213.33 736.44 H 250.98" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D11" data-seat-no="D11" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 331.92 703.86 H 383.37 Q 389.02 703.86 389.02 709.51 V 754.7 Q 389.02 760.35 383.37 760.35 H 331.92 Q 326.27 760.35 326.27 754.7 V 709.51 Q 326.27 703.86 331.92 703.86 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 336.31 747.92 Q 357.65 755.27 378.98 747.92" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 338.82 755.27 H 376.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G11" data-seat-no="G11" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 416.63 703.86 H 468.08 Q 473.73 703.86 473.73 709.51 V 754.7 Q 473.73 760.35 468.08 760.35 H 416.63 Q 410.98 760.35 410.98 754.7 V 709.51 Q 410.98 703.86 416.63 703.86 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 421.02 747.92 Q 442.35 755.27 463.69 747.92" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 423.53 755.27 H 461.18" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K11" data-seat-no="K11" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 542.12 685.02 H 593.57 Q 599.22 685.02 599.22 690.67 V 735.87 Q 599.22 741.52 593.57 741.52 H 542.12 Q 536.47 741.52 536.47 735.87 V 690.67 Q 536.47 685.02 542.12 685.02 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 546.51 729.09 Q 567.84 736.44 589.18 729.09" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 549.02 736.44 H 586.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A12" data-seat-no="A12" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 206.43 823.13 H 257.88 Q 263.53 823.13 263.53 828.78 V 873.97 Q 263.53 879.62 257.88 879.62 H 206.43 Q 200.78 879.62 200.78 873.97 V 828.78 Q 200.78 823.13 206.43 823.13 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 210.82 867.2 Q 232.16 874.54 253.49 867.2" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 213.33 874.54 H 250.98" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D12" data-seat-no="D12" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 331.92 845.1 H 383.37 Q 389.02 845.1 389.02 850.75 V 895.95 Q 389.02 901.6 383.37 901.6 H 331.92 Q 326.27 901.6 326.27 895.95 V 850.75 Q 326.27 845.1 331.92 845.1 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 336.31 889.17 Q 357.65 896.51 378.98 889.17" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 338.82 896.51 H 376.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G12" data-seat-no="G12" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 416.63 845.1 H 468.08 Q 473.73 845.1 473.73 850.75 V 895.95 Q 473.73 901.6 468.08 901.6 H 416.63 Q 410.98 901.6 410.98 895.95 V 850.75 Q 410.98 845.1 416.63 845.1 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 421.02 889.17 Q 442.35 896.51 463.69 889.17" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 423.53 896.51 H 461.18" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K12" data-seat-no="K12" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 542.12 823.13 H 593.57 Q 599.22 823.13 599.22 828.78 V 873.97 Q 599.22 879.62 593.57 879.62 H 542.12 Q 536.47 879.62 536.47 873.97 V 828.78 Q 536.47 823.13 542.12 823.13 Z" fill="#8E929D" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 546.51 867.2 Q 567.84 874.54 589.18 867.2" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 549.02 874.54 H 586.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A13" data-seat-no="A13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 204.55 1009.1 H 234.67 Q 238.43 1009.1 238.43 1012.86 V 1053.98 Q 238.43 1057.75 234.67 1057.75 H 204.55 Q 200.78 1057.75 200.78 1053.98 V 1012.86 Q 200.78 1009.1 204.55 1009.1 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 206.81 1047.04 Q 219.61 1053.37 232.41 1047.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 208.31 1053.37 H 230.9" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-C13" data-seat-no="C13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 263.37 1009.1 H 293.49 Q 297.25 1009.1 297.25 1012.86 V 1053.98 Q 297.25 1057.75 293.49 1057.75 H 263.37 Q 259.61 1057.75 259.61 1053.98 V 1012.86 Q 259.61 1009.1 263.37 1009.1 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 265.63 1047.04 Q 278.43 1053.37 291.23 1047.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 267.14 1053.37 H 289.73" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D13" data-seat-no="D13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 354.35 1006.74 H 384.47 Q 388.24 1006.74 388.24 1010.51 V 1051.63 Q 388.24 1055.39 384.47 1055.39 H 354.35 Q 350.59 1055.39 350.59 1051.63 V 1010.51 Q 350.59 1006.74 354.35 1006.74 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 356.61 1044.69 Q 369.41 1051.01 382.21 1044.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 358.12 1051.01 H 380.71" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G13" data-seat-no="G13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 413.96 1006.74 H 444.08 Q 447.84 1006.74 447.84 1010.51 V 1051.63 Q 447.84 1055.39 444.08 1055.39 H 413.96 Q 410.2 1055.39 410.2 1051.63 V 1010.51 Q 410.2 1006.74 413.96 1006.74 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 416.22 1044.69 Q 429.02 1051.01 441.82 1044.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 417.73 1051.01 H 440.31" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-H13" data-seat-no="H13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 507.29 1009.1 H 537.41 Q 541.18 1009.1 541.18 1012.86 V 1053.98 Q 541.18 1057.75 537.41 1057.75 H 507.29 Q 503.53 1057.75 503.53 1053.98 V 1012.86 Q 503.53 1009.1 507.29 1009.1 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 509.55 1047.04 Q 522.35 1053.37 535.15 1047.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 511.06 1053.37 H 533.65" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K13" data-seat-no="K13" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 566.12 1009.1 H 596.24 Q 600 1009.1 600 1012.86 V 1053.98 Q 600 1057.75 596.24 1057.75 H 566.12 Q 562.35 1057.75 562.35 1053.98 V 1012.86 Q 562.35 1009.1 566.12 1009.1 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 568.38 1047.04 Q 581.18 1053.37 593.98 1047.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 569.88 1053.37 H 592.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A14" data-seat-no="A14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 204.55 1125.23 H 234.67 Q 238.43 1125.23 238.43 1128.99 V 1170.11 Q 238.43 1173.88 234.67 1173.88 H 204.55 Q 200.78 1173.88 200.78 1170.11 V 1128.99 Q 200.78 1125.23 204.55 1125.23 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 206.81 1163.18 Q 219.61 1169.5 232.41 1163.18" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 208.31 1169.5 H 230.9" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-C14" data-seat-no="C14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 263.37 1125.23 H 293.49 Q 297.25 1125.23 297.25 1128.99 V 1170.11 Q 297.25 1173.88 293.49 1173.88 H 263.37 Q 259.61 1173.88 259.61 1170.11 V 1128.99 Q 259.61 1125.23 263.37 1125.23 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 265.63 1163.18 Q 278.43 1169.5 291.23 1163.18" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 267.14 1169.5 H 289.73" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D14" data-seat-no="D14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 354.35 1122.09 H 384.47 Q 388.24 1122.09 388.24 1125.85 V 1166.98 Q 388.24 1170.74 384.47 1170.74 H 354.35 Q 350.59 1170.74 350.59 1166.98 V 1125.85 Q 350.59 1122.09 354.35 1122.09 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 356.61 1160.04 Q 369.41 1166.36 382.21 1160.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 358.12 1166.36 H 380.71" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G14" data-seat-no="G14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 413.96 1122.09 H 444.08 Q 447.84 1122.09 447.84 1125.85 V 1166.98 Q 447.84 1170.74 444.08 1170.74 H 413.96 Q 410.2 1170.74 410.2 1166.98 V 1125.85 Q 410.2 1122.09 413.96 1122.09 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 416.22 1160.04 Q 429.02 1166.36 441.82 1160.04" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 417.73 1166.36 H 440.31" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-H14" data-seat-no="H14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 507.29 1125.23 H 537.41 Q 541.18 1125.23 541.18 1128.99 V 1170.11 Q 541.18 1173.88 537.41 1173.88 H 507.29 Q 503.53 1173.88 503.53 1170.11 V 1128.99 Q 503.53 1125.23 507.29 1125.23 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 509.55 1163.18 Q 522.35 1169.5 535.15 1163.18" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 511.06 1169.5 H 533.65" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K14" data-seat-no="K14" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 566.12 1125.23 H 596.24 Q 600 1125.23 600 1128.99 V 1170.11 Q 600 1173.88 596.24 1173.88 H 566.12 Q 562.35 1173.88 562.35 1170.11 V 1128.99 Q 562.35 1125.23 566.12 1125.23 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 568.38 1163.18 Q 581.18 1169.5 593.98 1163.18" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 569.88 1169.5 H 592.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A15" data-seat-no="A15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 204.55 1243.72 H 234.67 Q 238.43 1243.72 238.43 1247.48 V 1288.6 Q 238.43 1292.37 234.67 1292.37 H 204.55 Q 200.78 1292.37 200.78 1288.6 V 1247.48 Q 200.78 1243.72 204.55 1243.72 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 206.81 1281.66 Q 219.61 1287.99 232.41 1281.66" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 208.31 1287.99 H 230.9" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-C15" data-seat-no="C15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 263.37 1243.72 H 293.49 Q 297.25 1243.72 297.25 1247.48 V 1288.6 Q 297.25 1292.37 293.49 1292.37 H 263.37 Q 259.61 1292.37 259.61 1288.6 V 1247.48 Q 259.61 1243.72 263.37 1243.72 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 265.63 1281.66 Q 278.43 1287.99 291.23 1281.66" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 267.14 1287.99 H 289.73" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D15" data-seat-no="D15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 354.35 1236.65 H 384.47 Q 388.24 1236.65 388.24 1240.42 V 1281.54 Q 388.24 1285.3 384.47 1285.3 H 354.35 Q 350.59 1285.3 350.59 1281.54 V 1240.42 Q 350.59 1236.65 354.35 1236.65 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 356.61 1274.6 Q 369.41 1280.92 382.21 1274.6" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 358.12 1280.92 H 380.71" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G15" data-seat-no="G15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 413.96 1236.65 H 444.08 Q 447.84 1236.65 447.84 1240.42 V 1281.54 Q 447.84 1285.3 444.08 1285.3 H 413.96 Q 410.2 1285.3 410.2 1281.54 V 1240.42 Q 410.2 1236.65 413.96 1236.65 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 416.22 1274.6 Q 429.02 1280.92 441.82 1274.6" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 417.73 1280.92 H 440.31" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-H15" data-seat-no="H15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 507.29 1243.72 H 537.41 Q 541.18 1243.72 541.18 1247.48 V 1288.6 Q 541.18 1292.37 537.41 1292.37 H 507.29 Q 503.53 1292.37 503.53 1288.6 V 1247.48 Q 503.53 1243.72 507.29 1243.72 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 509.55 1281.66 Q 522.35 1287.99 535.15 1281.66" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 511.06 1287.99 H 533.65" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K15" data-seat-no="K15" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 566.12 1243.72 H 596.24 Q 600 1243.72 600 1247.48 V 1288.6 Q 600 1292.37 596.24 1292.37 H 566.12 Q 562.35 1292.37 562.35 1288.6 V 1247.48 Q 562.35 1243.72 566.12 1243.72 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 568.38 1281.66 Q 581.18 1287.99 593.98 1281.66" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 569.88 1287.99 H 592.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A16" data-seat-no="A16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 204.55 1608.59 H 234.67 Q 238.43 1608.59 238.43 1612.36 V 1653.48 Q 238.43 1657.24 234.67 1657.24 H 204.55 Q 200.78 1657.24 200.78 1653.48 V 1612.36 Q 200.78 1608.59 204.55 1608.59 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 206.81 1646.54 Q 219.61 1652.86 232.41 1646.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 208.31 1652.86 H 230.9" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-C16" data-seat-no="C16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 263.37 1608.59 H 293.49 Q 297.25 1608.59 297.25 1612.36 V 1653.48 Q 297.25 1657.24 293.49 1657.24 H 263.37 Q 259.61 1657.24 259.61 1653.48 V 1612.36 Q 259.61 1608.59 263.37 1608.59 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 265.63 1646.54 Q 278.43 1652.86 291.23 1646.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 267.14 1652.86 H 289.73" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D16" data-seat-no="D16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 354.35 1598.39 H 384.47 Q 388.24 1598.39 388.24 1602.15 V 1643.28 Q 388.24 1647.04 384.47 1647.04 H 354.35 Q 350.59 1647.04 350.59 1643.28 V 1602.15 Q 350.59 1598.39 354.35 1598.39 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 356.61 1636.34 Q 369.41 1642.66 382.21 1636.34" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 358.12 1642.66 H 380.71" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G16" data-seat-no="G16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 413.96 1598.39 H 444.08 Q 447.84 1598.39 447.84 1602.15 V 1643.28 Q 447.84 1647.04 444.08 1647.04 H 413.96 Q 410.2 1647.04 410.2 1643.28 V 1602.15 Q 410.2 1598.39 413.96 1598.39 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 416.22 1636.34 Q 429.02 1642.66 441.82 1636.34" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 417.73 1642.66 H 440.31" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-H16" data-seat-no="H16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 507.29 1608.59 H 537.41 Q 541.18 1608.59 541.18 1612.36 V 1653.48 Q 541.18 1657.24 537.41 1657.24 H 507.29 Q 503.53 1657.24 503.53 1653.48 V 1612.36 Q 503.53 1608.59 507.29 1608.59 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 509.55 1646.54 Q 522.35 1652.86 535.15 1646.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 511.06 1652.86 H 533.65" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K16" data-seat-no="K16" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 566.12 1608.59 H 596.24 Q 600 1608.59 600 1612.36 V 1653.48 Q 600 1657.24 596.24 1657.24 H 566.12 Q 562.35 1657.24 562.35 1653.48 V 1612.36 Q 562.35 1608.59 566.12 1608.59 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 568.38 1646.54 Q 581.18 1652.86 593.98 1646.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 569.88 1652.86 H 592.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-A17" data-seat-no="A17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 204.55 1726.29 H 234.67 Q 238.43 1726.29 238.43 1730.06 V 1771.18 Q 238.43 1774.94 234.67 1774.94 H 204.55 Q 200.78 1774.94 200.78 1771.18 V 1730.06 Q 200.78 1726.29 204.55 1726.29 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 206.81 1764.24 Q 219.61 1770.56 232.41 1764.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 208.31 1770.56 H 230.9" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-C17" data-seat-no="C17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 263.37 1726.29 H 293.49 Q 297.25 1726.29 297.25 1730.06 V 1771.18 Q 297.25 1774.94 293.49 1774.94 H 263.37 Q 259.61 1774.94 259.61 1771.18 V 1730.06 Q 259.61 1726.29 263.37 1726.29 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 265.63 1764.24 Q 278.43 1770.56 291.23 1764.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 267.14 1770.56 H 289.73" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-D17" data-seat-no="D17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 354.35 1716.88 H 384.47 Q 388.24 1716.88 388.24 1720.64 V 1761.76 Q 388.24 1765.53 384.47 1765.53 H 354.35 Q 350.59 1765.53 350.59 1761.76 V 1720.64 Q 350.59 1716.88 354.35 1716.88 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 356.61 1754.82 Q 369.41 1761.15 382.21 1754.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 358.12 1761.15 H 380.71" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-G17" data-seat-no="G17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 413.96 1716.88 H 444.08 Q 447.84 1716.88 447.84 1720.64 V 1761.76 Q 447.84 1765.53 444.08 1765.53 H 413.96 Q 410.2 1765.53 410.2 1761.76 V 1720.64 Q 410.2 1716.88 413.96 1716.88 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 416.22 1754.82 Q 429.02 1761.15 441.82 1754.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 417.73 1761.15 H 440.31" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-H17" data-seat-no="H17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 507.29 1726.29 H 537.41 Q 541.18 1726.29 541.18 1730.06 V 1771.18 Q 541.18 1774.94 537.41 1774.94 H 507.29 Q 503.53 1774.94 503.53 1771.18 V 1730.06 Q 503.53 1726.29 507.29 1726.29 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 509.55 1764.24 Q 522.35 1770.56 535.15 1764.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 511.06 1770.56 H 533.65" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Business-Seat-K17" data-seat-no="K17" data-cabin-class="BUSINESS" data-cabin-section="front">
+    <path d="M 566.12 1726.29 H 596.24 Q 600 1726.29 600 1730.06 V 1771.18 Q 600 1774.94 596.24 1774.94 H 566.12 Q 562.35 1774.94 562.35 1771.18 V 1730.06 Q 562.35 1726.29 566.12 1726.29 Z" fill="#49467C" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 568.38 1764.24 Q 581.18 1770.56 593.98 1764.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 569.88 1770.56 H 592.47" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A31" data-seat-no="A31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 1854.98 H 223.69 Q 227.45 1854.98 227.45 1858.74 V 1898.3 Q 227.45 1902.06 223.69 1902.06 H 193.57 Q 189.8 1902.06 189.8 1898.3 V 1858.74 Q 189.8 1854.98 193.57 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 1891.7 Q 208.63 1897.82 221.43 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 1897.82 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B31" data-seat-no="B31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 1854.98 H 262.9 Q 266.67 1854.98 266.67 1858.74 V 1898.3 Q 266.67 1902.06 262.9 1902.06 H 232.78 Q 229.02 1902.06 229.02 1898.3 V 1858.74 Q 229.02 1854.98 232.78 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 1891.7 Q 247.84 1897.82 260.64 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 1897.82 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C31" data-seat-no="C31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 1854.98 H 302.12 Q 305.88 1854.98 305.88 1858.74 V 1898.3 Q 305.88 1902.06 302.12 1902.06 H 272 Q 268.24 1902.06 268.24 1898.3 V 1858.74 Q 268.24 1854.98 272 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 1891.7 Q 287.06 1897.82 299.86 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 1897.82 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D31" data-seat-no="D31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 1836.15 H 375.84 Q 379.61 1836.15 379.61 1839.91 V 1879.46 Q 379.61 1883.23 375.84 1883.23 H 345.73 Q 341.96 1883.23 341.96 1879.46 V 1839.91 Q 341.96 1836.15 345.73 1836.15 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 1872.87 Q 360.78 1878.99 373.58 1872.87" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 1878.99 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E31" data-seat-no="E31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 1836.15 H 415.06 Q 418.82 1836.15 418.82 1839.91 V 1879.46 Q 418.82 1883.23 415.06 1883.23 H 384.94 Q 381.18 1883.23 381.18 1879.46 V 1839.91 Q 381.18 1836.15 384.94 1836.15 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 1872.87 Q 400 1878.99 412.8 1872.87" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 1878.99 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F31" data-seat-no="F31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 1836.15 H 454.27 Q 458.04 1836.15 458.04 1839.91 V 1879.46 Q 458.04 1883.23 454.27 1883.23 H 424.16 Q 420.39 1883.23 420.39 1879.46 V 1839.91 Q 420.39 1836.15 424.16 1836.15 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 1872.87 Q 439.22 1878.99 452.02 1872.87" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 1878.99 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G31" data-seat-no="G31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 1854.98 H 528 Q 531.76 1854.98 531.76 1858.74 V 1898.3 Q 531.76 1902.06 528 1902.06 H 497.88 Q 494.12 1902.06 494.12 1898.3 V 1858.74 Q 494.12 1854.98 497.88 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 1891.7 Q 512.94 1897.82 525.74 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 1897.82 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H31" data-seat-no="H31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 1854.98 H 567.22 Q 570.98 1854.98 570.98 1858.74 V 1898.3 Q 570.98 1902.06 567.22 1902.06 H 537.1 Q 533.33 1902.06 533.33 1898.3 V 1858.74 Q 533.33 1854.98 537.1 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 1891.7 Q 552.16 1897.82 564.96 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 1897.82 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K31" data-seat-no="K31" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 1854.98 H 606.43 Q 610.2 1854.98 610.2 1858.74 V 1898.3 Q 610.2 1902.06 606.43 1902.06 H 576.31 Q 572.55 1902.06 572.55 1898.3 V 1858.74 Q 572.55 1854.98 576.31 1854.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 1891.7 Q 591.37 1897.82 604.17 1891.7" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 1897.82 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A32" data-seat-no="A32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 1914.62 H 223.69 Q 227.45 1914.62 227.45 1918.38 V 1959.5 Q 227.45 1963.27 223.69 1963.27 H 193.57 Q 189.8 1963.27 189.8 1959.5 V 1918.38 Q 189.8 1914.62 193.57 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 1952.56 Q 208.63 1958.89 221.43 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 1958.89 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B32" data-seat-no="B32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 1914.62 H 262.9 Q 266.67 1914.62 266.67 1918.38 V 1959.5 Q 266.67 1963.27 262.9 1963.27 H 232.78 Q 229.02 1963.27 229.02 1959.5 V 1918.38 Q 229.02 1914.62 232.78 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 1952.56 Q 247.84 1958.89 260.64 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 1958.89 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C32" data-seat-no="C32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 1914.62 H 302.12 Q 305.88 1914.62 305.88 1918.38 V 1959.5 Q 305.88 1963.27 302.12 1963.27 H 272 Q 268.24 1963.27 268.24 1959.5 V 1918.38 Q 268.24 1914.62 272 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 1952.56 Q 287.06 1958.89 299.86 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 1958.89 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D32" data-seat-no="D32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 1895.78 H 375.84 Q 379.61 1895.78 379.61 1899.55 V 1940.67 Q 379.61 1944.43 375.84 1944.43 H 345.73 Q 341.96 1944.43 341.96 1940.67 V 1899.55 Q 341.96 1895.78 345.73 1895.78 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 1933.73 Q 360.78 1940.05 373.58 1933.73" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 1940.05 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E32" data-seat-no="E32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 1895.78 H 415.06 Q 418.82 1895.78 418.82 1899.55 V 1940.67 Q 418.82 1944.43 415.06 1944.43 H 384.94 Q 381.18 1944.43 381.18 1940.67 V 1899.55 Q 381.18 1895.78 384.94 1895.78 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 1933.73 Q 400 1940.05 412.8 1933.73" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 1940.05 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F32" data-seat-no="F32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 1895.78 H 454.27 Q 458.04 1895.78 458.04 1899.55 V 1940.67 Q 458.04 1944.43 454.27 1944.43 H 424.16 Q 420.39 1944.43 420.39 1940.67 V 1899.55 Q 420.39 1895.78 424.16 1895.78 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 1933.73 Q 439.22 1940.05 452.02 1933.73" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 1940.05 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G32" data-seat-no="G32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 1914.62 H 528 Q 531.76 1914.62 531.76 1918.38 V 1959.5 Q 531.76 1963.27 528 1963.27 H 497.88 Q 494.12 1963.27 494.12 1959.5 V 1918.38 Q 494.12 1914.62 497.88 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 1952.56 Q 512.94 1958.89 525.74 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 1958.89 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H32" data-seat-no="H32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 1914.62 H 567.22 Q 570.98 1914.62 570.98 1918.38 V 1959.5 Q 570.98 1963.27 567.22 1963.27 H 537.1 Q 533.33 1963.27 533.33 1959.5 V 1918.38 Q 533.33 1914.62 537.1 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 1952.56 Q 552.16 1958.89 564.96 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 1958.89 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K32" data-seat-no="K32" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 1914.62 H 606.43 Q 610.2 1914.62 610.2 1918.38 V 1959.5 Q 610.2 1963.27 606.43 1963.27 H 576.31 Q 572.55 1963.27 572.55 1959.5 V 1918.38 Q 572.55 1914.62 576.31 1914.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 1952.56 Q 591.37 1958.89 604.17 1952.56" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 1958.89 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A33" data-seat-no="A33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 1975.82 H 223.69 Q 227.45 1975.82 227.45 1979.59 V 2019.14 Q 227.45 2022.9 223.69 2022.9 H 193.57 Q 189.8 2022.9 189.8 2019.14 V 1979.59 Q 189.8 1975.82 193.57 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2012.54 Q 208.63 2018.66 221.43 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2018.66 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B33" data-seat-no="B33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 1975.82 H 262.9 Q 266.67 1975.82 266.67 1979.59 V 2019.14 Q 266.67 2022.9 262.9 2022.9 H 232.78 Q 229.02 2022.9 229.02 2019.14 V 1979.59 Q 229.02 1975.82 232.78 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2012.54 Q 247.84 2018.66 260.64 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2018.66 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C33" data-seat-no="C33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 1975.82 H 302.12 Q 305.88 1975.82 305.88 1979.59 V 2019.14 Q 305.88 2022.9 302.12 2022.9 H 272 Q 268.24 2022.9 268.24 2019.14 V 1979.59 Q 268.24 1975.82 272 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2012.54 Q 287.06 2018.66 299.86 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2018.66 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D33" data-seat-no="D33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 1956.99 H 375.84 Q 379.61 1956.99 379.61 1960.75 V 2000.3 Q 379.61 2004.07 375.84 2004.07 H 345.73 Q 341.96 2004.07 341.96 2000.3 V 1960.75 Q 341.96 1956.99 345.73 1956.99 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 1993.71 Q 360.78 1999.83 373.58 1993.71" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 1999.83 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E33" data-seat-no="E33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 1956.99 H 415.06 Q 418.82 1956.99 418.82 1960.75 V 2000.3 Q 418.82 2004.07 415.06 2004.07 H 384.94 Q 381.18 2004.07 381.18 2000.3 V 1960.75 Q 381.18 1956.99 384.94 1956.99 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 1993.71 Q 400 1999.83 412.8 1993.71" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 1999.83 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F33" data-seat-no="F33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 1956.99 H 454.27 Q 458.04 1956.99 458.04 1960.75 V 2000.3 Q 458.04 2004.07 454.27 2004.07 H 424.16 Q 420.39 2004.07 420.39 2000.3 V 1960.75 Q 420.39 1956.99 424.16 1956.99 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 1993.71 Q 439.22 1999.83 452.02 1993.71" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 1999.83 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G33" data-seat-no="G33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 1975.82 H 528 Q 531.76 1975.82 531.76 1979.59 V 2019.14 Q 531.76 2022.9 528 2022.9 H 497.88 Q 494.12 2022.9 494.12 2019.14 V 1979.59 Q 494.12 1975.82 497.88 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2012.54 Q 512.94 2018.66 525.74 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2018.66 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H33" data-seat-no="H33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 1975.82 H 567.22 Q 570.98 1975.82 570.98 1979.59 V 2019.14 Q 570.98 2022.9 567.22 2022.9 H 537.1 Q 533.33 2022.9 533.33 2019.14 V 1979.59 Q 533.33 1975.82 537.1 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2012.54 Q 552.16 2018.66 564.96 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2018.66 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K33" data-seat-no="K33" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 1975.82 H 606.43 Q 610.2 1975.82 610.2 1979.59 V 2019.14 Q 610.2 2022.9 606.43 2022.9 H 576.31 Q 572.55 2022.9 572.55 2019.14 V 1979.59 Q 572.55 1975.82 576.31 1975.82 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2012.54 Q 591.37 2018.66 604.17 2012.54" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2018.66 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A34" data-seat-no="A34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2035.46 H 223.69 Q 227.45 2035.46 227.45 2039.22 V 2080.34 Q 227.45 2084.11 223.69 2084.11 H 193.57 Q 189.8 2084.11 189.8 2080.34 V 2039.22 Q 189.8 2035.46 193.57 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2073.4 Q 208.63 2079.73 221.43 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2079.73 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B34" data-seat-no="B34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2035.46 H 262.9 Q 266.67 2035.46 266.67 2039.22 V 2080.34 Q 266.67 2084.11 262.9 2084.11 H 232.78 Q 229.02 2084.11 229.02 2080.34 V 2039.22 Q 229.02 2035.46 232.78 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2073.4 Q 247.84 2079.73 260.64 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2079.73 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C34" data-seat-no="C34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2035.46 H 302.12 Q 305.88 2035.46 305.88 2039.22 V 2080.34 Q 305.88 2084.11 302.12 2084.11 H 272 Q 268.24 2084.11 268.24 2080.34 V 2039.22 Q 268.24 2035.46 272 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2073.4 Q 287.06 2079.73 299.86 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2079.73 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D34" data-seat-no="D34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2016.62 H 375.84 Q 379.61 2016.62 379.61 2020.39 V 2061.51 Q 379.61 2065.27 375.84 2065.27 H 345.73 Q 341.96 2065.27 341.96 2061.51 V 2020.39 Q 341.96 2016.62 345.73 2016.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2054.57 Q 360.78 2060.9 373.58 2054.57" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2060.9 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E34" data-seat-no="E34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2016.62 H 415.06 Q 418.82 2016.62 418.82 2020.39 V 2061.51 Q 418.82 2065.27 415.06 2065.27 H 384.94 Q 381.18 2065.27 381.18 2061.51 V 2020.39 Q 381.18 2016.62 384.94 2016.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2054.57 Q 400 2060.9 412.8 2054.57" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2060.9 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F34" data-seat-no="F34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2016.62 H 454.27 Q 458.04 2016.62 458.04 2020.39 V 2061.51 Q 458.04 2065.27 454.27 2065.27 H 424.16 Q 420.39 2065.27 420.39 2061.51 V 2020.39 Q 420.39 2016.62 424.16 2016.62 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2054.57 Q 439.22 2060.9 452.02 2054.57" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2060.9 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G34" data-seat-no="G34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2035.46 H 528 Q 531.76 2035.46 531.76 2039.22 V 2080.34 Q 531.76 2084.11 528 2084.11 H 497.88 Q 494.12 2084.11 494.12 2080.34 V 2039.22 Q 494.12 2035.46 497.88 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2073.4 Q 512.94 2079.73 525.74 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2079.73 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H34" data-seat-no="H34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2035.46 H 567.22 Q 570.98 2035.46 570.98 2039.22 V 2080.34 Q 570.98 2084.11 567.22 2084.11 H 537.1 Q 533.33 2084.11 533.33 2080.34 V 2039.22 Q 533.33 2035.46 537.1 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2073.4 Q 552.16 2079.73 564.96 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2079.73 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K34" data-seat-no="K34" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2035.46 H 606.43 Q 610.2 2035.46 610.2 2039.22 V 2080.34 Q 610.2 2084.11 606.43 2084.11 H 576.31 Q 572.55 2084.11 572.55 2080.34 V 2039.22 Q 572.55 2035.46 576.31 2035.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2073.4 Q 591.37 2079.73 604.17 2073.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2079.73 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A35" data-seat-no="A35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2096.66 H 223.69 Q 227.45 2096.66 227.45 2100.43 V 2139.98 Q 227.45 2143.74 223.69 2143.74 H 193.57 Q 189.8 2143.74 189.8 2139.98 V 2100.43 Q 189.8 2096.66 193.57 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2133.38 Q 208.63 2139.5 221.43 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2139.5 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B35" data-seat-no="B35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2096.66 H 262.9 Q 266.67 2096.66 266.67 2100.43 V 2139.98 Q 266.67 2143.74 262.9 2143.74 H 232.78 Q 229.02 2143.74 229.02 2139.98 V 2100.43 Q 229.02 2096.66 232.78 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2133.38 Q 247.84 2139.5 260.64 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2139.5 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C35" data-seat-no="C35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2096.66 H 302.12 Q 305.88 2096.66 305.88 2100.43 V 2139.98 Q 305.88 2143.74 302.12 2143.74 H 272 Q 268.24 2143.74 268.24 2139.98 V 2100.43 Q 268.24 2096.66 272 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2133.38 Q 287.06 2139.5 299.86 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2139.5 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D35" data-seat-no="D35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2077.83 H 375.84 Q 379.61 2077.83 379.61 2081.59 V 2121.14 Q 379.61 2124.91 375.84 2124.91 H 345.73 Q 341.96 2124.91 341.96 2121.14 V 2081.59 Q 341.96 2077.83 345.73 2077.83 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2114.55 Q 360.78 2120.67 373.58 2114.55" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2120.67 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E35" data-seat-no="E35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2077.83 H 415.06 Q 418.82 2077.83 418.82 2081.59 V 2121.14 Q 418.82 2124.91 415.06 2124.91 H 384.94 Q 381.18 2124.91 381.18 2121.14 V 2081.59 Q 381.18 2077.83 384.94 2077.83 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2114.55 Q 400 2120.67 412.8 2114.55" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2120.67 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F35" data-seat-no="F35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2077.83 H 454.27 Q 458.04 2077.83 458.04 2081.59 V 2121.14 Q 458.04 2124.91 454.27 2124.91 H 424.16 Q 420.39 2124.91 420.39 2121.14 V 2081.59 Q 420.39 2077.83 424.16 2077.83 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2114.55 Q 439.22 2120.67 452.02 2114.55" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2120.67 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G35" data-seat-no="G35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2096.66 H 528 Q 531.76 2096.66 531.76 2100.43 V 2139.98 Q 531.76 2143.74 528 2143.74 H 497.88 Q 494.12 2143.74 494.12 2139.98 V 2100.43 Q 494.12 2096.66 497.88 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2133.38 Q 512.94 2139.5 525.74 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2139.5 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H35" data-seat-no="H35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2096.66 H 567.22 Q 570.98 2096.66 570.98 2100.43 V 2139.98 Q 570.98 2143.74 567.22 2143.74 H 537.1 Q 533.33 2143.74 533.33 2139.98 V 2100.43 Q 533.33 2096.66 537.1 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2133.38 Q 552.16 2139.5 564.96 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2139.5 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K35" data-seat-no="K35" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2096.66 H 606.43 Q 610.2 2096.66 610.2 2100.43 V 2139.98 Q 610.2 2143.74 606.43 2143.74 H 576.31 Q 572.55 2143.74 572.55 2139.98 V 2100.43 Q 572.55 2096.66 576.31 2096.66 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2133.38 Q 591.37 2139.5 604.17 2133.38" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2139.5 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A36" data-seat-no="A36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2156.3 H 223.69 Q 227.45 2156.3 227.45 2160.06 V 2201.18 Q 227.45 2204.95 223.69 2204.95 H 193.57 Q 189.8 2204.95 189.8 2201.18 V 2160.06 Q 189.8 2156.3 193.57 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2194.24 Q 208.63 2200.57 221.43 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2200.57 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B36" data-seat-no="B36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2156.3 H 262.9 Q 266.67 2156.3 266.67 2160.06 V 2201.18 Q 266.67 2204.95 262.9 2204.95 H 232.78 Q 229.02 2204.95 229.02 2201.18 V 2160.06 Q 229.02 2156.3 232.78 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2194.24 Q 247.84 2200.57 260.64 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2200.57 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C36" data-seat-no="C36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2156.3 H 302.12 Q 305.88 2156.3 305.88 2160.06 V 2201.18 Q 305.88 2204.95 302.12 2204.95 H 272 Q 268.24 2204.95 268.24 2201.18 V 2160.06 Q 268.24 2156.3 272 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2194.24 Q 287.06 2200.57 299.86 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2200.57 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D36" data-seat-no="D36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2137.46 H 375.84 Q 379.61 2137.46 379.61 2141.23 V 2182.35 Q 379.61 2186.11 375.84 2186.11 H 345.73 Q 341.96 2186.11 341.96 2182.35 V 2141.23 Q 341.96 2137.46 345.73 2137.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2175.41 Q 360.78 2181.74 373.58 2175.41" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2181.74 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E36" data-seat-no="E36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2137.46 H 415.06 Q 418.82 2137.46 418.82 2141.23 V 2182.35 Q 418.82 2186.11 415.06 2186.11 H 384.94 Q 381.18 2186.11 381.18 2182.35 V 2141.23 Q 381.18 2137.46 384.94 2137.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2175.41 Q 400 2181.74 412.8 2175.41" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2181.74 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F36" data-seat-no="F36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2137.46 H 454.27 Q 458.04 2137.46 458.04 2141.23 V 2182.35 Q 458.04 2186.11 454.27 2186.11 H 424.16 Q 420.39 2186.11 420.39 2182.35 V 2141.23 Q 420.39 2137.46 424.16 2137.46 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2175.41 Q 439.22 2181.74 452.02 2175.41" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2181.74 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G36" data-seat-no="G36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2156.3 H 528 Q 531.76 2156.3 531.76 2160.06 V 2201.18 Q 531.76 2204.95 528 2204.95 H 497.88 Q 494.12 2204.95 494.12 2201.18 V 2160.06 Q 494.12 2156.3 497.88 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2194.24 Q 512.94 2200.57 525.74 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2200.57 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H36" data-seat-no="H36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2156.3 H 567.22 Q 570.98 2156.3 570.98 2160.06 V 2201.18 Q 570.98 2204.95 567.22 2204.95 H 537.1 Q 533.33 2204.95 533.33 2201.18 V 2160.06 Q 533.33 2156.3 537.1 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2194.24 Q 552.16 2200.57 564.96 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2200.57 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K36" data-seat-no="K36" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2156.3 H 606.43 Q 610.2 2156.3 610.2 2160.06 V 2201.18 Q 610.2 2204.95 606.43 2204.95 H 576.31 Q 572.55 2204.95 572.55 2201.18 V 2160.06 Q 572.55 2156.3 576.31 2156.3 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2194.24 Q 591.37 2200.57 604.17 2194.24" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2200.57 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A37" data-seat-no="A37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2217.5 H 223.69 Q 227.45 2217.5 227.45 2221.27 V 2262.39 Q 227.45 2266.15 223.69 2266.15 H 193.57 Q 189.8 2266.15 189.8 2262.39 V 2221.27 Q 189.8 2217.5 193.57 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2255.45 Q 208.63 2261.77 221.43 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2261.77 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B37" data-seat-no="B37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2217.5 H 262.9 Q 266.67 2217.5 266.67 2221.27 V 2262.39 Q 266.67 2266.15 262.9 2266.15 H 232.78 Q 229.02 2266.15 229.02 2262.39 V 2221.27 Q 229.02 2217.5 232.78 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2255.45 Q 247.84 2261.77 260.64 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2261.77 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C37" data-seat-no="C37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2217.5 H 302.12 Q 305.88 2217.5 305.88 2221.27 V 2262.39 Q 305.88 2266.15 302.12 2266.15 H 272 Q 268.24 2266.15 268.24 2262.39 V 2221.27 Q 268.24 2217.5 272 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2255.45 Q 287.06 2261.77 299.86 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2261.77 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D37" data-seat-no="D37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2198.67 H 375.84 Q 379.61 2198.67 379.61 2202.43 V 2241.99 Q 379.61 2245.75 375.84 2245.75 H 345.73 Q 341.96 2245.75 341.96 2241.99 V 2202.43 Q 341.96 2198.67 345.73 2198.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2235.39 Q 360.78 2241.51 373.58 2235.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2241.51 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E37" data-seat-no="E37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2198.67 H 415.06 Q 418.82 2198.67 418.82 2202.43 V 2241.99 Q 418.82 2245.75 415.06 2245.75 H 384.94 Q 381.18 2245.75 381.18 2241.99 V 2202.43 Q 381.18 2198.67 384.94 2198.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2235.39 Q 400 2241.51 412.8 2235.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2241.51 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F37" data-seat-no="F37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2198.67 H 454.27 Q 458.04 2198.67 458.04 2202.43 V 2241.99 Q 458.04 2245.75 454.27 2245.75 H 424.16 Q 420.39 2245.75 420.39 2241.99 V 2202.43 Q 420.39 2198.67 424.16 2198.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2235.39 Q 439.22 2241.51 452.02 2235.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2241.51 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G37" data-seat-no="G37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2217.5 H 528 Q 531.76 2217.5 531.76 2221.27 V 2262.39 Q 531.76 2266.15 528 2266.15 H 497.88 Q 494.12 2266.15 494.12 2262.39 V 2221.27 Q 494.12 2217.5 497.88 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2255.45 Q 512.94 2261.77 525.74 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2261.77 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H37" data-seat-no="H37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2217.5 H 567.22 Q 570.98 2217.5 570.98 2221.27 V 2262.39 Q 570.98 2266.15 567.22 2266.15 H 537.1 Q 533.33 2266.15 533.33 2262.39 V 2221.27 Q 533.33 2217.5 537.1 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2255.45 Q 552.16 2261.77 564.96 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2261.77 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K37" data-seat-no="K37" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2217.5 H 606.43 Q 610.2 2217.5 610.2 2221.27 V 2262.39 Q 610.2 2266.15 606.43 2266.15 H 576.31 Q 572.55 2266.15 572.55 2262.39 V 2221.27 Q 572.55 2217.5 576.31 2217.5 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2255.45 Q 591.37 2261.77 604.17 2255.45" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2261.77 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A38" data-seat-no="A38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2278.71 H 223.69 Q 227.45 2278.71 227.45 2282.47 V 2322.02 Q 227.45 2325.79 223.69 2325.79 H 193.57 Q 189.8 2325.79 189.8 2322.02 V 2282.47 Q 189.8 2278.71 193.57 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2315.43 Q 208.63 2321.55 221.43 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2321.55 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B38" data-seat-no="B38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2278.71 H 262.9 Q 266.67 2278.71 266.67 2282.47 V 2322.02 Q 266.67 2325.79 262.9 2325.79 H 232.78 Q 229.02 2325.79 229.02 2322.02 V 2282.47 Q 229.02 2278.71 232.78 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2315.43 Q 247.84 2321.55 260.64 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2321.55 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C38" data-seat-no="C38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2278.71 H 302.12 Q 305.88 2278.71 305.88 2282.47 V 2322.02 Q 305.88 2325.79 302.12 2325.79 H 272 Q 268.24 2325.79 268.24 2322.02 V 2282.47 Q 268.24 2278.71 272 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2315.43 Q 287.06 2321.55 299.86 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2321.55 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D38" data-seat-no="D38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2259.87 H 375.84 Q 379.61 2259.87 379.61 2263.64 V 2303.19 Q 379.61 2306.95 375.84 2306.95 H 345.73 Q 341.96 2306.95 341.96 2303.19 V 2263.64 Q 341.96 2259.87 345.73 2259.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2296.6 Q 360.78 2302.72 373.58 2296.6" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2302.72 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E38" data-seat-no="E38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2259.87 H 415.06 Q 418.82 2259.87 418.82 2263.64 V 2303.19 Q 418.82 2306.95 415.06 2306.95 H 384.94 Q 381.18 2306.95 381.18 2303.19 V 2263.64 Q 381.18 2259.87 384.94 2259.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2296.6 Q 400 2302.72 412.8 2296.6" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2302.72 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F38" data-seat-no="F38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2259.87 H 454.27 Q 458.04 2259.87 458.04 2263.64 V 2303.19 Q 458.04 2306.95 454.27 2306.95 H 424.16 Q 420.39 2306.95 420.39 2303.19 V 2263.64 Q 420.39 2259.87 424.16 2259.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2296.6 Q 439.22 2302.72 452.02 2296.6" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2302.72 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G38" data-seat-no="G38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2278.71 H 528 Q 531.76 2278.71 531.76 2282.47 V 2322.02 Q 531.76 2325.79 528 2325.79 H 497.88 Q 494.12 2325.79 494.12 2322.02 V 2282.47 Q 494.12 2278.71 497.88 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2315.43 Q 512.94 2321.55 525.74 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2321.55 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H38" data-seat-no="H38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2278.71 H 567.22 Q 570.98 2278.71 570.98 2282.47 V 2322.02 Q 570.98 2325.79 567.22 2325.79 H 537.1 Q 533.33 2325.79 533.33 2322.02 V 2282.47 Q 533.33 2278.71 537.1 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2315.43 Q 552.16 2321.55 564.96 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2321.55 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K38" data-seat-no="K38" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2278.71 H 606.43 Q 610.2 2278.71 610.2 2282.47 V 2322.02 Q 610.2 2325.79 606.43 2325.79 H 576.31 Q 572.55 2325.79 572.55 2322.02 V 2282.47 Q 572.55 2278.71 576.31 2278.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2315.43 Q 591.37 2321.55 604.17 2315.43" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2321.55 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A39" data-seat-no="A39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2338.34 H 223.69 Q 227.45 2338.34 227.45 2342.11 V 2383.23 Q 227.45 2386.99 223.69 2386.99 H 193.57 Q 189.8 2386.99 189.8 2383.23 V 2342.11 Q 189.8 2338.34 193.57 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2376.29 Q 208.63 2382.61 221.43 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2382.61 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B39" data-seat-no="B39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2338.34 H 262.9 Q 266.67 2338.34 266.67 2342.11 V 2383.23 Q 266.67 2386.99 262.9 2386.99 H 232.78 Q 229.02 2386.99 229.02 2383.23 V 2342.11 Q 229.02 2338.34 232.78 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2376.29 Q 247.84 2382.61 260.64 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2382.61 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C39" data-seat-no="C39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2338.34 H 302.12 Q 305.88 2338.34 305.88 2342.11 V 2383.23 Q 305.88 2386.99 302.12 2386.99 H 272 Q 268.24 2386.99 268.24 2383.23 V 2342.11 Q 268.24 2338.34 272 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2376.29 Q 287.06 2382.61 299.86 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2382.61 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D39" data-seat-no="D39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2319.51 H 375.84 Q 379.61 2319.51 379.61 2323.27 V 2364.39 Q 379.61 2368.16 375.84 2368.16 H 345.73 Q 341.96 2368.16 341.96 2364.39 V 2323.27 Q 341.96 2319.51 345.73 2319.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2357.46 Q 360.78 2363.78 373.58 2357.46" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2363.78 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E39" data-seat-no="E39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2319.51 H 415.06 Q 418.82 2319.51 418.82 2323.27 V 2364.39 Q 418.82 2368.16 415.06 2368.16 H 384.94 Q 381.18 2368.16 381.18 2364.39 V 2323.27 Q 381.18 2319.51 384.94 2319.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2357.46 Q 400 2363.78 412.8 2357.46" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2363.78 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F39" data-seat-no="F39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2319.51 H 454.27 Q 458.04 2319.51 458.04 2323.27 V 2364.39 Q 458.04 2368.16 454.27 2368.16 H 424.16 Q 420.39 2368.16 420.39 2364.39 V 2323.27 Q 420.39 2319.51 424.16 2319.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2357.46 Q 439.22 2363.78 452.02 2357.46" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2363.78 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G39" data-seat-no="G39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2338.34 H 528 Q 531.76 2338.34 531.76 2342.11 V 2383.23 Q 531.76 2386.99 528 2386.99 H 497.88 Q 494.12 2386.99 494.12 2383.23 V 2342.11 Q 494.12 2338.34 497.88 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2376.29 Q 512.94 2382.61 525.74 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2382.61 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H39" data-seat-no="H39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2338.34 H 567.22 Q 570.98 2338.34 570.98 2342.11 V 2383.23 Q 570.98 2386.99 567.22 2386.99 H 537.1 Q 533.33 2386.99 533.33 2383.23 V 2342.11 Q 533.33 2338.34 537.1 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2376.29 Q 552.16 2382.61 564.96 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2382.61 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K39" data-seat-no="K39" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2338.34 H 606.43 Q 610.2 2338.34 610.2 2342.11 V 2383.23 Q 610.2 2386.99 606.43 2386.99 H 576.31 Q 572.55 2386.99 572.55 2383.23 V 2342.11 Q 572.55 2338.34 576.31 2338.34 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2376.29 Q 591.37 2382.61 604.17 2376.29" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2382.61 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A40" data-seat-no="A40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2399.55 H 223.69 Q 227.45 2399.55 227.45 2403.31 V 2442.86 Q 227.45 2446.63 223.69 2446.63 H 193.57 Q 189.8 2446.63 189.8 2442.86 V 2403.31 Q 189.8 2399.55 193.57 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2436.27 Q 208.63 2442.39 221.43 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2442.39 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B40" data-seat-no="B40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2399.55 H 262.9 Q 266.67 2399.55 266.67 2403.31 V 2442.86 Q 266.67 2446.63 262.9 2446.63 H 232.78 Q 229.02 2446.63 229.02 2442.86 V 2403.31 Q 229.02 2399.55 232.78 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2436.27 Q 247.84 2442.39 260.64 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2442.39 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C40" data-seat-no="C40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2399.55 H 302.12 Q 305.88 2399.55 305.88 2403.31 V 2442.86 Q 305.88 2446.63 302.12 2446.63 H 272 Q 268.24 2446.63 268.24 2442.86 V 2403.31 Q 268.24 2399.55 272 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2436.27 Q 287.06 2442.39 299.86 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2442.39 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D40" data-seat-no="D40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2380.71 H 375.84 Q 379.61 2380.71 379.61 2384.48 V 2424.03 Q 379.61 2427.8 375.84 2427.8 H 345.73 Q 341.96 2427.8 341.96 2424.03 V 2384.48 Q 341.96 2380.71 345.73 2380.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2417.44 Q 360.78 2423.56 373.58 2417.44" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2423.56 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E40" data-seat-no="E40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2380.71 H 415.06 Q 418.82 2380.71 418.82 2384.48 V 2424.03 Q 418.82 2427.8 415.06 2427.8 H 384.94 Q 381.18 2427.8 381.18 2424.03 V 2384.48 Q 381.18 2380.71 384.94 2380.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2417.44 Q 400 2423.56 412.8 2417.44" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2423.56 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F40" data-seat-no="F40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2380.71 H 454.27 Q 458.04 2380.71 458.04 2384.48 V 2424.03 Q 458.04 2427.8 454.27 2427.8 H 424.16 Q 420.39 2427.8 420.39 2424.03 V 2384.48 Q 420.39 2380.71 424.16 2380.71 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2417.44 Q 439.22 2423.56 452.02 2417.44" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2423.56 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G40" data-seat-no="G40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2399.55 H 528 Q 531.76 2399.55 531.76 2403.31 V 2442.86 Q 531.76 2446.63 528 2446.63 H 497.88 Q 494.12 2446.63 494.12 2442.86 V 2403.31 Q 494.12 2399.55 497.88 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2436.27 Q 512.94 2442.39 525.74 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2442.39 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H40" data-seat-no="H40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2399.55 H 567.22 Q 570.98 2399.55 570.98 2403.31 V 2442.86 Q 570.98 2446.63 567.22 2446.63 H 537.1 Q 533.33 2446.63 533.33 2442.86 V 2403.31 Q 533.33 2399.55 537.1 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2436.27 Q 552.16 2442.39 564.96 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2442.39 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K40" data-seat-no="K40" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2399.55 H 606.43 Q 610.2 2399.55 610.2 2403.31 V 2442.86 Q 610.2 2446.63 606.43 2446.63 H 576.31 Q 572.55 2446.63 572.55 2442.86 V 2403.31 Q 572.55 2399.55 576.31 2399.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2436.27 Q 591.37 2442.39 604.17 2436.27" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2442.39 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A41" data-seat-no="A41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2459.18 H 223.69 Q 227.45 2459.18 227.45 2462.95 V 2504.07 Q 227.45 2507.83 223.69 2507.83 H 193.57 Q 189.8 2507.83 189.8 2504.07 V 2462.95 Q 189.8 2459.18 193.57 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2497.13 Q 208.63 2503.45 221.43 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2503.45 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B41" data-seat-no="B41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2459.18 H 262.9 Q 266.67 2459.18 266.67 2462.95 V 2504.07 Q 266.67 2507.83 262.9 2507.83 H 232.78 Q 229.02 2507.83 229.02 2504.07 V 2462.95 Q 229.02 2459.18 232.78 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2497.13 Q 247.84 2503.45 260.64 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2503.45 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C41" data-seat-no="C41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2459.18 H 302.12 Q 305.88 2459.18 305.88 2462.95 V 2504.07 Q 305.88 2507.83 302.12 2507.83 H 272 Q 268.24 2507.83 268.24 2504.07 V 2462.95 Q 268.24 2459.18 272 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2497.13 Q 287.06 2503.45 299.86 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2503.45 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D41" data-seat-no="D41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2440.35 H 375.84 Q 379.61 2440.35 379.61 2444.11 V 2485.24 Q 379.61 2489 375.84 2489 H 345.73 Q 341.96 2489 341.96 2485.24 V 2444.11 Q 341.96 2440.35 345.73 2440.35 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2478.3 Q 360.78 2484.62 373.58 2478.3" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2484.62 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E41" data-seat-no="E41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2440.35 H 415.06 Q 418.82 2440.35 418.82 2444.11 V 2485.24 Q 418.82 2489 415.06 2489 H 384.94 Q 381.18 2489 381.18 2485.24 V 2444.11 Q 381.18 2440.35 384.94 2440.35 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2478.3 Q 400 2484.62 412.8 2478.3" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2484.62 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F41" data-seat-no="F41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2440.35 H 454.27 Q 458.04 2440.35 458.04 2444.11 V 2485.24 Q 458.04 2489 454.27 2489 H 424.16 Q 420.39 2489 420.39 2485.24 V 2444.11 Q 420.39 2440.35 424.16 2440.35 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2478.3 Q 439.22 2484.62 452.02 2478.3" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2484.62 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G41" data-seat-no="G41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2459.18 H 528 Q 531.76 2459.18 531.76 2462.95 V 2504.07 Q 531.76 2507.83 528 2507.83 H 497.88 Q 494.12 2507.83 494.12 2504.07 V 2462.95 Q 494.12 2459.18 497.88 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2497.13 Q 512.94 2503.45 525.74 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2503.45 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H41" data-seat-no="H41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2459.18 H 567.22 Q 570.98 2459.18 570.98 2462.95 V 2504.07 Q 570.98 2507.83 567.22 2507.83 H 537.1 Q 533.33 2507.83 533.33 2504.07 V 2462.95 Q 533.33 2459.18 537.1 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2497.13 Q 552.16 2503.45 564.96 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2503.45 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K41" data-seat-no="K41" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2459.18 H 606.43 Q 610.2 2459.18 610.2 2462.95 V 2504.07 Q 610.2 2507.83 606.43 2507.83 H 576.31 Q 572.55 2507.83 572.55 2504.07 V 2462.95 Q 572.55 2459.18 576.31 2459.18 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2497.13 Q 591.37 2503.45 604.17 2497.13" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2503.45 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A42" data-seat-no="A42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2520.39 H 223.69 Q 227.45 2520.39 227.45 2524.15 V 2565.27 Q 227.45 2569.04 223.69 2569.04 H 193.57 Q 189.8 2569.04 189.8 2565.27 V 2524.15 Q 189.8 2520.39 193.57 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2558.33 Q 208.63 2564.66 221.43 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2564.66 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B42" data-seat-no="B42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2520.39 H 262.9 Q 266.67 2520.39 266.67 2524.15 V 2565.27 Q 266.67 2569.04 262.9 2569.04 H 232.78 Q 229.02 2569.04 229.02 2565.27 V 2524.15 Q 229.02 2520.39 232.78 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2558.33 Q 247.84 2564.66 260.64 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2564.66 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C42" data-seat-no="C42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2520.39 H 302.12 Q 305.88 2520.39 305.88 2524.15 V 2565.27 Q 305.88 2569.04 302.12 2569.04 H 272 Q 268.24 2569.04 268.24 2565.27 V 2524.15 Q 268.24 2520.39 272 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2558.33 Q 287.06 2564.66 299.86 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2564.66 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D42" data-seat-no="D42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2501.55 H 375.84 Q 379.61 2501.55 379.61 2505.32 V 2544.87 Q 379.61 2548.64 375.84 2548.64 H 345.73 Q 341.96 2548.64 341.96 2544.87 V 2505.32 Q 341.96 2501.55 345.73 2501.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2538.28 Q 360.78 2544.4 373.58 2538.28" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2544.4 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E42" data-seat-no="E42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2501.55 H 415.06 Q 418.82 2501.55 418.82 2505.32 V 2544.87 Q 418.82 2548.64 415.06 2548.64 H 384.94 Q 381.18 2548.64 381.18 2544.87 V 2505.32 Q 381.18 2501.55 384.94 2501.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2538.28 Q 400 2544.4 412.8 2538.28" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2544.4 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F42" data-seat-no="F42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2501.55 H 454.27 Q 458.04 2501.55 458.04 2505.32 V 2544.87 Q 458.04 2548.64 454.27 2548.64 H 424.16 Q 420.39 2548.64 420.39 2544.87 V 2505.32 Q 420.39 2501.55 424.16 2501.55 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2538.28 Q 439.22 2544.4 452.02 2538.28" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2544.4 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G42" data-seat-no="G42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2520.39 H 528 Q 531.76 2520.39 531.76 2524.15 V 2565.27 Q 531.76 2569.04 528 2569.04 H 497.88 Q 494.12 2569.04 494.12 2565.27 V 2524.15 Q 494.12 2520.39 497.88 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2558.33 Q 512.94 2564.66 525.74 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2564.66 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H42" data-seat-no="H42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2520.39 H 567.22 Q 570.98 2520.39 570.98 2524.15 V 2565.27 Q 570.98 2569.04 567.22 2569.04 H 537.1 Q 533.33 2569.04 533.33 2565.27 V 2524.15 Q 533.33 2520.39 537.1 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2558.33 Q 552.16 2564.66 564.96 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2564.66 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K42" data-seat-no="K42" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2520.39 H 606.43 Q 610.2 2520.39 610.2 2524.15 V 2565.27 Q 610.2 2569.04 606.43 2569.04 H 576.31 Q 572.55 2569.04 572.55 2565.27 V 2524.15 Q 572.55 2520.39 576.31 2520.39 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2558.33 Q 591.37 2564.66 604.17 2558.33" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2564.66 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A43" data-seat-no="A43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 193.57 2581.59 H 223.69 Q 227.45 2581.59 227.45 2585.36 V 2624.91 Q 227.45 2628.67 223.69 2628.67 H 193.57 Q 189.8 2628.67 189.8 2624.91 V 2585.36 Q 189.8 2581.59 193.57 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2618.32 Q 208.63 2624.44 221.43 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2624.44 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B43" data-seat-no="B43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 232.78 2581.59 H 262.9 Q 266.67 2581.59 266.67 2585.36 V 2624.91 Q 266.67 2628.67 262.9 2628.67 H 232.78 Q 229.02 2628.67 229.02 2624.91 V 2585.36 Q 229.02 2581.59 232.78 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2618.32 Q 247.84 2624.44 260.64 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2624.44 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C43" data-seat-no="C43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 272 2581.59 H 302.12 Q 305.88 2581.59 305.88 2585.36 V 2624.91 Q 305.88 2628.67 302.12 2628.67 H 272 Q 268.24 2628.67 268.24 2624.91 V 2585.36 Q 268.24 2581.59 272 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2618.32 Q 287.06 2624.44 299.86 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2624.44 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D43" data-seat-no="D43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 345.73 2562.76 H 375.84 Q 379.61 2562.76 379.61 2566.52 V 2606.08 Q 379.61 2609.84 375.84 2609.84 H 345.73 Q 341.96 2609.84 341.96 2606.08 V 2566.52 Q 341.96 2562.76 345.73 2562.76 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2599.48 Q 360.78 2605.6 373.58 2599.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2605.6 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E43" data-seat-no="E43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 384.94 2562.76 H 415.06 Q 418.82 2562.76 418.82 2566.52 V 2606.08 Q 418.82 2609.84 415.06 2609.84 H 384.94 Q 381.18 2609.84 381.18 2606.08 V 2566.52 Q 381.18 2562.76 384.94 2562.76 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2599.48 Q 400 2605.6 412.8 2599.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2605.6 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F43" data-seat-no="F43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 424.16 2562.76 H 454.27 Q 458.04 2562.76 458.04 2566.52 V 2606.08 Q 458.04 2609.84 454.27 2609.84 H 424.16 Q 420.39 2609.84 420.39 2606.08 V 2566.52 Q 420.39 2562.76 424.16 2562.76 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2599.48 Q 439.22 2605.6 452.02 2599.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2605.6 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G43" data-seat-no="G43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 497.88 2581.59 H 528 Q 531.76 2581.59 531.76 2585.36 V 2624.91 Q 531.76 2628.67 528 2628.67 H 497.88 Q 494.12 2628.67 494.12 2624.91 V 2585.36 Q 494.12 2581.59 497.88 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2618.32 Q 512.94 2624.44 525.74 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2624.44 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H43" data-seat-no="H43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 537.1 2581.59 H 567.22 Q 570.98 2581.59 570.98 2585.36 V 2624.91 Q 570.98 2628.67 567.22 2628.67 H 537.1 Q 533.33 2628.67 533.33 2624.91 V 2585.36 Q 533.33 2581.59 537.1 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2618.32 Q 552.16 2624.44 564.96 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2624.44 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K43" data-seat-no="K43" data-cabin-class="ECONOMY" data-cabin-section="middle">
+    <path d="M 576.31 2581.59 H 606.43 Q 610.2 2581.59 610.2 2585.36 V 2624.91 Q 610.2 2628.67 606.43 2628.67 H 576.31 Q 572.55 2628.67 572.55 2624.91 V 2585.36 Q 572.55 2581.59 576.31 2581.59 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2618.32 Q 591.37 2624.44 604.17 2618.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2624.44 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D44" data-seat-no="D44" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 2791.89 H 375.84 Q 379.61 2791.89 379.61 2795.65 V 2836.77 Q 379.61 2840.54 375.84 2840.54 H 345.73 Q 341.96 2840.54 341.96 2836.77 V 2795.65 Q 341.96 2791.89 345.73 2791.89 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2829.83 Q 360.78 2836.16 373.58 2829.83" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2836.16 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E44" data-seat-no="E44" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 2791.89 H 415.06 Q 418.82 2791.89 418.82 2795.65 V 2836.77 Q 418.82 2840.54 415.06 2840.54 H 384.94 Q 381.18 2840.54 381.18 2836.77 V 2795.65 Q 381.18 2791.89 384.94 2791.89 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2829.83 Q 400 2836.16 412.8 2829.83" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2836.16 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F44" data-seat-no="F44" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 2791.89 H 454.27 Q 458.04 2791.89 458.04 2795.65 V 2836.77 Q 458.04 2840.54 454.27 2840.54 H 424.16 Q 420.39 2840.54 420.39 2836.77 V 2795.65 Q 420.39 2791.89 424.16 2791.89 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2829.83 Q 439.22 2836.16 452.02 2829.83" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2836.16 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A45" data-seat-no="A45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 2840.54 H 262.9 Q 266.67 2840.54 266.67 2844.3 V 2885.42 Q 266.67 2889.19 262.9 2889.19 H 232.78 Q 229.02 2889.19 229.02 2885.42 V 2844.3 Q 229.02 2840.54 232.78 2840.54 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2878.48 Q 247.84 2884.81 260.64 2878.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2884.81 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C45" data-seat-no="C45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 2840.54 H 302.12 Q 305.88 2840.54 305.88 2844.3 V 2885.42 Q 305.88 2889.19 302.12 2889.19 H 272 Q 268.24 2889.19 268.24 2885.42 V 2844.3 Q 268.24 2840.54 272 2840.54 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2878.48 Q 287.06 2884.81 299.86 2878.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2884.81 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D45" data-seat-no="D45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 2851.52 H 375.84 Q 379.61 2851.52 379.61 2855.29 V 2896.41 Q 379.61 2900.17 375.84 2900.17 H 345.73 Q 341.96 2900.17 341.96 2896.41 V 2855.29 Q 341.96 2851.52 345.73 2851.52 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2889.47 Q 360.78 2895.79 373.58 2889.47" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2895.79 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E45" data-seat-no="E45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 2851.52 H 415.06 Q 418.82 2851.52 418.82 2855.29 V 2896.41 Q 418.82 2900.17 415.06 2900.17 H 384.94 Q 381.18 2900.17 381.18 2896.41 V 2855.29 Q 381.18 2851.52 384.94 2851.52 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2889.47 Q 400 2895.79 412.8 2889.47" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2895.79 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F45" data-seat-no="F45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 2851.52 H 454.27 Q 458.04 2851.52 458.04 2855.29 V 2896.41 Q 458.04 2900.17 454.27 2900.17 H 424.16 Q 420.39 2900.17 420.39 2896.41 V 2855.29 Q 420.39 2851.52 424.16 2851.52 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2889.47 Q 439.22 2895.79 452.02 2889.47" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2895.79 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H45" data-seat-no="H45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 2840.54 H 528 Q 531.76 2840.54 531.76 2844.3 V 2885.42 Q 531.76 2889.19 528 2889.19 H 497.88 Q 494.12 2889.19 494.12 2885.42 V 2844.3 Q 494.12 2840.54 497.88 2840.54 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2878.48 Q 512.94 2884.81 525.74 2878.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2884.81 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K45" data-seat-no="K45" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 2840.54 H 567.22 Q 570.98 2840.54 570.98 2844.3 V 2885.42 Q 570.98 2889.19 567.22 2889.19 H 537.1 Q 533.33 2889.19 533.33 2885.42 V 2844.3 Q 533.33 2840.54 537.1 2840.54 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2878.48 Q 552.16 2884.81 564.96 2878.48" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2884.81 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A46" data-seat-no="A46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 2900.17 H 223.69 Q 227.45 2900.17 227.45 2903.94 V 2945.06 Q 227.45 2948.82 223.69 2948.82 H 193.57 Q 189.8 2948.82 189.8 2945.06 V 2903.94 Q 189.8 2900.17 193.57 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2938.12 Q 208.63 2944.44 221.43 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 2944.44 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B46" data-seat-no="B46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 2900.17 H 262.9 Q 266.67 2900.17 266.67 2903.94 V 2945.06 Q 266.67 2948.82 262.9 2948.82 H 232.78 Q 229.02 2948.82 229.02 2945.06 V 2903.94 Q 229.02 2900.17 232.78 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2938.12 Q 247.84 2944.44 260.64 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 2944.44 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C46" data-seat-no="C46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 2900.17 H 302.12 Q 305.88 2900.17 305.88 2903.94 V 2945.06 Q 305.88 2948.82 302.12 2948.82 H 272 Q 268.24 2948.82 268.24 2945.06 V 2903.94 Q 268.24 2900.17 272 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2938.12 Q 287.06 2944.44 299.86 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 2944.44 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D46" data-seat-no="D46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 2911.16 H 375.84 Q 379.61 2911.16 379.61 2914.92 V 2956.04 Q 379.61 2959.81 375.84 2959.81 H 345.73 Q 341.96 2959.81 341.96 2956.04 V 2914.92 Q 341.96 2911.16 345.73 2911.16 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 2949.1 Q 360.78 2955.43 373.58 2949.1" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 2955.43 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E46" data-seat-no="E46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 2911.16 H 415.06 Q 418.82 2911.16 418.82 2914.92 V 2956.04 Q 418.82 2959.81 415.06 2959.81 H 384.94 Q 381.18 2959.81 381.18 2956.04 V 2914.92 Q 381.18 2911.16 384.94 2911.16 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 2949.1 Q 400 2955.43 412.8 2949.1" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 2955.43 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F46" data-seat-no="F46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 2911.16 H 454.27 Q 458.04 2911.16 458.04 2914.92 V 2956.04 Q 458.04 2959.81 454.27 2959.81 H 424.16 Q 420.39 2959.81 420.39 2956.04 V 2914.92 Q 420.39 2911.16 424.16 2911.16 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 2949.1 Q 439.22 2955.43 452.02 2949.1" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 2955.43 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G46" data-seat-no="G46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 2900.17 H 528 Q 531.76 2900.17 531.76 2903.94 V 2945.06 Q 531.76 2948.82 528 2948.82 H 497.88 Q 494.12 2948.82 494.12 2945.06 V 2903.94 Q 494.12 2900.17 497.88 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2938.12 Q 512.94 2944.44 525.74 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 2944.44 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H46" data-seat-no="H46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 2900.17 H 567.22 Q 570.98 2900.17 570.98 2903.94 V 2945.06 Q 570.98 2948.82 567.22 2948.82 H 537.1 Q 533.33 2948.82 533.33 2945.06 V 2903.94 Q 533.33 2900.17 537.1 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2938.12 Q 552.16 2944.44 564.96 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 2944.44 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K46" data-seat-no="K46" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 2900.17 H 606.43 Q 610.2 2900.17 610.2 2903.94 V 2945.06 Q 610.2 2948.82 606.43 2948.82 H 576.31 Q 572.55 2948.82 572.55 2945.06 V 2903.94 Q 572.55 2900.17 576.31 2900.17 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2938.12 Q 591.37 2944.44 604.17 2938.12" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 2944.44 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A47" data-seat-no="A47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 2959.81 H 223.69 Q 227.45 2959.81 227.45 2963.57 V 3003.12 Q 227.45 3006.89 223.69 3006.89 H 193.57 Q 189.8 3006.89 189.8 3003.12 V 2963.57 Q 189.8 2959.81 193.57 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 2996.53 Q 208.63 3002.65 221.43 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3002.65 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B47" data-seat-no="B47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 2959.81 H 262.9 Q 266.67 2959.81 266.67 2963.57 V 3003.12 Q 266.67 3006.89 262.9 3006.89 H 232.78 Q 229.02 3006.89 229.02 3003.12 V 2963.57 Q 229.02 2959.81 232.78 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 2996.53 Q 247.84 3002.65 260.64 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3002.65 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C47" data-seat-no="C47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 2959.81 H 302.12 Q 305.88 2959.81 305.88 2963.57 V 3003.12 Q 305.88 3006.89 302.12 3006.89 H 272 Q 268.24 3006.89 268.24 3003.12 V 2963.57 Q 268.24 2959.81 272 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 2996.53 Q 287.06 3002.65 299.86 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3002.65 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D47" data-seat-no="D47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 2970.79 H 375.84 Q 379.61 2970.79 379.61 2974.56 V 3014.11 Q 379.61 3017.87 375.84 3017.87 H 345.73 Q 341.96 3017.87 341.96 3014.11 V 2974.56 Q 341.96 2970.79 345.73 2970.79 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3007.52 Q 360.78 3013.64 373.58 3007.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3013.64 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E47" data-seat-no="E47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 2970.79 H 415.06 Q 418.82 2970.79 418.82 2974.56 V 3014.11 Q 418.82 3017.87 415.06 3017.87 H 384.94 Q 381.18 3017.87 381.18 3014.11 V 2974.56 Q 381.18 2970.79 384.94 2970.79 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3007.52 Q 400 3013.64 412.8 3007.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3013.64 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F47" data-seat-no="F47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 2970.79 H 454.27 Q 458.04 2970.79 458.04 2974.56 V 3014.11 Q 458.04 3017.87 454.27 3017.87 H 424.16 Q 420.39 3017.87 420.39 3014.11 V 2974.56 Q 420.39 2970.79 424.16 2970.79 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3007.52 Q 439.22 3013.64 452.02 3007.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3013.64 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G47" data-seat-no="G47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 2959.81 H 528 Q 531.76 2959.81 531.76 2963.57 V 3003.12 Q 531.76 3006.89 528 3006.89 H 497.88 Q 494.12 3006.89 494.12 3003.12 V 2963.57 Q 494.12 2959.81 497.88 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 2996.53 Q 512.94 3002.65 525.74 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3002.65 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H47" data-seat-no="H47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 2959.81 H 567.22 Q 570.98 2959.81 570.98 2963.57 V 3003.12 Q 570.98 3006.89 567.22 3006.89 H 537.1 Q 533.33 3006.89 533.33 3003.12 V 2963.57 Q 533.33 2959.81 537.1 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 2996.53 Q 552.16 3002.65 564.96 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3002.65 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K47" data-seat-no="K47" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 2959.81 H 606.43 Q 610.2 2959.81 610.2 2963.57 V 3003.12 Q 610.2 3006.89 606.43 3006.89 H 576.31 Q 572.55 3006.89 572.55 3003.12 V 2963.57 Q 572.55 2959.81 576.31 2959.81 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 2996.53 Q 591.37 3002.65 604.17 2996.53" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3002.65 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A48" data-seat-no="A48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3017.87 H 223.69 Q 227.45 3017.87 227.45 3021.64 V 3062.76 Q 227.45 3066.52 223.69 3066.52 H 193.57 Q 189.8 3066.52 189.8 3062.76 V 3021.64 Q 189.8 3017.87 193.57 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3055.82 Q 208.63 3062.14 221.43 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3062.14 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B48" data-seat-no="B48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3017.87 H 262.9 Q 266.67 3017.87 266.67 3021.64 V 3062.76 Q 266.67 3066.52 262.9 3066.52 H 232.78 Q 229.02 3066.52 229.02 3062.76 V 3021.64 Q 229.02 3017.87 232.78 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3055.82 Q 247.84 3062.14 260.64 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3062.14 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C48" data-seat-no="C48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3017.87 H 302.12 Q 305.88 3017.87 305.88 3021.64 V 3062.76 Q 305.88 3066.52 302.12 3066.52 H 272 Q 268.24 3066.52 268.24 3062.76 V 3021.64 Q 268.24 3017.87 272 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3055.82 Q 287.06 3062.14 299.86 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3062.14 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D48" data-seat-no="D48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3028.86 H 375.84 Q 379.61 3028.86 379.61 3032.62 V 3073.74 Q 379.61 3077.51 375.84 3077.51 H 345.73 Q 341.96 3077.51 341.96 3073.74 V 3032.62 Q 341.96 3028.86 345.73 3028.86 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3066.81 Q 360.78 3073.13 373.58 3066.81" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3073.13 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E48" data-seat-no="E48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3028.86 H 415.06 Q 418.82 3028.86 418.82 3032.62 V 3073.74 Q 418.82 3077.51 415.06 3077.51 H 384.94 Q 381.18 3077.51 381.18 3073.74 V 3032.62 Q 381.18 3028.86 384.94 3028.86 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3066.81 Q 400 3073.13 412.8 3066.81" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3073.13 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F48" data-seat-no="F48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3028.86 H 454.27 Q 458.04 3028.86 458.04 3032.62 V 3073.74 Q 458.04 3077.51 454.27 3077.51 H 424.16 Q 420.39 3077.51 420.39 3073.74 V 3032.62 Q 420.39 3028.86 424.16 3028.86 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3066.81 Q 439.22 3073.13 452.02 3066.81" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3073.13 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G48" data-seat-no="G48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3017.87 H 528 Q 531.76 3017.87 531.76 3021.64 V 3062.76 Q 531.76 3066.52 528 3066.52 H 497.88 Q 494.12 3066.52 494.12 3062.76 V 3021.64 Q 494.12 3017.87 497.88 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3055.82 Q 512.94 3062.14 525.74 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3062.14 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H48" data-seat-no="H48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3017.87 H 567.22 Q 570.98 3017.87 570.98 3021.64 V 3062.76 Q 570.98 3066.52 567.22 3066.52 H 537.1 Q 533.33 3066.52 533.33 3062.76 V 3021.64 Q 533.33 3017.87 537.1 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3055.82 Q 552.16 3062.14 564.96 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3062.14 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K48" data-seat-no="K48" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3017.87 H 606.43 Q 610.2 3017.87 610.2 3021.64 V 3062.76 Q 610.2 3066.52 606.43 3066.52 H 576.31 Q 572.55 3066.52 572.55 3062.76 V 3021.64 Q 572.55 3017.87 576.31 3017.87 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3055.82 Q 591.37 3062.14 604.17 3055.82" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3062.14 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A49" data-seat-no="A49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3077.51 H 223.69 Q 227.45 3077.51 227.45 3081.27 V 3120.82 Q 227.45 3124.59 223.69 3124.59 H 193.57 Q 189.8 3124.59 189.8 3120.82 V 3081.27 Q 189.8 3077.51 193.57 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3114.23 Q 208.63 3120.35 221.43 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3120.35 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B49" data-seat-no="B49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3077.51 H 262.9 Q 266.67 3077.51 266.67 3081.27 V 3120.82 Q 266.67 3124.59 262.9 3124.59 H 232.78 Q 229.02 3124.59 229.02 3120.82 V 3081.27 Q 229.02 3077.51 232.78 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3114.23 Q 247.84 3120.35 260.64 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3120.35 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C49" data-seat-no="C49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3077.51 H 302.12 Q 305.88 3077.51 305.88 3081.27 V 3120.82 Q 305.88 3124.59 302.12 3124.59 H 272 Q 268.24 3124.59 268.24 3120.82 V 3081.27 Q 268.24 3077.51 272 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3114.23 Q 287.06 3120.35 299.86 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3120.35 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D49" data-seat-no="D49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3088.49 H 375.84 Q 379.61 3088.49 379.61 3092.26 V 3131.81 Q 379.61 3135.58 375.84 3135.58 H 345.73 Q 341.96 3135.58 341.96 3131.81 V 3092.26 Q 341.96 3088.49 345.73 3088.49 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3125.22 Q 360.78 3131.34 373.58 3125.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3131.34 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E49" data-seat-no="E49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3088.49 H 415.06 Q 418.82 3088.49 418.82 3092.26 V 3131.81 Q 418.82 3135.58 415.06 3135.58 H 384.94 Q 381.18 3135.58 381.18 3131.81 V 3092.26 Q 381.18 3088.49 384.94 3088.49 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3125.22 Q 400 3131.34 412.8 3125.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3131.34 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F49" data-seat-no="F49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3088.49 H 454.27 Q 458.04 3088.49 458.04 3092.26 V 3131.81 Q 458.04 3135.58 454.27 3135.58 H 424.16 Q 420.39 3135.58 420.39 3131.81 V 3092.26 Q 420.39 3088.49 424.16 3088.49 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3125.22 Q 439.22 3131.34 452.02 3125.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3131.34 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G49" data-seat-no="G49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3077.51 H 528 Q 531.76 3077.51 531.76 3081.27 V 3120.82 Q 531.76 3124.59 528 3124.59 H 497.88 Q 494.12 3124.59 494.12 3120.82 V 3081.27 Q 494.12 3077.51 497.88 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3114.23 Q 512.94 3120.35 525.74 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3120.35 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H49" data-seat-no="H49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3077.51 H 567.22 Q 570.98 3077.51 570.98 3081.27 V 3120.82 Q 570.98 3124.59 567.22 3124.59 H 537.1 Q 533.33 3124.59 533.33 3120.82 V 3081.27 Q 533.33 3077.51 537.1 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3114.23 Q 552.16 3120.35 564.96 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3120.35 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K49" data-seat-no="K49" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3077.51 H 606.43 Q 610.2 3077.51 610.2 3081.27 V 3120.82 Q 610.2 3124.59 606.43 3124.59 H 576.31 Q 572.55 3124.59 572.55 3120.82 V 3081.27 Q 572.55 3077.51 576.31 3077.51 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3114.23 Q 591.37 3120.35 604.17 3114.23" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3120.35 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A50" data-seat-no="A50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3135.58 H 223.69 Q 227.45 3135.58 227.45 3139.34 V 3180.46 Q 227.45 3184.23 223.69 3184.23 H 193.57 Q 189.8 3184.23 189.8 3180.46 V 3139.34 Q 189.8 3135.58 193.57 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3173.52 Q 208.63 3179.85 221.43 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3179.85 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B50" data-seat-no="B50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3135.58 H 262.9 Q 266.67 3135.58 266.67 3139.34 V 3180.46 Q 266.67 3184.23 262.9 3184.23 H 232.78 Q 229.02 3184.23 229.02 3180.46 V 3139.34 Q 229.02 3135.58 232.78 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3173.52 Q 247.84 3179.85 260.64 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3179.85 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C50" data-seat-no="C50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3135.58 H 302.12 Q 305.88 3135.58 305.88 3139.34 V 3180.46 Q 305.88 3184.23 302.12 3184.23 H 272 Q 268.24 3184.23 268.24 3180.46 V 3139.34 Q 268.24 3135.58 272 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3173.52 Q 287.06 3179.85 299.86 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3179.85 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D50" data-seat-no="D50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3146.56 H 375.84 Q 379.61 3146.56 379.61 3150.33 V 3191.45 Q 379.61 3195.21 375.84 3195.21 H 345.73 Q 341.96 3195.21 341.96 3191.45 V 3150.33 Q 341.96 3146.56 345.73 3146.56 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3184.51 Q 360.78 3190.83 373.58 3184.51" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3190.83 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E50" data-seat-no="E50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3146.56 H 415.06 Q 418.82 3146.56 418.82 3150.33 V 3191.45 Q 418.82 3195.21 415.06 3195.21 H 384.94 Q 381.18 3195.21 381.18 3191.45 V 3150.33 Q 381.18 3146.56 384.94 3146.56 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3184.51 Q 400 3190.83 412.8 3184.51" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3190.83 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F50" data-seat-no="F50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3146.56 H 454.27 Q 458.04 3146.56 458.04 3150.33 V 3191.45 Q 458.04 3195.21 454.27 3195.21 H 424.16 Q 420.39 3195.21 420.39 3191.45 V 3150.33 Q 420.39 3146.56 424.16 3146.56 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3184.51 Q 439.22 3190.83 452.02 3184.51" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3190.83 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G50" data-seat-no="G50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3135.58 H 528 Q 531.76 3135.58 531.76 3139.34 V 3180.46 Q 531.76 3184.23 528 3184.23 H 497.88 Q 494.12 3184.23 494.12 3180.46 V 3139.34 Q 494.12 3135.58 497.88 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3173.52 Q 512.94 3179.85 525.74 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3179.85 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H50" data-seat-no="H50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3135.58 H 567.22 Q 570.98 3135.58 570.98 3139.34 V 3180.46 Q 570.98 3184.23 567.22 3184.23 H 537.1 Q 533.33 3184.23 533.33 3180.46 V 3139.34 Q 533.33 3135.58 537.1 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3173.52 Q 552.16 3179.85 564.96 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3179.85 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K50" data-seat-no="K50" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3135.58 H 606.43 Q 610.2 3135.58 610.2 3139.34 V 3180.46 Q 610.2 3184.23 606.43 3184.23 H 576.31 Q 572.55 3184.23 572.55 3180.46 V 3139.34 Q 572.55 3135.58 576.31 3135.58 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3173.52 Q 591.37 3179.85 604.17 3173.52" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3179.85 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A51" data-seat-no="A51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3195.21 H 223.69 Q 227.45 3195.21 227.45 3198.98 V 3238.53 Q 227.45 3242.29 223.69 3242.29 H 193.57 Q 189.8 3242.29 189.8 3238.53 V 3198.98 Q 189.8 3195.21 193.57 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3231.93 Q 208.63 3238.05 221.43 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3238.05 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B51" data-seat-no="B51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3195.21 H 262.9 Q 266.67 3195.21 266.67 3198.98 V 3238.53 Q 266.67 3242.29 262.9 3242.29 H 232.78 Q 229.02 3242.29 229.02 3238.53 V 3198.98 Q 229.02 3195.21 232.78 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3231.93 Q 247.84 3238.05 260.64 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3238.05 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C51" data-seat-no="C51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3195.21 H 302.12 Q 305.88 3195.21 305.88 3198.98 V 3238.53 Q 305.88 3242.29 302.12 3242.29 H 272 Q 268.24 3242.29 268.24 3238.53 V 3198.98 Q 268.24 3195.21 272 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3231.93 Q 287.06 3238.05 299.86 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3238.05 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D51" data-seat-no="D51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3206.2 H 375.84 Q 379.61 3206.2 379.61 3209.96 V 3249.51 Q 379.61 3253.28 375.84 3253.28 H 345.73 Q 341.96 3253.28 341.96 3249.51 V 3209.96 Q 341.96 3206.2 345.73 3206.2 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3242.92 Q 360.78 3249.04 373.58 3242.92" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3249.04 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E51" data-seat-no="E51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3206.2 H 415.06 Q 418.82 3206.2 418.82 3209.96 V 3249.51 Q 418.82 3253.28 415.06 3253.28 H 384.94 Q 381.18 3253.28 381.18 3249.51 V 3209.96 Q 381.18 3206.2 384.94 3206.2 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3242.92 Q 400 3249.04 412.8 3242.92" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3249.04 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F51" data-seat-no="F51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3206.2 H 454.27 Q 458.04 3206.2 458.04 3209.96 V 3249.51 Q 458.04 3253.28 454.27 3253.28 H 424.16 Q 420.39 3253.28 420.39 3249.51 V 3209.96 Q 420.39 3206.2 424.16 3206.2 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3242.92 Q 439.22 3249.04 452.02 3242.92" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3249.04 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G51" data-seat-no="G51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3195.21 H 528 Q 531.76 3195.21 531.76 3198.98 V 3238.53 Q 531.76 3242.29 528 3242.29 H 497.88 Q 494.12 3242.29 494.12 3238.53 V 3198.98 Q 494.12 3195.21 497.88 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3231.93 Q 512.94 3238.05 525.74 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3238.05 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H51" data-seat-no="H51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3195.21 H 567.22 Q 570.98 3195.21 570.98 3198.98 V 3238.53 Q 570.98 3242.29 567.22 3242.29 H 537.1 Q 533.33 3242.29 533.33 3238.53 V 3198.98 Q 533.33 3195.21 537.1 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3231.93 Q 552.16 3238.05 564.96 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3238.05 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K51" data-seat-no="K51" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3195.21 H 606.43 Q 610.2 3195.21 610.2 3198.98 V 3238.53 Q 610.2 3242.29 606.43 3242.29 H 576.31 Q 572.55 3242.29 572.55 3238.53 V 3198.98 Q 572.55 3195.21 576.31 3195.21 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3231.93 Q 591.37 3238.05 604.17 3231.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3238.05 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A52" data-seat-no="A52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3253.28 H 223.69 Q 227.45 3253.28 227.45 3257.04 V 3298.16 Q 227.45 3301.93 223.69 3301.93 H 193.57 Q 189.8 3301.93 189.8 3298.16 V 3257.04 Q 189.8 3253.28 193.57 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3291.22 Q 208.63 3297.55 221.43 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3297.55 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B52" data-seat-no="B52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3253.28 H 262.9 Q 266.67 3253.28 266.67 3257.04 V 3298.16 Q 266.67 3301.93 262.9 3301.93 H 232.78 Q 229.02 3301.93 229.02 3298.16 V 3257.04 Q 229.02 3253.28 232.78 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3291.22 Q 247.84 3297.55 260.64 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3297.55 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C52" data-seat-no="C52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3253.28 H 302.12 Q 305.88 3253.28 305.88 3257.04 V 3298.16 Q 305.88 3301.93 302.12 3301.93 H 272 Q 268.24 3301.93 268.24 3298.16 V 3257.04 Q 268.24 3253.28 272 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3291.22 Q 287.06 3297.55 299.86 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3297.55 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D52" data-seat-no="D52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3264.26 H 375.84 Q 379.61 3264.26 379.61 3268.03 V 3309.15 Q 379.61 3312.91 375.84 3312.91 H 345.73 Q 341.96 3312.91 341.96 3309.15 V 3268.03 Q 341.96 3264.26 345.73 3264.26 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3302.21 Q 360.78 3308.53 373.58 3302.21" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3308.53 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E52" data-seat-no="E52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3264.26 H 415.06 Q 418.82 3264.26 418.82 3268.03 V 3309.15 Q 418.82 3312.91 415.06 3312.91 H 384.94 Q 381.18 3312.91 381.18 3309.15 V 3268.03 Q 381.18 3264.26 384.94 3264.26 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3302.21 Q 400 3308.53 412.8 3302.21" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3308.53 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F52" data-seat-no="F52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3264.26 H 454.27 Q 458.04 3264.26 458.04 3268.03 V 3309.15 Q 458.04 3312.91 454.27 3312.91 H 424.16 Q 420.39 3312.91 420.39 3309.15 V 3268.03 Q 420.39 3264.26 424.16 3264.26 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3302.21 Q 439.22 3308.53 452.02 3302.21" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3308.53 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G52" data-seat-no="G52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3253.28 H 528 Q 531.76 3253.28 531.76 3257.04 V 3298.16 Q 531.76 3301.93 528 3301.93 H 497.88 Q 494.12 3301.93 494.12 3298.16 V 3257.04 Q 494.12 3253.28 497.88 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3291.22 Q 512.94 3297.55 525.74 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3297.55 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H52" data-seat-no="H52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3253.28 H 567.22 Q 570.98 3253.28 570.98 3257.04 V 3298.16 Q 570.98 3301.93 567.22 3301.93 H 537.1 Q 533.33 3301.93 533.33 3298.16 V 3257.04 Q 533.33 3253.28 537.1 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3291.22 Q 552.16 3297.55 564.96 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3297.55 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K52" data-seat-no="K52" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3253.28 H 606.43 Q 610.2 3253.28 610.2 3257.04 V 3298.16 Q 610.2 3301.93 606.43 3301.93 H 576.31 Q 572.55 3301.93 572.55 3298.16 V 3257.04 Q 572.55 3253.28 576.31 3253.28 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3291.22 Q 591.37 3297.55 604.17 3291.22" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3297.55 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A53" data-seat-no="A53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3312.91 H 223.69 Q 227.45 3312.91 227.45 3316.68 V 3356.23 Q 227.45 3359.99 223.69 3359.99 H 193.57 Q 189.8 3359.99 189.8 3356.23 V 3316.68 Q 189.8 3312.91 193.57 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3349.64 Q 208.63 3355.76 221.43 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3355.76 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B53" data-seat-no="B53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3312.91 H 262.9 Q 266.67 3312.91 266.67 3316.68 V 3356.23 Q 266.67 3359.99 262.9 3359.99 H 232.78 Q 229.02 3359.99 229.02 3356.23 V 3316.68 Q 229.02 3312.91 232.78 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3349.64 Q 247.84 3355.76 260.64 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3355.76 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C53" data-seat-no="C53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3312.91 H 302.12 Q 305.88 3312.91 305.88 3316.68 V 3356.23 Q 305.88 3359.99 302.12 3359.99 H 272 Q 268.24 3359.99 268.24 3356.23 V 3316.68 Q 268.24 3312.91 272 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3349.64 Q 287.06 3355.76 299.86 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3355.76 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D53" data-seat-no="D53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3323.9 H 375.84 Q 379.61 3323.9 379.61 3327.66 V 3367.21 Q 379.61 3370.98 375.84 3370.98 H 345.73 Q 341.96 3370.98 341.96 3367.21 V 3327.66 Q 341.96 3323.9 345.73 3323.9 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3360.62 Q 360.78 3366.74 373.58 3360.62" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3366.74 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E53" data-seat-no="E53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3323.9 H 415.06 Q 418.82 3323.9 418.82 3327.66 V 3367.21 Q 418.82 3370.98 415.06 3370.98 H 384.94 Q 381.18 3370.98 381.18 3367.21 V 3327.66 Q 381.18 3323.9 384.94 3323.9 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3360.62 Q 400 3366.74 412.8 3360.62" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3366.74 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F53" data-seat-no="F53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3323.9 H 454.27 Q 458.04 3323.9 458.04 3327.66 V 3367.21 Q 458.04 3370.98 454.27 3370.98 H 424.16 Q 420.39 3370.98 420.39 3367.21 V 3327.66 Q 420.39 3323.9 424.16 3323.9 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3360.62 Q 439.22 3366.74 452.02 3360.62" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3366.74 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G53" data-seat-no="G53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3312.91 H 528 Q 531.76 3312.91 531.76 3316.68 V 3356.23 Q 531.76 3359.99 528 3359.99 H 497.88 Q 494.12 3359.99 494.12 3356.23 V 3316.68 Q 494.12 3312.91 497.88 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3349.64 Q 512.94 3355.76 525.74 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3355.76 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H53" data-seat-no="H53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3312.91 H 567.22 Q 570.98 3312.91 570.98 3316.68 V 3356.23 Q 570.98 3359.99 567.22 3359.99 H 537.1 Q 533.33 3359.99 533.33 3356.23 V 3316.68 Q 533.33 3312.91 537.1 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3349.64 Q 552.16 3355.76 564.96 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3355.76 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K53" data-seat-no="K53" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3312.91 H 606.43 Q 610.2 3312.91 610.2 3316.68 V 3356.23 Q 610.2 3359.99 606.43 3359.99 H 576.31 Q 572.55 3359.99 572.55 3356.23 V 3316.68 Q 572.55 3312.91 576.31 3312.91 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3349.64 Q 591.37 3355.76 604.17 3349.64" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3355.76 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A54" data-seat-no="A54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3370.98 H 223.69 Q 227.45 3370.98 227.45 3374.74 V 3415.86 Q 227.45 3419.63 223.69 3419.63 H 193.57 Q 189.8 3419.63 189.8 3415.86 V 3374.74 Q 189.8 3370.98 193.57 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3408.93 Q 208.63 3415.25 221.43 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3415.25 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B54" data-seat-no="B54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3370.98 H 262.9 Q 266.67 3370.98 266.67 3374.74 V 3415.86 Q 266.67 3419.63 262.9 3419.63 H 232.78 Q 229.02 3419.63 229.02 3415.86 V 3374.74 Q 229.02 3370.98 232.78 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3408.93 Q 247.84 3415.25 260.64 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3415.25 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C54" data-seat-no="C54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3370.98 H 302.12 Q 305.88 3370.98 305.88 3374.74 V 3415.86 Q 305.88 3419.63 302.12 3419.63 H 272 Q 268.24 3419.63 268.24 3415.86 V 3374.74 Q 268.24 3370.98 272 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3408.93 Q 287.06 3415.25 299.86 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3415.25 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D54" data-seat-no="D54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3381.96 H 375.84 Q 379.61 3381.96 379.61 3385.73 V 3426.85 Q 379.61 3430.61 375.84 3430.61 H 345.73 Q 341.96 3430.61 341.96 3426.85 V 3385.73 Q 341.96 3381.96 345.73 3381.96 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3419.91 Q 360.78 3426.24 373.58 3419.91" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3426.24 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E54" data-seat-no="E54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3381.96 H 415.06 Q 418.82 3381.96 418.82 3385.73 V 3426.85 Q 418.82 3430.61 415.06 3430.61 H 384.94 Q 381.18 3430.61 381.18 3426.85 V 3385.73 Q 381.18 3381.96 384.94 3381.96 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3419.91 Q 400 3426.24 412.8 3419.91" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3426.24 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F54" data-seat-no="F54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3381.96 H 454.27 Q 458.04 3381.96 458.04 3385.73 V 3426.85 Q 458.04 3430.61 454.27 3430.61 H 424.16 Q 420.39 3430.61 420.39 3426.85 V 3385.73 Q 420.39 3381.96 424.16 3381.96 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3419.91 Q 439.22 3426.24 452.02 3419.91" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3426.24 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G54" data-seat-no="G54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3370.98 H 528 Q 531.76 3370.98 531.76 3374.74 V 3415.86 Q 531.76 3419.63 528 3419.63 H 497.88 Q 494.12 3419.63 494.12 3415.86 V 3374.74 Q 494.12 3370.98 497.88 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3408.93 Q 512.94 3415.25 525.74 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3415.25 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H54" data-seat-no="H54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3370.98 H 567.22 Q 570.98 3370.98 570.98 3374.74 V 3415.86 Q 570.98 3419.63 567.22 3419.63 H 537.1 Q 533.33 3419.63 533.33 3415.86 V 3374.74 Q 533.33 3370.98 537.1 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3408.93 Q 552.16 3415.25 564.96 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3415.25 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K54" data-seat-no="K54" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3370.98 H 606.43 Q 610.2 3370.98 610.2 3374.74 V 3415.86 Q 610.2 3419.63 606.43 3419.63 H 576.31 Q 572.55 3419.63 572.55 3415.86 V 3374.74 Q 572.55 3370.98 576.31 3370.98 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3408.93 Q 591.37 3415.25 604.17 3408.93" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3415.25 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A55" data-seat-no="A55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3429.04 H 223.69 Q 227.45 3429.04 227.45 3432.81 V 3473.93 Q 227.45 3477.7 223.69 3477.7 H 193.57 Q 189.8 3477.7 189.8 3473.93 V 3432.81 Q 189.8 3429.04 193.57 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3466.99 Q 208.63 3473.32 221.43 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3473.32 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B55" data-seat-no="B55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3429.04 H 262.9 Q 266.67 3429.04 266.67 3432.81 V 3473.93 Q 266.67 3477.7 262.9 3477.7 H 232.78 Q 229.02 3477.7 229.02 3473.93 V 3432.81 Q 229.02 3429.04 232.78 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3466.99 Q 247.84 3473.32 260.64 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3473.32 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C55" data-seat-no="C55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3429.04 H 302.12 Q 305.88 3429.04 305.88 3432.81 V 3473.93 Q 305.88 3477.7 302.12 3477.7 H 272 Q 268.24 3477.7 268.24 3473.93 V 3432.81 Q 268.24 3429.04 272 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3466.99 Q 287.06 3473.32 299.86 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3473.32 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D55" data-seat-no="D55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3441.6 H 375.84 Q 379.61 3441.6 379.61 3445.36 V 3484.92 Q 379.61 3488.68 375.84 3488.68 H 345.73 Q 341.96 3488.68 341.96 3484.92 V 3445.36 Q 341.96 3441.6 345.73 3441.6 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3478.32 Q 360.78 3484.44 373.58 3478.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3484.44 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E55" data-seat-no="E55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3441.6 H 415.06 Q 418.82 3441.6 418.82 3445.36 V 3484.92 Q 418.82 3488.68 415.06 3488.68 H 384.94 Q 381.18 3488.68 381.18 3484.92 V 3445.36 Q 381.18 3441.6 384.94 3441.6 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3478.32 Q 400 3484.44 412.8 3478.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3484.44 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F55" data-seat-no="F55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3441.6 H 454.27 Q 458.04 3441.6 458.04 3445.36 V 3484.92 Q 458.04 3488.68 454.27 3488.68 H 424.16 Q 420.39 3488.68 420.39 3484.92 V 3445.36 Q 420.39 3441.6 424.16 3441.6 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3478.32 Q 439.22 3484.44 452.02 3478.32" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3484.44 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G55" data-seat-no="G55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3429.04 H 528 Q 531.76 3429.04 531.76 3432.81 V 3473.93 Q 531.76 3477.7 528 3477.7 H 497.88 Q 494.12 3477.7 494.12 3473.93 V 3432.81 Q 494.12 3429.04 497.88 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3466.99 Q 512.94 3473.32 525.74 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3473.32 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H55" data-seat-no="H55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3429.04 H 567.22 Q 570.98 3429.04 570.98 3432.81 V 3473.93 Q 570.98 3477.7 567.22 3477.7 H 537.1 Q 533.33 3477.7 533.33 3473.93 V 3432.81 Q 533.33 3429.04 537.1 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3466.99 Q 552.16 3473.32 564.96 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3473.32 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K55" data-seat-no="K55" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3429.04 H 606.43 Q 610.2 3429.04 610.2 3432.81 V 3473.93 Q 610.2 3477.7 606.43 3477.7 H 576.31 Q 572.55 3477.7 572.55 3473.93 V 3432.81 Q 572.55 3429.04 576.31 3429.04 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3466.99 Q 591.37 3473.32 604.17 3466.99" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3473.32 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A56" data-seat-no="A56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3488.68 H 223.69 Q 227.45 3488.68 227.45 3492.45 V 3532 Q 227.45 3535.76 223.69 3535.76 H 193.57 Q 189.8 3535.76 189.8 3532 V 3492.45 Q 189.8 3488.68 193.57 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3525.4 Q 208.63 3531.52 221.43 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3531.52 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B56" data-seat-no="B56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3488.68 H 262.9 Q 266.67 3488.68 266.67 3492.45 V 3532 Q 266.67 3535.76 262.9 3535.76 H 232.78 Q 229.02 3535.76 229.02 3532 V 3492.45 Q 229.02 3488.68 232.78 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3525.4 Q 247.84 3531.52 260.64 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3531.52 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C56" data-seat-no="C56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3488.68 H 302.12 Q 305.88 3488.68 305.88 3492.45 V 3532 Q 305.88 3535.76 302.12 3535.76 H 272 Q 268.24 3535.76 268.24 3532 V 3492.45 Q 268.24 3488.68 272 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3525.4 Q 287.06 3531.52 299.86 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3531.52 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D56" data-seat-no="D56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3499.67 H 375.84 Q 379.61 3499.67 379.61 3503.43 V 3542.98 Q 379.61 3546.75 375.84 3546.75 H 345.73 Q 341.96 3546.75 341.96 3542.98 V 3503.43 Q 341.96 3499.67 345.73 3499.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3536.39 Q 360.78 3542.51 373.58 3536.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3542.51 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E56" data-seat-no="E56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3499.67 H 415.06 Q 418.82 3499.67 418.82 3503.43 V 3542.98 Q 418.82 3546.75 415.06 3546.75 H 384.94 Q 381.18 3546.75 381.18 3542.98 V 3503.43 Q 381.18 3499.67 384.94 3499.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3536.39 Q 400 3542.51 412.8 3536.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3542.51 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F56" data-seat-no="F56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3499.67 H 454.27 Q 458.04 3499.67 458.04 3503.43 V 3542.98 Q 458.04 3546.75 454.27 3546.75 H 424.16 Q 420.39 3546.75 420.39 3542.98 V 3503.43 Q 420.39 3499.67 424.16 3499.67 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3536.39 Q 439.22 3542.51 452.02 3536.39" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3542.51 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G56" data-seat-no="G56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3488.68 H 528 Q 531.76 3488.68 531.76 3492.45 V 3532 Q 531.76 3535.76 528 3535.76 H 497.88 Q 494.12 3535.76 494.12 3532 V 3492.45 Q 494.12 3488.68 497.88 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3525.4 Q 512.94 3531.52 525.74 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3531.52 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H56" data-seat-no="H56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3488.68 H 567.22 Q 570.98 3488.68 570.98 3492.45 V 3532 Q 570.98 3535.76 567.22 3535.76 H 537.1 Q 533.33 3535.76 533.33 3532 V 3492.45 Q 533.33 3488.68 537.1 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3525.4 Q 552.16 3531.52 564.96 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3531.52 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K56" data-seat-no="K56" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3488.68 H 606.43 Q 610.2 3488.68 610.2 3492.45 V 3532 Q 610.2 3535.76 606.43 3535.76 H 576.31 Q 572.55 3535.76 572.55 3532 V 3492.45 Q 572.55 3488.68 576.31 3488.68 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3525.4 Q 591.37 3531.52 604.17 3525.4" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3531.52 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A57" data-seat-no="A57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3546.75 H 223.69 Q 227.45 3546.75 227.45 3550.51 V 3591.63 Q 227.45 3595.4 223.69 3595.4 H 193.57 Q 189.8 3595.4 189.8 3591.63 V 3550.51 Q 189.8 3546.75 193.57 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3584.69 Q 208.63 3591.02 221.43 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3591.02 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B57" data-seat-no="B57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3546.75 H 262.9 Q 266.67 3546.75 266.67 3550.51 V 3591.63 Q 266.67 3595.4 262.9 3595.4 H 232.78 Q 229.02 3595.4 229.02 3591.63 V 3550.51 Q 229.02 3546.75 232.78 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3584.69 Q 247.84 3591.02 260.64 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3591.02 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C57" data-seat-no="C57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3546.75 H 302.12 Q 305.88 3546.75 305.88 3550.51 V 3591.63 Q 305.88 3595.4 302.12 3595.4 H 272 Q 268.24 3595.4 268.24 3591.63 V 3550.51 Q 268.24 3546.75 272 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3584.69 Q 287.06 3591.02 299.86 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3591.02 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D57" data-seat-no="D57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3557.73 H 375.84 Q 379.61 3557.73 379.61 3561.5 V 3602.62 Q 379.61 3606.38 375.84 3606.38 H 345.73 Q 341.96 3606.38 341.96 3602.62 V 3561.5 Q 341.96 3557.73 345.73 3557.73 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3595.68 Q 360.78 3602 373.58 3595.68" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3602 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E57" data-seat-no="E57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3557.73 H 415.06 Q 418.82 3557.73 418.82 3561.5 V 3602.62 Q 418.82 3606.38 415.06 3606.38 H 384.94 Q 381.18 3606.38 381.18 3602.62 V 3561.5 Q 381.18 3557.73 384.94 3557.73 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3595.68 Q 400 3602 412.8 3595.68" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3602 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F57" data-seat-no="F57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3557.73 H 454.27 Q 458.04 3557.73 458.04 3561.5 V 3602.62 Q 458.04 3606.38 454.27 3606.38 H 424.16 Q 420.39 3606.38 420.39 3602.62 V 3561.5 Q 420.39 3557.73 424.16 3557.73 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3595.68 Q 439.22 3602 452.02 3595.68" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3602 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G57" data-seat-no="G57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3546.75 H 528 Q 531.76 3546.75 531.76 3550.51 V 3591.63 Q 531.76 3595.4 528 3595.4 H 497.88 Q 494.12 3595.4 494.12 3591.63 V 3550.51 Q 494.12 3546.75 497.88 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3584.69 Q 512.94 3591.02 525.74 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3591.02 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H57" data-seat-no="H57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3546.75 H 567.22 Q 570.98 3546.75 570.98 3550.51 V 3591.63 Q 570.98 3595.4 567.22 3595.4 H 537.1 Q 533.33 3595.4 533.33 3591.63 V 3550.51 Q 533.33 3546.75 537.1 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3584.69 Q 552.16 3591.02 564.96 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3591.02 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K57" data-seat-no="K57" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3546.75 H 606.43 Q 610.2 3546.75 610.2 3550.51 V 3591.63 Q 610.2 3595.4 606.43 3595.4 H 576.31 Q 572.55 3595.4 572.55 3591.63 V 3550.51 Q 572.55 3546.75 576.31 3546.75 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3584.69 Q 591.37 3591.02 604.17 3584.69" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3591.02 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-A58" data-seat-no="A58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 193.57 3606.38 H 223.69 Q 227.45 3606.38 227.45 3610.15 V 3649.7 Q 227.45 3653.46 223.69 3653.46 H 193.57 Q 189.8 3653.46 189.8 3649.7 V 3610.15 Q 189.8 3606.38 193.57 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 195.83 3643.11 Q 208.63 3649.23 221.43 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 197.33 3649.23 H 219.92" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-B58" data-seat-no="B58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 232.78 3606.38 H 262.9 Q 266.67 3606.38 266.67 3610.15 V 3649.7 Q 266.67 3653.46 262.9 3653.46 H 232.78 Q 229.02 3653.46 229.02 3649.7 V 3610.15 Q 229.02 3606.38 232.78 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 235.04 3643.11 Q 247.84 3649.23 260.64 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 236.55 3649.23 H 259.14" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-C58" data-seat-no="C58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 272 3606.38 H 302.12 Q 305.88 3606.38 305.88 3610.15 V 3649.7 Q 305.88 3653.46 302.12 3653.46 H 272 Q 268.24 3653.46 268.24 3649.7 V 3610.15 Q 268.24 3606.38 272 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 274.26 3643.11 Q 287.06 3649.23 299.86 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 275.76 3649.23 H 298.35" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-D58" data-seat-no="D58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 345.73 3617.37 H 375.84 Q 379.61 3617.37 379.61 3621.13 V 3660.68 Q 379.61 3664.45 375.84 3664.45 H 345.73 Q 341.96 3664.45 341.96 3660.68 V 3621.13 Q 341.96 3617.37 345.73 3617.37 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 347.98 3654.09 Q 360.78 3660.21 373.58 3654.09" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 349.49 3660.21 H 372.08" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-E58" data-seat-no="E58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 384.94 3617.37 H 415.06 Q 418.82 3617.37 418.82 3621.13 V 3660.68 Q 418.82 3664.45 415.06 3664.45 H 384.94 Q 381.18 3664.45 381.18 3660.68 V 3621.13 Q 381.18 3617.37 384.94 3617.37 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 387.2 3654.09 Q 400 3660.21 412.8 3654.09" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 388.71 3660.21 H 411.29" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-F58" data-seat-no="F58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 424.16 3617.37 H 454.27 Q 458.04 3617.37 458.04 3621.13 V 3660.68 Q 458.04 3664.45 454.27 3664.45 H 424.16 Q 420.39 3664.45 420.39 3660.68 V 3621.13 Q 420.39 3617.37 424.16 3617.37 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 426.42 3654.09 Q 439.22 3660.21 452.02 3654.09" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 427.92 3660.21 H 450.51" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-G58" data-seat-no="G58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 497.88 3606.38 H 528 Q 531.76 3606.38 531.76 3610.15 V 3649.7 Q 531.76 3653.46 528 3653.46 H 497.88 Q 494.12 3653.46 494.12 3649.7 V 3610.15 Q 494.12 3606.38 497.88 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 500.14 3643.11 Q 512.94 3649.23 525.74 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 501.65 3649.23 H 524.24" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-H58" data-seat-no="H58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 537.1 3606.38 H 567.22 Q 570.98 3606.38 570.98 3610.15 V 3649.7 Q 570.98 3653.46 567.22 3653.46 H 537.1 Q 533.33 3653.46 533.33 3649.7 V 3610.15 Q 533.33 3606.38 537.1 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 539.36 3643.11 Q 552.16 3649.23 564.96 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 540.86 3649.23 H 563.45" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="Economy-Seat-K58" data-seat-no="K58" data-cabin-class="ECONOMY" data-cabin-section="rear">
+    <path d="M 576.31 3606.38 H 606.43 Q 610.2 3606.38 610.2 3610.15 V 3649.7 Q 610.2 3653.46 606.43 3653.46 H 576.31 Q 572.55 3653.46 572.55 3649.7 V 3610.15 Q 572.55 3606.38 576.31 3606.38 Z" fill="#8991A6" stroke="#404638" stroke-width="1.6"/>
+    <path d="M 578.57 3643.11 Q 591.37 3649.23 604.17 3643.11" fill="none" stroke="#E8E9ED" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M 580.08 3649.23 H 602.67" fill="none" stroke="#D3D6DC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  </g>
+</svg>

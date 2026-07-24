@@ -58,7 +58,7 @@ public class PassengerRealtimeService {
                         (left, right) -> left.getEventAt().isAfter(right.getEventAt()) ? left : right,
                         LinkedHashMap::new
                 ));
-        List<PassengerActivityResponse> activities = A330SeatManifest.seats().stream()
+        List<PassengerActivityResponse> activities = C929SeatManifest.seats().stream()
                 .map(seat -> toActivity(seat, rowsBySeat.get(seat.seatNo())))
                 .toList();
         OffsetDateTime updatedAt = rows.stream()
@@ -76,7 +76,7 @@ public class PassengerRealtimeService {
     }
 
     private PassengerRealtimeSnapshotResponse emptySnapshot() {
-        List<PassengerActivityResponse> activities = A330SeatManifest.seats().stream()
+        List<PassengerActivityResponse> activities = C929SeatManifest.seats().stream()
                 .map(seat -> toActivity(seat, null))
                 .toList();
         return new PassengerRealtimeSnapshotResponse(
@@ -87,7 +87,7 @@ public class PassengerRealtimeService {
         );
     }
 
-    private PassengerActivityResponse toActivity(A330SeatManifest.Seat seat, PassengerActivityRow row) {
+    private PassengerActivityResponse toActivity(C929SeatManifest.Seat seat, PassengerActivityRow row) {
         if (row == null) {
             return new PassengerActivityResponse(
                     null, seat.seatNo(), seat.cabinClass(), null, "IDLE", null, List.of(),

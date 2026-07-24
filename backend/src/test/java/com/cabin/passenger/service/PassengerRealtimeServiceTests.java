@@ -25,10 +25,10 @@ class PassengerRealtimeServiceTests {
 
         assertThat(result.hasData()).isFalse();
         assertThat(result.updatedAt()).isNull();
-        assertThat(result.passengerActivities().total()).isEqualTo(237);
-        assertThat(result.passengerActivities().items()).hasSize(237);
+        assertThat(result.passengerActivities().total()).isEqualTo(282);
+        assertThat(result.passengerActivities().items()).hasSize(282);
         assertThat(result.passengerActivities().items().getFirst().seatNo()).isEqualTo("A11");
-        assertThat(result.passengerActivities().items().getLast().seatNo()).isEqualTo("H57");
+        assertThat(result.passengerActivities().items().getLast().seatNo()).isEqualTo("K58");
         assertThat(result.passengerActivities().items())
                 .allMatch(item -> "IDLE".equals(item.activityKind()));
     }
@@ -55,7 +55,7 @@ class PassengerRealtimeServiceTests {
                 .extracting(item -> item.type())
                 .containsExactly("民谣", "轻音乐");
         assertThat(result.mediaStatistics().videoTotalCount() + result.mediaStatistics().musicTotalCount())
-                .isLessThanOrEqualTo(237);
+                .isLessThanOrEqualTo(282);
         var first = result.passengerActivities().items().getFirst();
         assertThat(first.seatNo()).isEqualTo("A11");
         assertThat(first.activityKind()).isEqualTo("VIDEO");
