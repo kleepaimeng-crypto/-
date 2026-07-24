@@ -945,6 +945,37 @@
   width: min(500px, 92vw);
 }
 
+.dialog-panel--editable {
+  display: flex;
+  width: min(760px, 92vw);
+  max-height: min(820px, calc(100vh - 100px));
+  flex-direction: column;
+}
+
+.dialog-panel__content {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(95, 128, 166, 0.72) #0a111b;
+}
+
+.dialog-panel__content::-webkit-scrollbar,
+.edit-payload-section pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dialog-panel__content::-webkit-scrollbar-track,
+.edit-payload-section pre::-webkit-scrollbar-track {
+  background: #0a111b;
+}
+
+.dialog-panel__content::-webkit-scrollbar-thumb,
+.edit-payload-section pre::-webkit-scrollbar-thumb {
+  border: 2px solid #0a111b;
+  border-radius: 999px;
+  background: rgba(95, 128, 166, 0.72);
+}
+
 .dialog-hint {
   margin: 20px 28px 0;
   color: #79889e;
@@ -1003,9 +1034,46 @@
   cursor: pointer;
 }
 
-.dialog-panel > .inline-error {
+.dialog-panel > .inline-error,
+.dialog-panel__content > .inline-error {
   margin: 0 28px 18px;
   font-size: 12px;
+}
+
+.edit-payload-section {
+  margin: 0 28px 24px;
+  border: 1px solid rgba(97, 124, 166, 0.2);
+  background: #0a111b;
+}
+
+.edit-payload-section summary {
+  padding: 13px 16px;
+  color: #9eacbf;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.edit-payload-section pre {
+  max-height: 240px;
+  margin: 0;
+  overflow: auto;
+  padding: 0 16px 16px;
+  color: #91c9d7;
+  font: 11px/1.7 Consolas, monospace;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(95, 128, 166, 0.72) #0a111b;
+  white-space: pre-wrap;
+}
+
+.edit-payload-section__state {
+  margin: 0;
+  padding: 0 16px 16px;
+  color: #79889e;
+  font-size: 12px;
+}
+
+.edit-payload-section__state.is-error {
+  color: #e47d7d;
 }
 
 .dialog-panel > footer {

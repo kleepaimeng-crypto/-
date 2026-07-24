@@ -71,6 +71,9 @@ const detail = ref<DataRecordDetailDto | null>(null)
 const detailOpen = ref(false)
 const detailLoading = ref(false)
 const editOpen = ref(false)
+const editDetail = ref<DataRecordDetailDto | null>(null)
+const editDetailLoading = ref(false)
+const editDetailError = ref('')
 const deleteOpen = ref(false)
 const importOpen = ref(false)
 const activeRecord = ref<DataRecordListItemDto | null>(null)
@@ -107,6 +110,14 @@ const canManageData = computed(() => {
   const roleCode = authSession.state.user?.roleCode
   return roleCode === 'SUPER_ADMIN' || roleCode === 'ADMIN'
 })
+const editRawPayloadText = computed(() => {
+  if (!editDetail.value) return ''
+  return editDetail.value.rawPayload
+    ? JSON.stringify(editDetail.value.rawPayload, null, 2)
+    : editDetail.value.rawText || '暂无原始报文。'
+})
+
+let editDetailRequestSequence = 0
 const pageNumbers = computed(() => {
   const start = Math.max(1, page.value - 1)
   const end = Math.min(totalPages.value, start + 2)
@@ -278,7 +289,34 @@ function openEdit(record: DataRecordListItemDto): void {
     expectedVersion: record.version,
   })
   actionError.value = ''
+  editDetail.value = null
+  editDetailError.value = ''
   editOpen.value = true
+  void loadEditDetail(record.id)
+}
+
+async function loadEditDetail(recordId: string): Promise<void> {
+  const sequence = ++editDetailRequestSequence
+  editDetailLoading.value = true
+  try {
+    const result = await getDataRecord(recordId)
+    if (sequence !== editDetailRequestSequence || !editOpen.value) return
+    editDetail.value = result
+  } catch (error) {
+    if (sequence === editDetailRequestSequence && editOpen.value) {
+      editDetailError.value = errorMessage(error, '原始报文读取失败')
+    }
+  } finally {
+    if (sequence === editDetailRequestSequence) editDetailLoading.value = false
+  }
+}
+
+function closeEdit(): void {
+  editDetailRequestSequence += 1
+  editOpen.value = false
+  editDetail.value = null
+  editDetailError.value = ''
+  editDetailLoading.value = false
 }
 
 async function submitEdit(): Promise<void> {
@@ -287,7 +325,7 @@ async function submitEdit(): Promise<void> {
   actionError.value = ''
   try {
     await updateRecordMetadata(activeRecord.value.id, { ...editForm })
-    editOpen.value = false
+    closeEdit()
     await loadRecords()
   } catch (error) {
     actionError.value = errorMessage(error, '保存失败')
@@ -653,21 +691,30 @@ onBeforeUnmount(() => {
       </aside>
     </div>
 
-    <div v-if="editOpen" class="overlay" @click.self="editOpen = false">
-      <section class="dialog-panel">
-        <header><div><span class="section-kicker">METADATA</span><h2>编辑管理信息</h2></div><button class="close-button" @click="editOpen = false">×</button></header>
-        <p class="dialog-hint">仅修改目录管理字段，原始报文与解析摘要保持只读。</p>
-        <div class="form-grid">
-          <label>飞机 ID<input v-model="editForm.aircraftRegistrationNo" /></label>
-          <label>机型<input v-model="editForm.aircraftModel" /></label>
-          <label>航司代码<input v-model="editForm.airlineCode" /></label>
-          <label>航班号<input v-model="editForm.flightNo" /></label>
-          <label>起飞机场<input v-model="editForm.origin" maxlength="4" /></label>
-          <label>到达机场<input v-model="editForm.destination" maxlength="4" /></label>
-          <label class="is-wide">来源设备<input v-model="editForm.sourceDeviceCode" /></label>
+    <div v-if="editOpen" class="overlay" @click.self="closeEdit">
+      <section class="dialog-panel dialog-panel--editable">
+        <header><div><span class="section-kicker">METADATA</span><h2>编辑管理信息</h2></div><button class="close-button" @click="closeEdit">×</button></header>
+        <div class="dialog-panel__content">
+          <p class="dialog-hint">仅修改目录管理字段，原始报文与解析摘要保持只读。</p>
+          <div class="form-grid">
+            <label>飞机 ID<input v-model="editForm.aircraftRegistrationNo" /></label>
+            <label>机型<input v-model="editForm.aircraftModel" /></label>
+            <label>航司代码<input v-model="editForm.airlineCode" /></label>
+            <label>航班号<input v-model="editForm.flightNo" /></label>
+            <label>起飞机场<input v-model="editForm.origin" maxlength="4" /></label>
+            <label>到达机场<input v-model="editForm.destination" maxlength="4" /></label>
+            <label class="is-wide">来源设备<input v-model="editForm.sourceDeviceCode" /></label>
+          </div>
+          <details class="edit-payload-section">
+            <summary>原始报文 JSON（只读）</summary>
+            <p v-if="editDetailLoading" class="edit-payload-section__state">正在读取原始报文…</p>
+            <p v-else-if="editDetailError" class="edit-payload-section__state is-error">{{ editDetailError }}</p>
+            <pre v-else-if="editDetail">{{ editRawPayloadText }}</pre>
+            <p v-else class="edit-payload-section__state">暂无原始报文。</p>
+          </details>
+          <p v-if="actionError" class="inline-error">{{ actionError }}</p>
         </div>
-        <p v-if="actionError" class="inline-error">{{ actionError }}</p>
-        <footer><button class="button button--ghost" @click="editOpen = false">取消</button><button class="button button--accent" :disabled="actionLoading" @click="submitEdit">保存修改</button></footer>
+        <footer><button class="button button--ghost" @click="closeEdit">取消</button><button class="button button--accent" :disabled="actionLoading" @click="submitEdit">保存修改</button></footer>
       </section>
     </div>
 

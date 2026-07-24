@@ -20,7 +20,7 @@ import com.cabin.data.entity.TagRow;
 import com.cabin.data.mapper.DataRecordMapper;
 import com.cabin.log.service.AuditLogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -173,12 +173,15 @@ public class DataRecordService {
         );
     }
 
-    private JsonNode rawPayload(DataRecordDetailRow row) {
+    private Map<String, Object> rawPayload(DataRecordDetailRow row) {
         if (row.getRawPayload() == null) {
             return null;
         }
         try {
-            return objectMapper.readTree(row.getRawPayload());
+            return objectMapper.readValue(
+                    row.getRawPayload(),
+                    new TypeReference<LinkedHashMap<String, Object>>() {}
+            );
         } catch (JsonProcessingException exception) {
             throw new BusinessException(ResponseCode.INTERNAL_ERROR, "原始报文读取失败");
         }
