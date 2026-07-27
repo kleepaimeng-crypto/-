@@ -1,14 +1,36 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import type { FlightHistoryPointDto } from '../api/types'
 
-const SPEEDS = [0.5, 1, 2, 4, 8] as const
+const SPEEDS = [1, 2, 5, 10, 20] as const
+const CHART_WINDOW_MS = 10 * 60 * 1000
+const CHART_POINT_LIMITS: Record<PlaybackSpeed, number> = {
+  1: 600,
+  2: 300,
+  5: 120,
+  10: 60,
+  20: 30,
+}
+const CHART_SAMPLE_INTERVALS_MS: Record<PlaybackSpeed, number> = {
+  1: 1000,
+  2: 2000,
+  5: 5000,
+  10: 10_000,
+  20: 20_000,
+}
+
+type PlaybackSpeed = (typeof SPEEDS)[number]
+
+export interface PlaybackChartDomain {
+  startAtMs: number
+  endAtMs: number
+}
 
 export function useFlightHistoryPlayback() {
   const points = ref<FlightHistoryPointDto[]>([])
   const currentIndex = ref(0)
   const segmentProgress = ref(0)
   const playing = ref(false)
-  const speed = ref<(typeof SPEEDS)[number]>(1)
+  const speed = ref<PlaybackSpeed>(5)
   let timer: number | undefined
 
   const currentPoint = computed(() => {
@@ -26,6 +48,42 @@ export function useFlightHistoryPlayback() {
   const progress = computed(() => points.value.length < 2
     ? 0
     : (currentIndex.value + segmentProgress.value) / (points.value.length - 1))
+  const playbackTimeMs = computed<number | null>(() => {
+    const currentTime = pointTime(points.value[currentIndex.value])
+    if (currentTime === null) return null
+    const nextTime = pointTime(points.value[currentIndex.value + 1])
+    if (nextTime === null || nextTime <= currentTime || segmentProgress.value === 0) {
+      return currentTime
+    }
+    return currentTime + (nextTime - currentTime) * segmentProgress.value
+  })
+  const chartDomain = computed<PlaybackChartDomain | null>(() => {
+    const firstTime = firstFiniteTime(points.value)
+    const currentTime = playbackTimeMs.value
+    if (firstTime === null || currentTime === null) return null
+    const endAtMs = Math.max(firstTime + CHART_WINDOW_MS, currentTime)
+    return {
+      startAtMs: endAtMs - CHART_WINDOW_MS,
+      endAtMs,
+    }
+  })
+  const chartPoints = computed(() => {
+    const playedPoints = points.value.slice(0, currentIndex.value + 1)
+    const domain = chartDomain.value
+    const firstTime = firstFiniteTime(points.value)
+    const visiblePoints = domain
+      ? playedPoints.filter((point) => {
+        const time = pointTime(point)
+        return time !== null && time >= domain.startAtMs && time <= domain.endAtMs
+      })
+      : playedPoints
+    return samplePointsByTimeBuckets(
+      visiblePoints,
+      CHART_SAMPLE_INTERVALS_MS[speed.value],
+      CHART_POINT_LIMITS[speed.value],
+      firstTime ?? 0,
+    )
+  })
 
   function load(nextPoints: FlightHistoryPointDto[]): void {
     stop()
@@ -67,7 +125,7 @@ export function useFlightHistoryPlayback() {
     segmentProgress.value = 0
   }
 
-  function setSpeed(value: (typeof SPEEDS)[number]): void {
+  function setSpeed(value: PlaybackSpeed): void {
     speed.value = value
     if (playing.value) {
       if (timer !== undefined) window.clearTimeout(timer)
@@ -104,7 +162,67 @@ export function useFlightHistoryPlayback() {
   }
 
   onBeforeUnmount(stop)
-  return { SPEEDS, currentIndex, currentPoint, flownPoints, load, playing, points, progress, reset, seek, setSpeed, speed, stop, toggle }
+  return {
+    SPEEDS,
+    chartDomain,
+    chartPoints,
+    currentIndex,
+    currentPoint,
+    flownPoints,
+    load,
+    playing,
+    playbackTimeMs,
+    points,
+    progress,
+    reset,
+    seek,
+    setSpeed,
+    speed,
+    stop,
+    toggle,
+  }
+}
+
+function samplePointsByTimeBuckets(
+  points: FlightHistoryPointDto[],
+  intervalMs: number,
+  maxPoints: number,
+  originTimeMs: number,
+): FlightHistoryPointDto[] {
+  const sampled: FlightHistoryPointDto[] = []
+  let previousBucket: number | null = null
+  for (const point of points) {
+    const time = pointTime(point)
+    if (time === null) continue
+    const bucket = Math.floor((time - originTimeMs) / intervalMs)
+    if (bucket === previousBucket) {
+      if (sampled.length === 1) {
+        sampled.push(point)
+        continue
+      }
+      sampled[sampled.length - 1] = point
+      continue
+    }
+    sampled.push(point)
+    previousBucket = bucket
+  }
+  return sampled.length > maxPoints
+    ? [sampled[0], ...sampled.slice(-(maxPoints - 1))]
+    : sampled
+}
+
+function firstFiniteTime(points: FlightHistoryPointDto[]): number | null {
+  for (const point of points) {
+    const time = pointTime(point)
+    if (time !== null) return time
+  }
+  return null
+}
+
+function pointTime(point: FlightHistoryPointDto | undefined): number | null {
+  if (!point) return null
+  const time = Date.parse(point.sampleAt)
+  return Number.isFinite(time) ? time : null
 }
 
 function interpolatePoint(

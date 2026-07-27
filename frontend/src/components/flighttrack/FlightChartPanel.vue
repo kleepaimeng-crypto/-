@@ -19,6 +19,11 @@ interface AxisScale {
   ticks: Array<{ value: number; y: number; text: string }>
 }
 
+interface ChartTimeDomain {
+  startAtMs: number
+  endAtMs: number
+}
+
 const props = defineProps<{
   title: string
   leftLabel?: string
@@ -28,6 +33,8 @@ const props = defineProps<{
   scalePadding?: number
   axisDecimals?: number
   currentIndex?: number
+  cursorAtMs?: number | null
+  timeDomain?: ChartTimeDomain | null
 }>()
 
 const chart = computed(() => {
@@ -42,8 +49,10 @@ const chart = computed(() => {
   const plotHeight = height - top - bottom
   const firstPointTime = firstFiniteTime(props.points)
   const lastPointTime = lastFiniteTime(props.points)
-  const startTime = firstPointTime ?? 0
-  const endTime = lastPointTime && lastPointTime > startTime ? lastPointTime : startTime + 1
+  const fixedDomain = validTimeDomain(props.timeDomain)
+  const startTime = fixedDomain?.startAtMs ?? firstPointTime ?? 0
+  const endTime = fixedDomain?.endAtMs
+    ?? (lastPointTime && lastPointTime > startTime ? lastPointTime : startTime + 1)
   const primarySeries = props.series[0]
   const secondarySeries = props.series[1]
   const primaryScale = buildScale(valuesFor(primarySeries?.key), top, plotHeight, axisPadding)
@@ -54,7 +63,11 @@ const chart = computed(() => {
   function xFor(point: FlightTelemetryPointDto): number {
     const pointTime = Date.parse(point.sampleAt)
     if (!Number.isFinite(pointTime)) return left
-    return left + ((pointTime - startTime) / (endTime - startTime)) * plotWidth
+    return xForTime(pointTime)
+  }
+
+  function xForTime(time: number): number {
+    return left + ((time - startTime) / (endTime - startTime)) * plotWidth
   }
 
   function yFor(value: number, scale: AxisScale): number {
@@ -90,9 +103,14 @@ const chart = computed(() => {
       const end = coords.at(-1)
       return { ...serie, commands, end, points: coords }
     }),
-    labels: timeLabels(props.points, xFor, 4, left + 18, width - right - 18),
-    cursorX: props.currentIndex === undefined || !props.points[props.currentIndex]
-      ? null : xFor(props.points[props.currentIndex]),
+    labels: fixedDomain
+      ? fixedDomainLabels(fixedDomain, 4, left + 18, width - right - 18)
+      : timeLabels(props.points, xFor, 4, left + 18, width - right - 18),
+    cursorX: typeof props.cursorAtMs === 'number' && Number.isFinite(props.cursorAtMs)
+      ? xForTime(props.cursorAtMs)
+      : props.currentIndex === undefined || !props.points[props.currentIndex]
+        ? null
+        : xFor(props.points[props.currentIndex]),
   }
 })
 
@@ -135,6 +153,28 @@ function lastFiniteTime(points: FlightTelemetryPointDto[]): number | null {
   return null
 }
 
+function validTimeDomain(domain: ChartTimeDomain | null | undefined): ChartTimeDomain | null {
+  if (!domain) return null
+  if (!Number.isFinite(domain.startAtMs) || !Number.isFinite(domain.endAtMs)) return null
+  return domain.endAtMs > domain.startAtMs ? domain : null
+}
+
+function fixedDomainLabels(
+  domain: ChartTimeDomain,
+  count: number,
+  minX: number,
+  maxX: number,
+): Array<{ text: string; x: number }> {
+  return Array.from({ length: count }, (_, index) => {
+    const ratio = count < 2 ? 0 : index / (count - 1)
+    const time = domain.startAtMs + (domain.endAtMs - domain.startAtMs) * ratio
+    return {
+      text: formatTime(time),
+      x: minX + (maxX - minX) * ratio,
+    }
+  })
+}
+
 function timeLabels(
   points: FlightTelemetryPointDto[],
   xFor: (point: FlightTelemetryPointDto) => number,
@@ -153,6 +193,12 @@ function fullTimeText(value: string): string {
   const parts = value.split(':')
   if (parts.length >= 3) return parts.slice(-3).join(':')
   return value
+}
+
+function formatTime(value: number): string {
+  const date = new Date(value)
+  const pad = (part: number): string => String(part).padStart(2, '0')
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
 function formatAxisNumber(value: number, fixedDecimals?: number): string {

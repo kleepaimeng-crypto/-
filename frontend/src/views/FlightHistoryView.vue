@@ -199,16 +199,16 @@ onBeforeUnmount(() => {
 
         <aside class="flight-left-stack history-left-stack">
           <FlightStatusCard :history-session="selected" :history-point="playback.currentPoint.value" />
-          <FlightChartPanel title="经纬度" left-label="纬度" right-label="经度" :points="playback.points.value" :series="positionSeries" :current-index="playback.currentIndex.value" />
-          <FlightChartPanel title="海拔高与地速" left-label="地速(kt)" right-label="海拔高(ft)" :points="playback.points.value" :series="speedSeries" :current-index="playback.currentIndex.value" />
+          <FlightChartPanel title="经纬度" left-label="纬度" right-label="经度" :points="playback.chartPoints.value" :series="positionSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" />
+          <FlightChartPanel title="海拔高与地速" left-label="地速(kt)" right-label="海拔高(ft)" :points="playback.chartPoints.value" :series="speedSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" />
         </aside>
 
         <FlightMapStage ref="mapStage" :track="playback.flownPoints.value" :current-point="playback.currentPoint.value" :loading="trackLoading" :error="trackError" />
 
         <aside class="flight-right-stack history-right-stack">
-          <FlightChartPanel title="航向角" :points="playback.points.value" :series="headingSeries" :current-index="playback.currentIndex.value" :scale-padding="0.72" />
-          <FlightChartPanel title="横滚角" :points="playback.points.value" :series="rollSeries" :current-index="playback.currentIndex.value" :scale-padding="0.72" :axis-decimals="1" />
-          <FlightChartPanel title="俯仰角" :points="playback.points.value" :series="pitchSeries" :current-index="playback.currentIndex.value" :scale-padding="0.72" :axis-decimals="1" />
+          <FlightChartPanel title="航向角" :points="playback.chartPoints.value" :series="headingSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" :scale-padding="0.72" />
+          <FlightChartPanel title="横滚角" :points="playback.chartPoints.value" :series="rollSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" :scale-padding="0.72" :axis-decimals="1" />
+          <FlightChartPanel title="俯仰角" :points="playback.chartPoints.value" :series="pitchSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" :scale-padding="0.72" :axis-decimals="1" />
         </aside>
 
         <div class="history-playback-bar">
@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
           <button type="button" :disabled="playback.points.value.length < 2" @click="playback.toggle">{{ playback.playing.value ? '暂停' : '播放' }}</button>
           <input type="range" min="0" max="1" step="0.001" :value="playback.progress.value" :disabled="playback.points.value.length < 2" @input="playback.seek(Number(($event.target as HTMLInputElement).value))" />
           <span>{{ progressPercent }}%</span>
-          <select :value="playback.speed.value" aria-label="回放倍速" @change="playback.setSpeed(Number(($event.target as HTMLSelectElement).value) as 0.5 | 1 | 2 | 4 | 8)"><option v-for="item in playback.SPEEDS" :key="item" :value="item">{{ item }}×</option></select>
+          <select :value="playback.speed.value" aria-label="回放倍速" @change="playback.setSpeed(Number(($event.target as HTMLSelectElement).value) as 1 | 2 | 5 | 10 | 20)"><option v-for="item in playback.SPEEDS" :key="item" :value="item">{{ item }}×</option></select>
         </div>
         <p v-if="trackError" class="history-track-error">{{ trackError }}</p>
       </section>
