@@ -14,6 +14,7 @@ import com.cabin.flighttrack.service.FlightTrackService;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -46,6 +47,7 @@ class FlightTrackControllerTests {
         );
         when(service.getCurrent()).thenReturn(new FlightTrackCurrentResponse(
                 new FlightTrackInfoResponse(
+                        UUID.fromString("75bfe089-c2c0-4c04-8d20-9ab9baf6e3f9"),
                         "B-TEST-001",
                         "Boeing 777-300ER",
                         "CA",
@@ -69,6 +71,7 @@ class FlightTrackControllerTests {
         mockMvc.perform(get("/api/v1/flight-track/current"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("OK"))
+                .andExpect(jsonPath("$.data.flight.flightSessionId").value("75bfe089-c2c0-4c04-8d20-9ab9baf6e3f9"))
                 .andExpect(jsonPath("$.data.flight.flightNo").value("CA4732"))
                 .andExpect(jsonPath("$.data.latestPoint.frameCount").value(42))
                 .andExpect(jsonPath("$.data.track[0].latitude").value(36.411113024));

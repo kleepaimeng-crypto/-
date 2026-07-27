@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 
 import com.cabin.flighttrack.entity.FlightSessionRow;
 import com.cabin.flighttrack.mapper.FlightSessionMapper;
+import com.cabin.flighthistory.FlightFinishReason;
+import com.cabin.flighthistory.service.FlightSessionClosingService;
 import com.cabin.udp.entity.DataRecord;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -60,6 +62,23 @@ class FlightSessionServiceTests {
     }
 
     @Test
+    void recordsNewFlightWhenRouteChangesAlongsideFrameReset() {
+        FlightSessionRow active = activeSession(now.minusSeconds(10), 200);
+        FlightSessionClosingService closingService = mock(FlightSessionClosingService.class);
+        FlightSessionService serviceWithHistory = new FlightSessionService(provider(mapper), provider(closingService));
+        DataRecord restarted = record(now);
+        restarted.setFlightNo("CA1843");
+        restarted.setOrigin("ZBAA");
+        restarted.setDestination("ZSPD");
+        when(mapper.findActiveForUpdate("SIMULATOR", "SIM-QAR", "127.0.0.1"))
+                .thenReturn(active);
+
+        serviceWithHistory.resolve(restarted, qarRow(now, 1));
+
+        verify(closingService).closeLocked(active, FlightFinishReason.NEW_FLIGHT);
+    }
+
+    @Test
     void startsNewSessionAfterFiveMinuteGap() {
         FlightSessionRow active = activeSession(now.minusMinutes(6), 10);
         when(mapper.findActiveForUpdate("SIMULATOR", "SIM-QAR", "127.0.0.1"))
@@ -107,9 +126,9 @@ class FlightSessionServiceTests {
     }
 
     @SuppressWarnings("unchecked")
-    private ObjectProvider<FlightSessionMapper> provider(FlightSessionMapper mapper) {
-        ObjectProvider<FlightSessionMapper> provider = mock(ObjectProvider.class);
-        when(provider.getIfAvailable()).thenReturn(mapper);
+    private <T> ObjectProvider<T> provider(T bean) {
+        ObjectProvider<T> provider = mock(ObjectProvider.class);
+        when(provider.getIfAvailable()).thenReturn(bean);
         return provider;
     }
 }

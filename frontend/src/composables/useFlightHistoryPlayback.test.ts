@@ -12,6 +12,7 @@ describe('useFlightHistoryPlayback', () => {
 
   it('advances by real sample time and stops at the final point', () => {
     vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-27T08:00:00+08:00'))
     const playback = useFlightHistoryPlayback()
     playback.load(points)
     playback.toggle()
@@ -25,6 +26,7 @@ describe('useFlightHistoryPlayback', () => {
 
   it('seeks without keeping a previous timer alive', () => {
     vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-27T08:00:00+08:00'))
     const playback = useFlightHistoryPlayback()
     playback.load(points)
     playback.toggle()
@@ -32,6 +34,24 @@ describe('useFlightHistoryPlayback', () => {
     vi.advanceTimersByTime(5000)
     expect(playback.currentIndex.value).toBe(2)
     expect(playback.playing.value).toBe(false)
+  })
+
+  it('interpolates the current point while a segment is playing', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-27T08:00:00+08:00'))
+    const playback = useFlightHistoryPlayback()
+    playback.load([
+      point('2026-07-27T08:00:00+08:00', 1),
+      { ...point('2026-07-27T08:00:01+08:00', 2), longitude: 121 },
+    ])
+    playback.toggle()
+
+    vi.advanceTimersByTime(500)
+
+    expect(playback.currentIndex.value).toBe(0)
+    expect(playback.currentPoint.value?.longitude).toBeGreaterThan(120)
+    expect(playback.currentPoint.value?.longitude).toBeLessThan(121)
+    expect(playback.flownPoints.value).toHaveLength(2)
   })
 })
 

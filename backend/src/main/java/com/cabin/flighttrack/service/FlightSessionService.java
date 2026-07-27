@@ -114,6 +114,11 @@ public class FlightSessionService {
     }
 
     private FlightFinishReason finishReason(FlightSessionRow active, DataRecord record, long frameCount) {
+        if (!same(active.getFlightNo(), record.getFlightNo())
+                || !same(active.getOrigin(), record.getOrigin())
+                || !same(active.getDestination(), record.getDestination())) {
+            return FlightFinishReason.NEW_FLIGHT;
+        }
         return frameCount <= RESET_FRAME_MAX && active.getLastFrameCount() > frameCount
                 ? FlightFinishReason.FRAME_RESET
                 : FlightFinishReason.NEW_FLIGHT;

@@ -112,6 +112,7 @@ public class FlightTrackService {
         String origin = display(row.getOrigin());
         String destination = display(row.getDestination());
         return new FlightTrackInfoResponse(
+                row.getFlightSessionId(),
                 row.getAircraftRegistrationNo(),
                 row.getAircraftModel(),
                 airlineCode,

@@ -1,8 +1,10 @@
 package com.cabin.flighttrack.dto;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public record FlightTrackInfoResponse(
+        UUID flightSessionId,
         String aircraftRegistrationNo,
         String aircraftModel,
         String airlineCode,

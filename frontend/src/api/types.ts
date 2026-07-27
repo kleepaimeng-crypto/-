@@ -371,6 +371,7 @@ export interface FlightTrackPointDto {
 }
 
 export interface FlightTrackInfoDto {
+  flightSessionId: string
   aircraftRegistrationNo: string | null
   aircraftModel: string | null
   airlineCode: string | null
