@@ -98,6 +98,11 @@ public interface PassengerRealtimeMapper {
                 a.cabin_class,
                 a.behavior_type,
                 CASE a.behavior_type
+                    WHEN 'MOVIE_PLAY' THEN a.behavior_detail ->> 'contentId'
+                    WHEN 'MUSIC_PLAY' THEN a.behavior_detail ->> 'musicId'
+                    ELSE NULL
+                END AS media_code,
+                CASE a.behavior_type
                     WHEN 'MOVIE_PLAY' THEN a.behavior_detail ->> 'contentName'
                     WHEN 'MUSIC_PLAY' THEN a.behavior_detail ->> 'musicName'
                     WHEN 'WAP_BROWSING' THEN a.behavior_detail ->> 'dstDomain'

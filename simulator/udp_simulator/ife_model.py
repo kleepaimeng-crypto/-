@@ -5,13 +5,11 @@ import hashlib
 import random
 from dataclasses import dataclass
 
+from .entertainment_catalog import MUSIC_WORKS, VIDEO_WORKS, MediaWork
 from .passengers import Passenger
 from .scenario import ScenarioContext, compact_time
 
 
-MOVIE_NAMES = ["星海远航", "云端恋曲", "逆袭之路", "长安奇谈", "银河竞技场", "都市风暴"]
-MUSIC_NAMES = ["云上节拍", "夜航民谣", "蓝色爵士", "星光电子", "古典晨曦", "摇滚航线"]
-ARTISTS = ["AirBand", "Skyline", "Blue Cabin", "Cloud Nine", "North Star"]
 DOMAINS = ["www.baidu.com", "www.weixin.com", "news.example.com", "travel.example.com"]
 SHOP_GOODS = [
     ("GOODS-001", "航空纪念模型", "SOUVENIR", 199.00),
@@ -92,36 +90,36 @@ class IfeModel:
         return self._wap_info(event.passenger)
 
     def _movie_info(self, passenger: Passenger, include_cover: bool) -> dict:
-        content_id = f"MOV-{self.rng.randint(1, 999):03d}-2026"
+        work = self._choose_work(VIDEO_WORKS, passenger.video_preferences)
         info = {
             "behaviorType": "MOVIE_PLAY",
-            "contentId": content_id,
-            "contentName": self.rng.choice(MOVIE_NAMES),
-            "contentType": self._joined_preferences(passenger.video_preferences),
-            "contentDuration": self.rng.randint(90, 180),
+            "contentId": work.work_code,
+            "contentName": work.title,
+            "contentType": "/".join(work.genres),
+            "contentDuration": work.duration_seconds // 60,
             "playAction": self.rng.choice(["PLAY", "PAUSE", "STOP", "SEEK"]),
-            "playPosition": self.rng.randint(0, 7200),
+            "playPosition": self.rng.randint(0, work.duration_seconds),
             "resolution": self.rng.choice(["720P", "1080P", "4K"]),
         }
         if include_cover:
-            info.update(self._cover_fields(content_id, mime_type=self.rng.choice(["jpeg", "png"])))
+            info.update(self._cover_fields(work.work_code, mime_type=self.rng.choice(["jpeg", "png"])))
         return info
 
     def _music_info(self, passenger: Passenger, include_cover: bool) -> dict:
-        music_id = f"MUS-{self.rng.randint(1, 999):03d}-2026"
+        work = self._choose_work(MUSIC_WORKS, passenger.music_preferences)
         info = {
             "behaviorType": "MUSIC_PLAY",
-            "musicId": music_id,
-            "musicName": self.rng.choice(MUSIC_NAMES),
-            "musicType": self._joined_preferences(passenger.music_preferences),
-            "artist": self.rng.choice(ARTISTS),
-            "album": self.rng.choice(["云端精选", "巡航歌单", "夜航专辑", ""]),
+            "musicId": work.work_code,
+            "musicName": work.title,
+            "musicType": "/".join(work.genres),
+            "artist": work.creator_name,
+            "album": work.collection_name or "",
             "playAction": self.rng.choice(["PLAY", "PAUSE", "NEXT", "PREV"]),
-            "playPosition": self.rng.randint(0, 300),
+            "playPosition": self.rng.randint(0, work.duration_seconds),
             "volume": self.rng.randint(20, 90),
         }
         if include_cover:
-            info.update(self._cover_fields(music_id, mime_type=self.rng.choice(["jpeg", "png"])))
+            info.update(self._cover_fields(work.work_code, mime_type=self.rng.choice(["jpeg", "png"])))
         return info
 
     def _cast_info(self) -> dict:
@@ -180,9 +178,10 @@ class IfeModel:
             ],
         }
 
-    def _joined_preferences(self, preferences: list[str]) -> str:
-        chosen_count = self.rng.randint(1, len(preferences))
-        return "/".join(self.rng.sample(preferences, chosen_count))
+    def _choose_work(self, works: tuple[MediaWork, ...], preferences: list[str]) -> MediaWork:
+        preference_set = set(preferences)
+        matched = [work for work in works if preference_set.intersection(work.genres)]
+        return self.rng.choice(matched or list(works))
 
     def _cover_fields(self, seed: str, mime_type: str) -> dict:
         raw = f"{seed}-{self.context.flight_number}".encode("utf-8")
@@ -209,4 +208,3 @@ class IfeModel:
                 }
             )
         return pages
-

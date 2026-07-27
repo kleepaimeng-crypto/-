@@ -6,9 +6,15 @@ from collections import Counter
 
 from receiver_server import ReceiverState
 from udp_simulator.config import SimulatorConfig
+from udp_simulator.entertainment_catalog import MUSIC_WORKS, VIDEO_WORKS
 from udp_simulator.ground_model import GroundModel
 from udp_simulator.ife_model import IfeModel
-from udp_simulator.passengers import C929_700_SEATS, build_passengers
+from udp_simulator.passengers import (
+    C929_700_SEATS,
+    MUSIC_TYPES,
+    VIDEO_TYPES,
+    build_passengers,
+)
 from udp_simulator.scenario import create_scenario
 from udp_simulator.window_model import SmartWindowModel
 
@@ -61,6 +67,48 @@ class C929LayoutTests(unittest.TestCase):
         self.assertEqual(traffic_item["seatLabel"], traffic_item["displayTerminalId"])
         self.assertRegex(session_item["seatLabel"], r"^[A-Z][0-9]{2}$")
         self.assertEqual(session_item["seatLabel"], session_item["displayTerminalId"])
+
+    def test_entertainment_catalog_is_complete_and_ife_metadata_stays_consistent(self) -> None:
+        self.assertEqual(24, len(VIDEO_WORKS))
+        self.assertEqual(24, len(MUSIC_WORKS))
+        all_works = VIDEO_WORKS + MUSIC_WORKS
+        self.assertEqual(48, len({work.work_code for work in all_works}))
+        self.assertTrue(
+            {"星海远航", "云端恋曲", "逆袭之路", "长安奇谈", "银河竞技场", "都市风暴"}
+            <= {work.title for work in VIDEO_WORKS}
+        )
+        self.assertTrue(
+            {"云上节拍", "夜航民谣", "蓝色爵士", "星光电子", "古典晨曦", "摇滚航线"}
+            <= {work.title for work in MUSIC_WORKS}
+        )
+
+        video_genre_counts = Counter(genre for work in VIDEO_WORKS for genre in work.genres)
+        music_genre_counts = Counter(genre for work in MUSIC_WORKS for genre in work.genres)
+        self.assertEqual(set(VIDEO_TYPES), set(video_genre_counts))
+        self.assertEqual(set(MUSIC_TYPES), set(music_genre_counts))
+        self.assertTrue(all(video_genre_counts[genre] >= 4 for genre in VIDEO_TYPES))
+        self.assertTrue(all(music_genre_counts[genre] >= 4 for genre in MUSIC_TYPES))
+
+        rng = random.Random(20260727)
+        passengers = build_passengers(282, rng)
+        model = IfeModel(create_scenario(282, 59, rng), passengers, rng)
+        video_by_code = {work.work_code: work for work in VIDEO_WORKS}
+        music_by_code = {work.work_code: work for work in MUSIC_WORKS}
+
+        for page in model.build_cockrell_pages(50):
+            for item in page["items"]:
+                info = item["behaviorInfo"]
+                if info["behaviorType"] == "MOVIE_PLAY":
+                    work = video_by_code[info["contentId"]]
+                    self.assertEqual(work.title, info["contentName"])
+                    self.assertEqual("/".join(work.genres), info["contentType"])
+                    self.assertEqual(work.duration_seconds // 60, info["contentDuration"])
+                elif info["behaviorType"] == "MUSIC_PLAY":
+                    work = music_by_code[info["musicId"]]
+                    self.assertEqual(work.title, info["musicName"])
+                    self.assertEqual("/".join(work.genres), info["musicType"])
+                    self.assertEqual(work.creator_name, info["artist"])
+                    self.assertEqual(work.collection_name or "", info["album"])
 
     def test_default_config_matches_confirmed_aircraft(self) -> None:
         config = SimulatorConfig()

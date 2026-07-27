@@ -322,6 +322,33 @@ export interface PassengerMediaStatisticsDto {
   musicRanking: MediaRankingItemDto[]
 }
 
+export type EntertainmentCategory = 'VIDEO' | 'MUSIC'
+export type EntertainmentRecommendationReason = 'SAME_TYPE' | 'CATEGORY_POPULAR'
+
+export interface EntertainmentWorkDto {
+  workCode: string
+  category: EntertainmentCategory
+  title: string
+  types: string[]
+  summary: string
+  creatorName: string
+  collectionName: string | null
+  durationSeconds: number
+  releaseYear: number
+  language: string
+  region: string
+}
+
+export interface EntertainmentRecommendationDto {
+  workCode: string
+  category: EntertainmentCategory
+  title: string
+  types: string[]
+  creatorName: string
+  currentViewerCount: number
+  reason: EntertainmentRecommendationReason
+}
+
 export interface PassengerActivityDto {
   passengerId: string | null
   seatNo: string
@@ -339,6 +366,8 @@ export interface PassengerActivityDto {
   eventAt: string | null
   bandwidthUpdatedAt: string | null
   sourceRecordId: string | null
+  mediaWork: EntertainmentWorkDto | null
+  recommendations: EntertainmentRecommendationDto[]
 }
 
 export interface PassengerActivitiesDto {
