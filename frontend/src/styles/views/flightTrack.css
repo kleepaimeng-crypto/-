@@ -206,7 +206,7 @@
 
 .flight-status-grid div {
   min-width: 0;
-  padding: 7px 8px;
+  padding: 6px 8px;
   border: 1px solid rgba(81, 103, 140, 0.32);
   background: rgba(22, 33, 50, 0.82);
 }
@@ -223,7 +223,7 @@
 
 .flight-status-grid dd {
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 3px;
   color: #d8e2f1;
   font-size: 12px;
   line-height: 1.15;
@@ -327,6 +327,12 @@
   fill: none;
   stroke: rgba(133, 153, 190, 0.46);
   stroke-width: 0.9;
+}
+
+.chart-playback-cursor {
+  stroke: #ff9a2f;
+  stroke-dasharray: 3 3;
+  stroke-width: 1.2;
 }
 
 .chart-series-line {

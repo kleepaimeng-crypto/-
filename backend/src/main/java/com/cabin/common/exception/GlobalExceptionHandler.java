@@ -6,6 +6,8 @@ import com.cabin.common.response.ResponseCode;
 import com.cabin.common.trace.TraceContext;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,6 +20,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Response<Void>> handleBusinessException(BusinessException exception) {
         ResponseCode code = exception.responseCode();
@@ -69,7 +73,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Response<Void>> handleUnexpected() {
+    public ResponseEntity<Response<Void>> handleUnexpected(Exception exception) {
+        log.error("未处理的服务异常，traceId={}", TraceContext.currentTraceId(), exception);
         return ResponseEntity.status(ResponseCode.INTERNAL_ERROR.httpStatus())
                 .body(Response.error(
                         ResponseCode.INTERNAL_ERROR,

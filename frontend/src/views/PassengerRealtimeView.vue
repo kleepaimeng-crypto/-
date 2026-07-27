@@ -33,7 +33,7 @@ async function logout(): Promise<void> {
       <nav class="workspace-nav" aria-label="主导航">
         <button class="workspace-nav__item" @click="router.push('/')">数据管理</button>
         <button class="workspace-nav__item" @click="router.push('/flight-track')">飞机轨迹实时系统</button>
-        <button class="workspace-nav__item" disabled>飞机轨迹回放系统</button>
+        <button class="workspace-nav__item" @click="router.push('/flight-history')">飞机轨迹回放系统</button>
         <button class="workspace-nav__item" disabled>数据统计</button>
         <button
           v-if="authSession.state.user?.roleCode === 'SUPER_ADMIN'"

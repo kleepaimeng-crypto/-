@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
         "spring.autoconfigure.exclude="
                 + "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration,"
                 + "org.springframework.boot.flyway.autoconfigure.FlywayAutoConfiguration",
-        "cabin.udp.enabled=false"
+        "cabin.udp.enabled=false",
+        "cabin.flight-history.enabled=false"
 })
 class BackendApplicationTests {
 
