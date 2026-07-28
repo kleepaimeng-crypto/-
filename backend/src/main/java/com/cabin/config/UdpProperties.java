@@ -26,7 +26,7 @@ public record UdpProperties(
     }
 
     public String aircraftModel() {
-        return blankToDefault(aircraftModel, "Boeing 777-300ER");
+        return blankToDefault(aircraftModel, "COMAC C929-700");
     }
 
     public String airlineCode() {

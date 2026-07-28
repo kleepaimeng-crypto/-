@@ -145,7 +145,7 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 {
   "dataTypes": [{"code": "QAR", "name": "QAR"}],
   "airlines": [{"code": "CA", "name": "CA"}],
-  "aircraftModels": ["Boeing 777-300ER"],
+  "aircraftModels": ["COMAC C929-700"],
   "aircraftRegistrations": ["B-TEST-001"],
   "devices": [{"code": "SIM-QAR", "name": "QAR 模拟设备"}],
   "airports": ["ZBAA", "ZSPD", "ZGGG", "ZUUU", "ZSHC"],
@@ -190,7 +190,7 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
   {
     "id": "7f0c2100-5105-4cc7-9f18-92dde557207e",
     "aircraftRegistrationNo": "B-TEST-001",
-    "aircraftModel": "Boeing 777-300ER",
+    "aircraftModel": "COMAC C929-700",
     "airlineCode": "CA",
     "flightNo": "CA4732",
     "origin": "ZBAA",
@@ -258,7 +258,7 @@ PHM、ACARS、视频流等可以作为停用的数据类型字典项存在，但
 ```json
 {
   "aircraftRegistrationNo": "B-TEST-001",
-  "aircraftModel": "Boeing 777-300ER",
+    "aircraftModel": "COMAC C929-700",
   "airlineCode": "CA",
   "flightNo": "CA4732",
   "origin": "ZBAA",
