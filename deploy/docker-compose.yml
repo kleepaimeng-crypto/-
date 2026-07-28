@@ -1,13 +1,15 @@
+name: cabin-data-platform
+
 services:
   postgres:
-    image: postgres:18
+    image: ${POSTGRES_IMAGE:-postgres:18}
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-cabin_data_platform}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env or environment}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-15432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -16,6 +18,53 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  backend:
+    image: ${BACKEND_IMAGE:-cabin-data-platform-backend:latest}
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-cabin_data_platform}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env or environment}
+      JWT_ISSUER: ${JWT_ISSUER:-cabin-data-platform}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env or environment}
+      JWT_EXPIRES_IN_SECONDS: ${JWT_EXPIRES_IN_SECONDS:-7200}
+      BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-admin}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?BOOTSTRAP_ADMIN_PASSWORD must be set in .env or environment}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}
+      UDP_ENABLED: ${UDP_ENABLED:-true}
+      APP_ZONE_ID: ${APP_ZONE_ID:-Asia/Shanghai}
+      MANAGEMENT_HEALTH_REDIS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-18081}:8080"
+      - "8190-8196:8090-8096/udp"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-cabin-data-platform-frontend:latest}
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-18080}:80"
+    volumes:
+      - ../frontend/map:/usr/share/nginx/html/offline-map:ro
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:
