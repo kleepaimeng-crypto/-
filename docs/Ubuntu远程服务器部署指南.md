@@ -6,7 +6,7 @@
 
 - `postgres`：PostgreSQL 18 数据库。
 - `backend`：Java 21 / Spring Boot 后端，启动时自动执行 Flyway 数据库迁移。
-- `frontend`：Nginx 托管 Vue/Vite 构建产物，代理 `/api/v1`，并提供 `/offline-map` 离线地图。
+- `frontend`：Nginx 托管 Vue/Vite 构建产物，代理 `/api/v1`，并直接提供构建产物中的 `/map/geojson` 行政区地图数据。
 
 如果服务器不能使用 Docker 构建镜像，也可以使用本文第 5～8 节的传统方式：后端由 `systemd` 运行，前端由宿主机 Nginx 托管。
 
@@ -128,26 +128,27 @@ openssl rand -base64 48
 
 ## 4. 使用 Docker Compose 一键启动整个项目（推荐）
 
-### 4.1 确认离线地图文件
+### 4.1 确认 GeoJSON 地图文件
 
-Compose 会将服务器上的 `frontend/map` 目录只读挂载到前端容器，不会把十几万个瓦片文件重复打进镜像。启动前确认目录结构如下：
+当前地图使用 `frontend/public/map/geojson`，不再使用 `frontend/map/tiles_street` 瓦片。Vite 构建时会自动把 `public` 目录复制到 `dist`，因此 GeoJSON 会直接进入前端镜像，不需要单独上传或挂载。
 
 ```text
-/opt/cabin-data-platform/frontend/map
-└── tiles_street
-    ├── 3
-    ├── 4
-    └── ...
+/opt/cabin-data-platform/frontend/public/map/geojson
+├── manifest.json
+├── china.json
+├── province-boundaries.json
+├── province
+└── citys
 ```
 
-检查一个实际瓦片：
+构建前检查清单文件：
 
 ```bash
 cd /opt/cabin-data-platform
-test -f frontend/map/tiles_street/3/4/2.png && echo "离线地图文件正常"
+test -f frontend/public/map/geojson/manifest.json && echo "GeoJSON 地图文件正常"
 ```
 
-如果提示文件不存在，先按第 8.1 节将本地的 `frontend/map` 上传到服务器，再执行 Compose 启动。
+如果文件不存在，说明上传的项目代码不完整，需要重新上传或拉取 `frontend/public/map/geojson`。这些文件属于前端源码的一部分，不需要额外的地图压缩包。
 
 ### 4.2 构建并启动全部服务
 
@@ -193,7 +194,7 @@ docker compose --env-file .env -f deploy/docker-compose.yml exec postgres \
 ```bash
 curl http://127.0.0.1:18081/actuator/health
 curl -I http://127.0.0.1:18080/
-curl -I http://127.0.0.1:18080/offline-map/tiles_street/3/4/2.png
+curl -I http://127.0.0.1:18080/map/geojson/manifest.json
 ```
 
 浏览器访问：
@@ -209,7 +210,7 @@ http://服务器IP:18080/
 - `127.0.0.1:15432/tcp`：PostgreSQL 本机调试端口，不直接暴露到公网；容器之间仍使用 `postgres:5432`。
 - `8190-8196/udp`：外部设备或模拟器入口，映射到后端容器的 `8090-8096/udp`。
 - `postgres_data`：数据库持久化卷，重新构建容器不会丢失数据。
-- `frontend/map`：从宿主机只读挂载到前端容器。
+- `frontend/public/map/geojson`：在构建前端镜像时自动复制到 `/usr/share/nginx/html/map/geojson`，不使用宿主机目录挂载。
 
 Compose 文件已经固定项目名为 `cabin-data-platform`。启动命令仍显式使用 `-p cabin-data-platform`，避免与服务器现有的 `docker` Compose 项目混淆。
 
@@ -301,13 +302,12 @@ docker save -o cabin-platform-images-linux-amd64.tar \
 sha256sum cabin-platform-images-linux-amd64.tar
 ```
 
-#### 4.4.3 单独打包项目文件和离线地图
+#### 4.4.3 打包项目文件
 
 除了镜像包，还需要把以下内容传到服务器：
 
 - 项目中的 `deploy/docker-compose.yml`。
 - 项目根目录 `.env.example`，到服务器后复制为 `.env`。
-- `frontend/map` 离线地图目录。
 
 推荐直接上传项目目录，但可以删除或排除以下不需要的本地构建缓存：
 
@@ -319,17 +319,12 @@ frontend/dist
 .idea
 ```
 
-离线地图包含大量小文件，建议先在本地项目根目录打成一个压缩包再传输：
-
-```powershell
-tar -czf cabin-platform-map.tar.gz -C frontend map
-```
+GeoJSON 地图已经位于 `frontend/public/map/geojson`，并已包含在构建好的前端镜像中，不需要单独制作或上传地图压缩包。
 
 最终需要传入内网的主要文件为：
 
 ```text
 cabin-platform-images-linux-amd64.tar
-cabin-platform-map.tar.gz
 项目代码（至少包含 deploy、backend、frontend 和 .env.example）
 ```
 
@@ -356,21 +351,14 @@ docker image inspect cabin-data-platform-backend:latest --format '{{.Os}}/{{.Arc
 docker image inspect cabin-data-platform-frontend:latest --format '{{.Os}}/{{.Architecture}}'
 ```
 
-解压离线地图：
+如果服务器保留完整源码，可以检查 GeoJSON 源文件：
 
 ```bash
-sudo mkdir -p /opt/cabin-data-platform/frontend
-sudo tar -xzf /opt/offline-packages/cabin-platform-map.tar.gz \
-  -C /opt/cabin-data-platform/frontend
-sudo chown -R $USER:$USER /opt/cabin-data-platform/frontend/map
+test -f /opt/cabin-data-platform/frontend/public/map/geojson/manifest.json \
+  && echo "GeoJSON 地图源文件正常"
 ```
 
-检查瓦片：
-
-```bash
-test -f /opt/cabin-data-platform/frontend/map/tiles_street/3/4/2.png \
-  && echo "离线地图正常"
-```
+使用预构建前端镜像启动时，GeoJSON 已在镜像内部，即使服务器不单独保存地图目录也能正常运行。
 
 创建并检查环境变量：
 
@@ -405,7 +393,7 @@ docker compose --env-file .env -f deploy/docker-compose.yml \
 docker compose --env-file .env -f deploy/docker-compose.yml ps
 curl http://127.0.0.1:18081/actuator/health
 curl -I http://127.0.0.1:18080/
-curl -I http://127.0.0.1:18080/offline-map/tiles_street/3/4/2.png
+curl -I http://127.0.0.1:18080/map/geojson/manifest.json
 ```
 
 #### 4.4.6 后续离线更新
@@ -556,9 +544,8 @@ nano .env.production
 
 ```env
 VITE_API_BASE_URL=/api/v1
-VITE_OFFLINE_MAP_TILE_URL=/offline-map/tiles_street/{z}/{x}/{y}.png?v=street-v1
-VITE_OFFLINE_MAP_MIN_ZOOM=3
-VITE_OFFLINE_MAP_MAX_ZOOM=10
+VITE_MAP_MIN_ZOOM=3
+VITE_MAP_MAX_ZOOM=10
 ```
 
 安装依赖并构建：
@@ -577,50 +564,30 @@ sudo cp -r dist/* /var/www/cabin-platform/
 sudo chown -R www-data:www-data /var/www/cabin-platform
 ```
 
-## 8. 传统方式：配置离线地图和 Nginx
+## 8. 传统方式：配置 GeoJSON 地图和 Nginx
 
-### 8.1 上传离线地图到服务器
+### 8.1 验证构建产物中的 GeoJSON
 
-`frontend/map/tiles_street` 体积较大且已被 `.gitignore` 忽略，因此执行 `git clone` 或 `git pull` 通常不会得到瓦片文件，必须单独上传。
-
-在保存完整项目的本地电脑上执行下面的命令，将 `服务器用户` 和 `服务器IP` 替换为实际值：
-
-```bash
-cd 项目根目录
-rsync -av --progress frontend/map/ 服务器用户@服务器IP:/opt/cabin-data-platform/frontend/map/
-```
-
-如果本地电脑是 Windows 且没有 `rsync`，可以使用 WinSCP、SFTP 等工具上传。服务器上的最终目录必须是：
+`frontend/public/map/geojson` 属于前端公共资源。执行 `npm run build` 后，Vite 会自动生成：
 
 ```text
-/opt/cabin-data-platform/frontend/map/tiles_street/{z}/{x}/{y}.png
+frontend/dist/map/geojson/manifest.json
+frontend/dist/map/geojson/china.json
+frontend/dist/map/geojson/province-boundaries.json
+frontend/dist/map/geojson/province/...
+frontend/dist/map/geojson/citys/...
 ```
 
-在服务器上验证：
+构建后验证：
 
 ```bash
-test -f /opt/cabin-data-platform/frontend/map/tiles_street/3/4/2.png \
-  && echo "瓦片上传成功" \
-  || echo "瓦片缺失，请检查目录层级"
+cd /opt/cabin-data-platform/frontend
+test -f dist/map/geojson/manifest.json \
+  && echo "GeoJSON 已进入前端构建产物" \
+  || echo "GeoJSON 缺失，请检查 frontend/public/map/geojson"
 ```
 
-全栈 Compose 部署会直接挂载这个目录，不需要再复制。传统 Nginx 部署建议同步到独立目录：
-
-```bash
-sudo mkdir -p /opt/cabin/maps
-sudo rsync -a /opt/cabin-data-platform/frontend/map/ /opt/cabin/maps/
-sudo chown -R www-data:www-data /opt/cabin/maps
-sudo find /opt/cabin/maps -type d -exec chmod 755 {} \;
-sudo find /opt/cabin/maps -type f -exec chmod 644 {} \;
-```
-
-同步完成后再次验证：
-
-```bash
-test -f /opt/cabin/maps/tiles_street/3/4/2.png && echo "Nginx 地图目录正常"
-```
-
-以后更新地图时，重新执行 `rsync` 和权限设置命令即可；不需要重新构建前端。
+第 7 节复制整个 `dist` 目录时，GeoJSON 会一起复制到 `/var/www/cabin-platform/map/geojson`，不需要单独上传或同步地图目录。
 
 ### 8.2 创建 Nginx 站点配置
 
@@ -661,32 +628,23 @@ server {
         proxy_set_header Host $host;
     }
 
-    # 离线地图 URL：
-    # /offline-map/tiles_street/{z}/{x}/{y}.png
-    location ~ ^/offline-map/([A-Za-z0-9_-]+)/(\d+)/(\d+)/(\d+)\.png$ {
-        alias /opt/cabin/maps/$1/$2/$3/$4.png;
+    # GeoJSON 是前端 dist 中的普通静态资源。
+    # 缺失时直接返回 404，避免回退到 index.html。
+    location ^~ /map/geojson/ {
+        try_files $uri =404;
         access_log off;
-        log_not_found off;
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000, immutable";
     }
 }
 ```
 
-这里的 URL 与前端生产配置对应：
-
-```env
-VITE_OFFLINE_MAP_TILE_URL=/offline-map/tiles_street/{z}/{x}/{y}.png?v=street-v1
-```
-
-`alias` 的实际文件路径对应关系如下：
+GeoJSON 请求与文件路径对应关系：
 
 ```text
 浏览器请求：
-/offline-map/tiles_street/3/4/2.png
+/map/geojson/manifest.json
 
 服务器文件：
-/opt/cabin/maps/tiles_street/3/4/2.png
+/var/www/cabin-platform/map/geojson/manifest.json
 ```
 
 ### 8.3 启用并验证 Nginx
@@ -700,19 +658,19 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-验证首页、API 代理和地图瓦片：
+验证首页、API 代理和 GeoJSON：
 
 ```bash
 curl -I http://127.0.0.1/
 curl http://127.0.0.1/actuator/health
-curl -I http://127.0.0.1/offline-map/tiles_street/3/4/2.png
+curl -I http://127.0.0.1/map/geojson/manifest.json
 ```
 
-最后一个命令应返回 `HTTP/1.1 200 OK` 和 `Content-Type: image/png`。如果返回 `404`，依次检查：
+最后一个命令应返回 `HTTP/1.1 200 OK` 和 JSON 内容类型。如果返回 `404`，依次检查：
 
 ```bash
-ls -lh /opt/cabin/maps/tiles_street/3/4/2.png
-sudo nginx -T | grep -A 8 offline-map
+ls -lh /var/www/cabin-platform/map/geojson/manifest.json
+sudo nginx -T | grep -A 5 '/map/geojson'
 sudo tail -n 100 /var/log/nginx/error.log
 ```
 
@@ -920,18 +878,18 @@ Compose 模式由前端容器内的 Nginx 将 `/api/v1` 转发到后端容器的
 
 首次启动后端时，Flyway 会自动执行数据库迁移脚本，创建业务表和初始化数据。只要日志没有报错，稍等一会儿即可。
 
-### 12.5 离线地图返回 404
+### 12.5 GeoJSON 地图返回 404
 
-Compose 部署先检查宿主机目录和容器挂载：
+Compose 部署先检查源码、镜像内构建产物和 HTTP 响应：
 
 ```bash
-ls -lh frontend/map/tiles_street/3/4/2.png
+ls -lh frontend/public/map/geojson/manifest.json
 docker compose --env-file .env -f deploy/docker-compose.yml exec frontend \
-  ls -lh /usr/share/nginx/html/offline-map/tiles_street/3/4/2.png
-curl -I http://127.0.0.1:18080/offline-map/tiles_street/3/4/2.png
+  ls -lh /usr/share/nginx/html/map/geojson/manifest.json
+curl -I http://127.0.0.1:18080/map/geojson/manifest.json
 ```
 
-传统 Nginx 部署按照第 8 节检查 `/opt/cabin/maps`、Nginx `alias` 和文件读取权限。
+传统 Nginx 部署按照第 8 节检查 `/var/www/cabin-platform/map/geojson` 和 Nginx 静态文件配置。
 
 ### 12.6 页面无法访问时的排查顺序
 
@@ -959,9 +917,9 @@ sudo nginx -t
 - `.env` 中数据库用户为 `postgres`，数据库密码和数据源密码均为 `123456`（公网正式环境应换成同一个强密码）。
 - `JWT_SECRET` 已替换为至少 32 位随机字符串。
 - `BOOTSTRAP_ADMIN_PASSWORD` 已替换为正式管理员初始密码。
-- `frontend/map/tiles_street/3/4/2.png` 已存在。
+- `frontend/public/map/geojson/manifest.json` 已存在。
 - Compose 模式下 `postgres`、`backend`、`frontend` 均已启动。
 - `curl http://127.0.0.1:18081/actuator/health` 返回正常。
-- `curl -I http://127.0.0.1:18080/offline-map/tiles_street/3/4/2.png` 返回 `200`。
+- `curl -I http://127.0.0.1:18080/map/geojson/manifest.json` 返回 `200`。
 - 传统模式下 `/etc/cabin-backend.env` 已设置 `SPRING_PROFILES_ACTIVE=prod`，且 Nginx `sudo nginx -t` 校验通过。
 - 浏览器可以访问 `http://服务器IP:18080/`。

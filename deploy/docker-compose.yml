@@ -60,8 +60,6 @@ services:
     restart: unless-stopped
     ports:
       - "${HTTP_PORT:-18080}:80"
-    volumes:
-      - ../frontend/map:/usr/share/nginx/html/offline-map:ro
     depends_on:
       backend:
         condition: service_healthy

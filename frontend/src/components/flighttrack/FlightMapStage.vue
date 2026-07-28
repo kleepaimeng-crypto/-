@@ -28,8 +28,8 @@ const props = defineProps<{
   error: string
 }>()
 
-const minZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MIN_ZOOM, 3)
-const maxTileZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MAX_ZOOM, 10)
+const minZoom = numberEnv(import.meta.env.VITE_MAP_MIN_ZOOM, 3)
+const maxMapZoom = numberEnv(import.meta.env.VITE_MAP_MAX_ZOOM, 10)
 const initialZoom = 9
 const defaultMapZoom = 4
 const chinaMapCenter = fromLonLat([104.5, 35.5])
@@ -241,7 +241,7 @@ function setupMap(): void {
       ],
       view: new View({
         center: chinaMapCenter,
-        maxZoom: maxTileZoom,
+        maxZoom: maxMapZoom,
         minZoom,
         zoom: defaultMapZoom,
       }),

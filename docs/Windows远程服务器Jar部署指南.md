@@ -329,9 +329,8 @@ notepad .env.production
 
 ```env
 VITE_API_BASE_URL=/api/v1
-VITE_OFFLINE_MAP_TILE_URL=/offline-map/tiles_street/{z}/{x}/{y}.png?v=street-v1
-VITE_OFFLINE_MAP_MIN_ZOOM=3
-VITE_OFFLINE_MAP_MAX_ZOOM=10
+VITE_MAP_MIN_ZOOM=3
+VITE_MAP_MAX_ZOOM=10
 ```
 
 安装依赖并构建：
