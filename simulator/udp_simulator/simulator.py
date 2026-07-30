@@ -11,7 +11,7 @@ from .flight_model import FlightModel
 from .ground_model import GroundModel
 from .ife_model import IfeModel
 from .passengers import build_passengers
-from .scenario import create_scenario
+from .scenario import choose_next_destination, create_scenario, create_scenario_for_route
 from .udp_sender import SendResult, UdpSender
 from .window_model import SmartWindowModel
 
@@ -29,6 +29,8 @@ class DataSimulator:
         self.config = config
         self.rng = random.Random(config.random_seed)
         self.context = create_scenario(config.passenger_count, config.window_rows, self.rng)
+        self.used_flight_numbers = {self.context.flight_number}
+        self.pending_next_flight = False
         self.passengers = build_passengers(config.passenger_count, self.rng)
         self.flight_model = FlightModel.create(self.context, self.rng)
         self.window_model = SmartWindowModel(self.context, config.window_count, self.rng)
@@ -81,6 +83,8 @@ class DataSimulator:
             "aircraftModel": self.context.aircraft_model,
             "passengerCount": len(self.passengers),
             "windowCount": self.config.window_count,
+            "segmentSequence": self.context.segment_sequence,
+            "phase": self.context.phase,
         }
 
     def _build_jobs(self) -> list[ScheduledJob]:
@@ -100,12 +104,20 @@ class DataSimulator:
         self.context.simulated_now += timedelta(seconds=elapsed_seconds)
 
     def _qar_payloads(self, elapsed_seconds: float) -> list[dict]:
-        return [self.flight_model.advance(elapsed_seconds)]
+        if self.pending_next_flight:
+            self._start_next_flight()
+        payload = self.flight_model.advance(elapsed_seconds)
+        if self.flight_model.finished:
+            self.pending_next_flight = True
+            self._schedule_final_snapshots()
+        return [payload]
 
     def _ground_task_payloads(self, elapsed_seconds: float) -> list[dict]:
         return [self.ground_model.task_payload()]
 
     def _ground_traffic_payloads(self, elapsed_seconds: float) -> list[dict]:
+        if self.context.status == "finished":
+            return []
         return self.ground_model.traffic_payload()
 
     def _ground_session_payloads(self, elapsed_seconds: float) -> list[dict]:
@@ -115,7 +127,38 @@ class DataSimulator:
         return [self.window_model.update_payload()]
 
     def _ife_633_payloads(self, elapsed_seconds: float) -> list[dict]:
+        if self.context.status == "finished":
+            return []
         return self.ife_model.build_633_pages(self.config.ife_page_size)
 
     def _ife_cockrell_payloads(self, elapsed_seconds: float) -> list[dict]:
+        if self.context.status == "finished":
+            return []
         return self.ife_model.build_cockrell_pages(self.config.ife_page_size)
+
+    def _start_next_flight(self) -> None:
+        previous = self.context
+        origin = previous.destination
+        destination = choose_next_destination(previous.origin, origin, self.rng)
+        next_context = create_scenario_for_route(
+            passenger_count=self.config.passenger_count,
+            window_rows=self.config.window_rows,
+            rng=self.rng,
+            origin=origin,
+            destination=destination,
+            segment_sequence=previous.segment_sequence + 1,
+            simulated_now=previous.simulated_now,
+            excluded_flight_numbers=self.used_flight_numbers,
+        )
+        self.used_flight_numbers.add(next_context.flight_number)
+        self.context = next_context
+        self.flight_model = FlightModel.create(next_context, self.rng)
+        self.ground_model = GroundModel(next_context, self.passengers, self.rng)
+        self.ife_model = IfeModel(next_context, self.passengers, self.rng)
+        self.window_model.context = next_context
+        self.pending_next_flight = False
+
+    def _schedule_final_snapshots(self) -> None:
+        for job in self.jobs:
+            if job.message_type in {"ground.task", "ground.session_summary"}:
+                job.next_run_at = 0

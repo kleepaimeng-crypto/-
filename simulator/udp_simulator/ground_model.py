@@ -22,11 +22,11 @@ class GroundModel:
                 "taskId": self.context.task_id,
                 "flightNo": self.context.flight_number,
                 "scenarioName": self.context.scenario_name,
-                "status": "running",
-                "phase": "cruise",
+                "status": self.context.status,
+                "phase": self.context.phase,
                 "terminalCount": len(self.passengers),
                 "startedAt": iso_time(self.context.scenario_start_time),
-                "endedAt": None,
+                "endedAt": iso_time(self.context.ended_at) if self.context.ended_at else None,
                 "downlinkTargetMbps": 600.0,
                 "statisticsWindowSeconds": 5,
                 "totalBytes": self.total_bytes,
@@ -75,7 +75,8 @@ class GroundModel:
     def session_payload(self, page_size: int = 50) -> list[dict]:
         items = []
         sampled = self.rng.sample(self.passengers, min(len(self.passengers), page_size))
-        elapsed = int((self.context.simulated_now - self.context.scenario_start_time).total_seconds())
+        session_now = self.context.ended_at or self.context.simulated_now
+        elapsed = int((session_now - self.context.scenario_start_time).total_seconds())
         for passenger in sampled:
             application = self.rng.choice(["高清视频", "音乐", "网页浏览"])
             peak = self._throughput(application) * self.rng.uniform(1.1, 1.6)
@@ -95,7 +96,7 @@ class GroundModel:
                     "downlinkBytes": self.rng.randint(100_000_000, 9_000_000_000),
                     "averageThroughputMbps": round(avg, 2),
                     "peakThroughputMbps": round(peak, 2),
-                    "status": "active",
+                    "status": "finished" if self.context.status == "finished" else "active",
                 }
             )
         return [
@@ -115,4 +116,3 @@ class GroundModel:
         if application == "音乐":
             return self.rng.uniform(0.2, 1.2)
         return self.rng.uniform(1.0, 4.0)
-
