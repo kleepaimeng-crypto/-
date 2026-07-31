@@ -11,7 +11,7 @@ import { useFlightTrack } from '../composables/useFlightTrack'
 import { calculateFixedCanvasScale } from '../utils/fixedCanvas'
 
 const router = useRouter()
-const { autoRefresh, current, error, loading, reload, toggleAutoRefresh } = useFlightTrack()
+const { current, error, loading } = useFlightTrack()
 const canvasScale = ref(1)
 const mapStage = ref<InstanceType<typeof FlightMapStage> | null>(null)
 const chartPoints = computed(() => latestRollingPoints(current.value?.track ?? [], 16))
@@ -149,12 +149,6 @@ onBeforeUnmount(() => {
             @click="locatePlane"
           >
             ⌖
-          </button>
-          <button class="flight-tool-button" @click="toggleAutoRefresh">
-            {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
-          </button>
-          <button class="flight-tool-button" :disabled="loading" @click="reload()">
-            {{ loading ? '刷新中' : '立即刷新' }}
           </button>
         </div>
       </section>

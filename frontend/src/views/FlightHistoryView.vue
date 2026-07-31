@@ -17,6 +17,7 @@ const canvasScale = ref(1)
 const sessions = ref<FlightHistorySessionDto[]>([])
 const selected = ref<FlightHistorySessionDto | null>(null)
 const total = ref(0)
+const historyFilterRef = ref<HTMLElement | null>(null)
 const dropdownOpen = ref(false)
 const datePickerOpen = ref(false)
 const listLoading = ref(false)
@@ -27,7 +28,6 @@ const query = reactive({
   flightNo: '',
   endedFrom: localDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
   endedTo: localDate(new Date()),
-  finishReason: '' as '' | FlightFinishReason,
 })
 const playback = useFlightHistoryPlayback()
 const mapStage = ref<InstanceType<typeof FlightMapStage> | null>(null)
@@ -49,7 +49,8 @@ const pitchSeries = [{ key: 'pitchDeg' as const, label: '俯仰量', color: '#82
 const progressPercent = computed(() => Math.round(playback.progress.value * 1000) / 10)
 const dateRangeLabel = computed(() => `${displayDate(query.endedFrom)} — ${displayDate(query.endedTo)}`)
 
-async function loadSessions(): Promise<void> {
+async function loadSessions(openDropdown = false): Promise<void> {
+  if (openDropdown) dropdownOpen.value = true
   listLoading.value = true
   listError.value = ''
   try {
@@ -57,7 +58,6 @@ async function loadSessions(): Promise<void> {
       endedFrom: toStartOfDayIso(query.endedFrom),
       endedTo: toEndOfDayIso(query.endedTo),
       flightNo: query.flightNo || undefined,
-      finishReason: query.finishReason || undefined,
       page: 1,
       pageSize: 20,
       sortBy: 'endedAt',
@@ -65,7 +65,6 @@ async function loadSessions(): Promise<void> {
     })
     sessions.value = result.items
     total.value = result.total
-    dropdownOpen.value = true
   } catch (error) {
     listError.value = toMessage(error)
   } finally {
@@ -129,6 +128,17 @@ function handleDateChange(changed: 'from' | 'to'): void {
   void loadSessions()
 }
 
+function toggleDatePicker(): void {
+  dropdownOpen.value = false
+  datePickerOpen.value = !datePickerOpen.value
+}
+
+function handleDocumentPointerDown(event: PointerEvent): void {
+  if (event.target instanceof Node && historyFilterRef.value?.contains(event.target)) return
+  dropdownOpen.value = false
+  datePickerOpen.value = false
+}
+
 function reasonLabel(reason: FlightFinishReason): string {
   return { LANDED: '正常落地', TIMEOUT: '断流超时', NEW_FLIGHT: '新航班', FRAME_RESET: '帧号重置' }[reason]
 }
@@ -139,11 +149,13 @@ async function logout(): Promise<void> { authSession.logout(); await router.repl
 onMounted(() => {
   updateCanvasScale()
   window.addEventListener('resize', updateCanvasScale)
+  document.addEventListener('pointerdown', handleDocumentPointerDown)
   void loadSessions()
 })
 onBeforeUnmount(() => {
   playback.stop()
   window.removeEventListener('resize', updateCanvasScale)
+  document.removeEventListener('pointerdown', handleDocumentPointerDown)
 })
 </script>
 
@@ -164,10 +176,10 @@ onBeforeUnmount(() => {
       </header>
 
       <section class="flight-layout history-layout">
-        <div class="history-filter-bar">
+        <div ref="historyFilterRef" class="history-filter-bar">
           <div class="history-flight-picker">
-            <input v-model="query.flightNo" placeholder="航班号" @focus="dropdownOpen = true" @keyup.enter="loadSessions" />
-            <button type="button" @click="loadSessions">查询</button>
+            <input v-model="query.flightNo" placeholder="航班号" @focus="dropdownOpen = true" @keyup.enter="loadSessions(true)" />
+            <button type="button" @click="loadSessions(true)">查询</button>
             <section v-if="dropdownOpen" class="history-session-dropdown">
               <p v-if="listLoading">正在查询历史航段…</p>
               <p v-else-if="listError" class="is-error">{{ listError }}</p>
@@ -180,7 +192,7 @@ onBeforeUnmount(() => {
             </section>
           </div>
           <div class="history-date-filter">
-            <button class="history-date-trigger" type="button" :aria-expanded="datePickerOpen" @click="datePickerOpen = !datePickerOpen">
+            <button class="history-date-trigger" type="button" :aria-expanded="datePickerOpen" @click="toggleDatePicker">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" /></svg>
               <span>{{ dateRangeLabel }}</span><i>⌄</i>
             </button>
@@ -194,7 +206,6 @@ onBeforeUnmount(() => {
               <p>最多查询连续 31 天，结束日期包含当天。</p>
             </section>
           </div>
-          <select v-model="query.finishReason" aria-label="结束原因" @change="loadSessions"><option value="">全部结束原因</option><option value="LANDED">正常落地</option><option value="TIMEOUT">断流超时</option><option value="NEW_FLIGHT">新航班</option><option value="FRAME_RESET">帧号重置</option></select>
         </div>
 
         <aside class="flight-left-stack history-left-stack">
