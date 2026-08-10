@@ -1,4 +1,4 @@
-# 科可瑞尔 IFE 单事件与实时快照契约
+# 科可瑞尔 IFE 单事件与实时状态契约
 
 ## 1. UDP 基本约定
 
@@ -76,8 +76,8 @@
 
 ## 3. 接收与保存规则
 
-- 一条 UDP 数据报生成一条 `data_record`，其 `payloadCount` 为 `1`。
-- 同一事务中插入一条 `ife_cockrell_behavior` 历史记录，并更新一条当前状态记录。
+- 一条 UDP 数据报生成一条 `data_record`，其 `payloadCount` 为 `1`，并唯一关联一条 `ife_cockrell_behavior`。
+- 同一事务中插入一条 `ife_cockrell_behavior` 历史记录；事务提交成功后更新后端内存中的当前状态缓存。
 - `sentAt` 使用 `sysInfo.timestamp`；`receivedAt` 使用服务器接收时间。
 - 原始 JSON 保持在 `data_record.raw_payload`，解析后的 `behaviorInfo` 保存为 JSON 对象。
 - 接收端复用现有 UDP 当前飞行上下文补齐 `data_record` 的航线与航司管理字段。
@@ -91,16 +91,22 @@
 GET /api/v1/passenger-realtime/snapshot
 ```
 
-本阶段调整其科可瑞尔数据来源：按现有 UDP 当前飞行上下文的 `flightNo` 从 `ife_cockrell_current_state` 读取全部已知座位状态，再以固定 C929-700 座位清单补齐为 282 项。当前飞行上下文由 QAR 确定，不以最新 IFE 事件推断。
+本阶段调整其科可瑞尔数据来源：按现有 UDP 当前 QAR 航班会话的 `flightSessionId` 读取后端内存中该会话的全部已知 KKRE 座位状态，再以固定 C929-700 座位清单补齐为 282 项。当前飞行上下文由 QAR 确定，不以最新 IFE 事件推断；本期不与 633 IFE 合并。
+
+内存缓存按当前 QAR 航班会话隔离。服务重启或缓存清空后不从历史表重建，页面等待新的匹配 IFE 事件。
 
 每项新增/明确如下语义：
 
 | 字段 | 规则 |
 | --- | --- |
 | `seatNo` | 当前页面使用的固定座位标识。 |
-| `activityKind` | 未收到事件时沿用 `IDLE`；前端展示为“空闲”。 |
+| `activityKind` | 未收到事件时为 `null`；前端据此展示为“空闲”。 |
 | `behaviorType` | 未收到事件时为 `null`；已收到时取客户事件值。 |
 | `eventAt` | 已收到事件时为 `sysInfo.timestamp` 转换后的带时区时间；未收到时为 `null`。 |
+
+当 `behaviorType`、`eventAt` 等行为字段为空时，前端自行显示“空闲”；后端不得以虚构的行为内容填充座位。
+
+已收到事件的 `playAction`（客户样例已确认 `PLAY`、`PAUSE`）是乘客真实操作：前端保留其对应的影音行为和操作值，不得转换为空闲。`STOP` 未在客户文档中出现，未经客户确认不得由模拟器自行发送。
 
 影音排行只统计当前航班已收到的 `MOVIE_PLAY`、`MUSIC_PLAY` 状态。空闲、浏览和购物不进入影音排行。
 
@@ -112,4 +118,6 @@ GET /api/v1/passenger-realtime/snapshot
 | `behaviorType` 不支持 | 当前 UDP 数据记录为解析失败；不更新当前状态。 |
 | 客户座位号无法映射页面座位 | 保存历史记录并标记映射错误；不更新页面对应座位。 |
 | 旧事件晚到 | 保存历史记录；不覆盖当前状态。 |
-| 当前状态表不可用 | 事件事务失败并记录稳定错误；不得静默伪造页面状态。 |
+| 航班号重复的旧会话事件 | 保存历史记录；若事件时间早于当前 QAR 会话 `startedAt` 减 5 分钟，不更新当前缓存。 |
+| QAR 会话结束或切换 | 立即清除旧会话的内存缓存。 |
+| 内存缓存更新失败 | 记录稳定错误；不得静默伪造页面状态。 |
