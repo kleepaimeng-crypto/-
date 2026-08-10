@@ -80,6 +80,8 @@
 - 同一事务中插入一条 `ife_cockrell_behavior` 历史记录，并更新一条当前状态记录。
 - `sentAt` 使用 `sysInfo.timestamp`；`receivedAt` 使用服务器接收时间。
 - 原始 JSON 保持在 `data_record.raw_payload`，解析后的 `behaviorInfo` 保存为 JSON 对象。
+- 接收端复用现有 UDP 当前飞行上下文补齐 `data_record` 的航线与航司管理字段。
+- QAR 是当前飞行上下文的权威来源。科可瑞尔事件的 `flightId` 与当前上下文不一致时，事件保留为历史数据，但不得切换当前飞行上下文。
 
 ## 4. 乘客实时快照
 
@@ -89,7 +91,7 @@
 GET /api/v1/passenger-realtime/snapshot
 ```
 
-本阶段调整其科可瑞尔数据来源：从 `ife_cockrell_current_state` 读取当前航班全部已知座位状态，再以固定 C929-700 座位清单补齐为 282 项。
+本阶段调整其科可瑞尔数据来源：按现有 UDP 当前飞行上下文的 `flightNo` 从 `ife_cockrell_current_state` 读取全部已知座位状态，再以固定 C929-700 座位清单补齐为 282 项。当前飞行上下文由 QAR 确定，不以最新 IFE 事件推断。
 
 每项新增/明确如下语义：
 
