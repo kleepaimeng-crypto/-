@@ -8,7 +8,7 @@ import type {
   PassengerSmartWindowItemDto,
   PassengerSmartWindowSnapshotDto,
 } from '../../api/types'
-import { formatBytes, formatMbps } from '../../utils/displayFormatters'
+import { formatBytes } from '../../utils/displayFormatters'
 import {
   C929_WINDOW_COUNT,
   isFirstRowWindow,
@@ -17,7 +17,7 @@ import {
   windowZone,
 } from '../../utils/smartWindowDisplay'
 
-type WatchKind = 'video' | 'music' | 'browsing' | 'other' | 'idle'
+type WatchKind = 'video' | 'music' | 'browsing' | 'shopping' | 'other' | 'idle'
 type CabinSectionKey = 'front' | 'middle' | 'rear'
 
 interface WatchPreviewRow {
@@ -25,7 +25,6 @@ interface WatchPreviewRow {
   type: WatchKind
   title: string
   types: string[]
-  bandwidth: string
   detail: string
   mediaWork: EntertainmentWorkDto | null
   recommendations: EntertainmentRecommendationDto[]
@@ -126,7 +125,6 @@ function buildWatchPreviewRow(activity: PassengerActivityDto, active: boolean): 
     type,
     title: activity.title || (type === 'idle' ? '暂无观看或浏览行为' : watchKindLabel(type)),
     types: activity.mediaWork?.types ?? activity.types ?? [],
-    bandwidth: formatMbps(activity.bandwidthMbps),
     detail: activityKindDetail(activity),
     mediaWork: activity.mediaWork ?? null,
     recommendations: activity.recommendations ?? [],
@@ -135,9 +133,11 @@ function buildWatchPreviewRow(activity: PassengerActivityDto, active: boolean): 
 }
 
 function watchKind(activity: PassengerActivityDto): WatchKind {
+  if (!activity.behaviorType || !activity.eventAt) return 'idle'
   if (activity.activityKind === 'VIDEO') return 'video'
   if (activity.activityKind === 'MUSIC') return 'music'
   if (activity.activityKind === 'BROWSING') return 'browsing'
+  if (activity.activityKind === 'SHOPPING') return 'shopping'
   if (activity.activityKind === 'IDLE') return 'idle'
   return 'other'
 }
@@ -146,6 +146,7 @@ function watchKindLabel(kind: WatchKind): string {
   if (kind === 'video') return '视频'
   if (kind === 'music') return '音乐'
   if (kind === 'browsing') return '浏览'
+  if (kind === 'shopping') return '购物'
   if (kind === 'idle') return '空闲'
   return '其他'
 }
@@ -156,6 +157,9 @@ function activityKindDetail(activity: PassengerActivityDto): string {
   }
   if (activity.activityKind === 'IDLE') {
     return '当前座位暂无影音或网络行为'
+  }
+  if (activity.activityKind === 'SHOPPING') {
+    return '当前行为：购物'
   }
   if (activity.activityKind === 'VIDEO' || activity.activityKind === 'MUSIC') {
     return activity.mediaWork ? '' : `${activity.action || '播放中'} · 作品资料待收录`
@@ -752,10 +756,6 @@ onBeforeUnmount(() => {
               <span class="seat-icon"></span>
               <strong>{{ item.seat }}</strong>
               <i :class="`watch-kind watch-kind--${item.type}`">{{ watchKindLabel(item.type) }}</i>
-            </div>
-            <div class="watch-bandwidth">
-              <span>当前带宽</span>
-              <strong>{{ item.bandwidth }}</strong>
             </div>
           </header>
 

@@ -6,6 +6,7 @@ import com.cabin.udp.entity.DataRecord;
 import java.time.OffsetDateTime;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,9 @@ public class CurrentFlightContextService {
                 record.setDestination(context.destination());
             }
         }
-        if (isBlank(record.getAirlineCode()) && !isBlank(context.airlineCode())) {
+        if (isBlank(record.getAirlineCode())
+                && !isBlank(context.airlineCode())
+                && sameFlightOrMissing(record.getFlightNo(), context.flightNo())) {
             record.setAirlineCode(context.airlineCode());
         }
         enrichAirline(record);
@@ -52,7 +55,23 @@ public class CurrentFlightContextService {
     }
 
     public CurrentFlightContext updateFrom(DataRecord record) {
-        CurrentFlightContext candidate = candidateFrom(record);
+        return updateFrom(record, null, null);
+    }
+
+    public CurrentFlightContext updateFromQar(
+            DataRecord record,
+            UUID flightSessionId,
+            OffsetDateTime sessionStartedAt
+    ) {
+        return updateFrom(record, flightSessionId, sessionStartedAt);
+    }
+
+    private CurrentFlightContext updateFrom(
+            DataRecord record,
+            UUID flightSessionId,
+            OffsetDateTime sessionStartedAt
+    ) {
+        CurrentFlightContext candidate = candidateFrom(record, flightSessionId, sessionStartedAt);
         if (candidate == null) {
             return null;
         }
@@ -61,6 +80,20 @@ public class CurrentFlightContextService {
         CurrentFlightContext after;
         do {
             before = currentContext.get();
+            if (before != null
+                    && flightSessionId != null
+                    && flightSessionId.equals(before.flightSessionId())
+                    && before.sessionStartedAt() != null) {
+                candidate = new CurrentFlightContext(
+                        candidate.flightNo(),
+                        candidate.origin(),
+                        candidate.destination(),
+                        candidate.airlineCode(),
+                        candidate.flightSessionId(),
+                        before.sessionStartedAt(),
+                        candidate.updatedAt()
+                );
+            }
             after = merge(before, candidate);
             if (Objects.equals(before, after)) {
                 return null;
@@ -99,7 +132,11 @@ public class CurrentFlightContextService {
         return before;
     }
 
-    private CurrentFlightContext candidateFrom(DataRecord record) {
+    private CurrentFlightContext candidateFrom(
+            DataRecord record,
+            UUID flightSessionId,
+            OffsetDateTime sessionStartedAt
+    ) {
         String flightNo = trimToNull(record.getFlightNo());
         String origin = trimToNull(record.getOrigin());
         String destination = trimToNull(record.getDestination());
@@ -110,7 +147,15 @@ public class CurrentFlightContextService {
         if (isBlank(flightNo) && isBlank(origin) && isBlank(destination)) {
             return null;
         }
-        return new CurrentFlightContext(flightNo, origin, destination, airlineCode, record.getReceivedAt());
+        return new CurrentFlightContext(
+                flightNo,
+                origin,
+                destination,
+                airlineCode,
+                flightSessionId,
+                sessionStartedAt,
+                record.getReceivedAt()
+        );
     }
 
     private boolean sameRoute(CurrentFlightContext left, CurrentFlightContext right) {

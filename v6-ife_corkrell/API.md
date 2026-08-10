@@ -100,7 +100,7 @@ GET /api/v1/passenger-realtime/snapshot
 | 字段 | 规则 |
 | --- | --- |
 | `seatNo` | 当前页面使用的固定座位标识。 |
-| `activityKind` | 未收到事件时为 `null`；前端据此展示为“空闲”。 |
+| `activityKind` | 未收到事件时为 `null`；前端据此展示为“空闲”。已知行为映射为 `MOVIE_PLAY → VIDEO`、`MUSIC_PLAY → MUSIC`、`WAP_BROWSING → BROWSING`、`SHOPPING → SHOPPING`；未知行为才为 `OTHER`。 |
 | `behaviorType` | 未收到事件时为 `null`；已收到时取客户事件值。 |
 | `eventAt` | 已收到事件时为 `sysInfo.timestamp` 转换后的带时区时间；未收到时为 `null`。 |
 
@@ -109,6 +109,8 @@ GET /api/v1/passenger-realtime/snapshot
 已收到事件的 `playAction`（客户样例已确认 `PLAY`、`PAUSE`）是乘客真实操作：前端保留其对应的影音行为和操作值，不得转换为空闲。`STOP` 未在客户文档中出现，未经客户确认不得由模拟器自行发送。
 
 影音排行只统计当前航班已收到的 `MOVIE_PLAY`、`MUSIC_PLAY` 状态。空闲、浏览和购物不进入影音排行。
+
+`SHOPPING` 是已知购物行为：乘客实时页面显示“购物”，但不展示 `orderList`、订单或商品明细。
 
 ## 5. 错误场景
 

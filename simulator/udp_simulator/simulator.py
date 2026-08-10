@@ -36,6 +36,7 @@ class DataSimulator:
         self.window_model = SmartWindowModel(self.context, config.window_count, self.rng)
         self.ife_model = IfeModel(self.context, self.passengers, self.rng)
         self.ground_model = GroundModel(self.context, self.passengers, self.rng)
+        self.cockrell_snapshot_task_id: str | None = None
         self.sender = UdpSender(config, dry_run=dry_run)
         self.jobs = self._build_jobs()
 
@@ -134,7 +135,13 @@ class DataSimulator:
     def _ife_cockrell_payloads(self, elapsed_seconds: float) -> list[dict]:
         if self.context.status == "finished":
             return []
-        return self.ife_model.build_cockrell_pages(self.config.ife_page_size)
+        if self.cockrell_snapshot_task_id != self.context.task_id:
+            self.cockrell_snapshot_task_id = self.context.task_id
+            return self.ife_model.build_cockrell_events("full", self.config.ife_cockrell_burst_size)
+        return self.ife_model.build_cockrell_events(
+            self.config.ife_cockrell_mode,
+            self.config.ife_cockrell_burst_size,
+        )
 
     def _start_next_flight(self) -> None:
         previous = self.context

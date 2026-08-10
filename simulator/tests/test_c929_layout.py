@@ -16,6 +16,7 @@ from udp_simulator.passengers import (
     build_passengers,
 )
 from udp_simulator.scenario import create_scenario
+from udp_simulator.simulator import DataSimulator
 from udp_simulator.window_model import SmartWindowModel
 
 
@@ -37,19 +38,19 @@ class C929LayoutTests(unittest.TestCase):
             self.assertNotIn(invalid, seat_numbers)
         self.assertTrue(all(seat[0].isalpha() and seat[1:].isdigit() for seat in seat_numbers))
 
-    def test_passengers_and_ife_keep_existing_wire_shape(self) -> None:
+    def test_passengers_and_ife_keep_confirmed_wire_shape(self) -> None:
         rng = random.Random(20260703)
         passengers = build_passengers(282, rng)
         context = create_scenario(282, 59, rng)
         model = IfeModel(context, passengers, rng)
 
         pages_633 = model.build_633_pages(50)
-        pages_cockrell = model.build_cockrell_pages(50)
+        events_cockrell = model.build_cockrell_events("full", 50)
         self.assertEqual([50, 50, 50, 50, 50, 32], [len(page["items"]) for page in pages_633])
-        self.assertEqual([50, 50, 50, 50, 50, 32], [len(page["items"]) for page in pages_cockrell])
-        self.assertTrue(all(page["total"] == 282 for page in pages_633 + pages_cockrell))
+        self.assertEqual(282, len(events_cockrell))
+        self.assertTrue(all(page["total"] == 282 for page in pages_633))
 
-        item = pages_cockrell[0]["items"][0]
+        item = events_cockrell[0]
         self.assertEqual({"sysInfo", "paxInfo", "behaviorInfo", "extInfo"}, set(item))
         self.assertEqual({"timestamp", "flightId"}, set(item["sysInfo"]))
         self.assertEqual({"pnr", "seatNo", "cabinClass", "deviceId", "userId"}, set(item["paxInfo"]))
@@ -95,29 +96,59 @@ class C929LayoutTests(unittest.TestCase):
         video_by_code = {work.work_code: work for work in VIDEO_WORKS}
         music_by_code = {work.work_code: work for work in MUSIC_WORKS}
 
-        for page in model.build_cockrell_pages(50):
-            for item in page["items"]:
-                info = item["behaviorInfo"]
-                if info["behaviorType"] == "MOVIE_PLAY":
-                    work = video_by_code[info["contentId"]]
-                    self.assertEqual(work.title, info["contentName"])
-                    self.assertEqual("/".join(work.genres), info["contentType"])
-                    self.assertEqual(work.duration_seconds // 60, info["contentDuration"])
-                elif info["behaviorType"] == "MUSIC_PLAY":
-                    work = music_by_code[info["musicId"]]
-                    self.assertEqual(work.title, info["musicName"])
-                    self.assertEqual("/".join(work.genres), info["musicType"])
-                    self.assertEqual(work.creator_name, info["artist"])
-                    self.assertEqual(work.collection_name or "", info["album"])
+        for item in model.build_cockrell_events("full", 50):
+            info = item["behaviorInfo"]
+            if info["behaviorType"] == "MOVIE_PLAY":
+                work = video_by_code[info["contentId"]]
+                self.assertEqual(work.title, info["contentName"])
+                self.assertEqual("/".join(work.genres), info["contentType"])
+                self.assertEqual(work.duration_seconds // 60, info["contentDuration"])
+                self.assertIn(info["playAction"], {"PLAY", "PAUSE"})
+            elif info["behaviorType"] == "MUSIC_PLAY":
+                work = music_by_code[info["musicId"]]
+                self.assertEqual(work.title, info["musicName"])
+                self.assertEqual("/".join(work.genres), info["musicType"])
+                self.assertEqual(work.creator_name, info["artist"])
+                self.assertEqual(work.collection_name or "", info["album"])
+                self.assertIn(info["playAction"], {"PLAY", "PAUSE"})
 
     def test_default_config_matches_confirmed_aircraft(self) -> None:
         config = SimulatorConfig()
         self.assertEqual(282, config.passenger_count)
         self.assertEqual(118, config.window_count)
         self.assertEqual(59, config.window_rows)
+        self.assertEqual("single", config.ife_cockrell_mode)
+        self.assertEqual(50, config.ife_cockrell_burst_size)
+        self.assertEqual(5.0, config.send_intervals_seconds["ife_cockrell.behavior"])
 
         with self.assertRaisesRegex(ValueError, "passengerCount must be 282"):
             build_passengers(320, random.Random(1))
+
+    def test_cockrell_modes_emit_one_event_per_selected_passenger(self) -> None:
+        rng = random.Random(20260810)
+        passengers = build_passengers(282, rng)
+        model = IfeModel(create_scenario(282, 59, rng), passengers, rng)
+
+        self.assertEqual(1, len(model.build_cockrell_events("single", 50)))
+        burst = model.build_cockrell_events("burst", 50)
+        self.assertEqual(50, len(burst))
+        self.assertEqual(50, len({item["paxInfo"]["seatNo"] for item in burst}))
+        self.assertEqual(282, len(model.build_cockrell_events("full", 50)))
+
+    def test_cockrell_sends_a_full_snapshot_before_single_events(self) -> None:
+        simulator = DataSimulator(SimulatorConfig(random_seed=20260810), dry_run=True)
+        self.addCleanup(simulator.close)
+
+        initial = simulator._ife_cockrell_payloads(10)
+        later = simulator._ife_cockrell_payloads(10)
+
+        self.assertEqual(282, len(initial))
+        self.assertEqual(282, len({item["paxInfo"]["seatNo"] for item in initial}))
+        self.assertEqual(1, len(later))
+
+        simulator._start_next_flight()
+        next_flight_initial = simulator._ife_cockrell_payloads(10)
+        self.assertEqual(282, len(next_flight_initial))
 
     def test_smart_windows_are_118_with_symmetric_zone_counts(self) -> None:
         rng = random.Random(20260703)

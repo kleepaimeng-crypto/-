@@ -3,6 +3,7 @@ package com.cabin.udp.service;
 import com.cabin.common.exception.BusinessException;
 import com.cabin.common.response.ResponseCode;
 import com.cabin.flighttrack.service.FlightSessionService;
+import com.cabin.passenger.service.IfeCockrellCurrentStateCache;
 import com.cabin.udp.dto.CurrentFlightContext;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
@@ -22,6 +23,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 public class UdpIngestService {
@@ -30,19 +33,22 @@ public class UdpIngestService {
     private final UdpPayloadParser parser;
     private final CurrentFlightContextService currentFlightContextService;
     private final FlightSessionService flightSessionService;
+    private final IfeCockrellCurrentStateCache cockrellStateCache;
 
     public UdpIngestService(
             ObjectProvider<UdpIngestMapper> mapperProvider,
             ObjectMapper objectMapper,
             UdpPayloadParser parser,
             CurrentFlightContextService currentFlightContextService,
-            FlightSessionService flightSessionService
+            FlightSessionService flightSessionService,
+            IfeCockrellCurrentStateCache cockrellStateCache
     ) {
         this.mapperProvider = mapperProvider;
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.currentFlightContextService = currentFlightContextService;
         this.flightSessionService = flightSessionService;
+        this.cockrellStateCache = cockrellStateCache;
     }
 
     @Transactional
@@ -104,27 +110,46 @@ public class UdpIngestService {
     private void persist(ParsedUdpPayload parsed) {
         UdpIngestMapper mapper = mapper();
         DataRecord record = currentFlightContextService.applyTo(parsed.record());
+        CurrentFlightContext contextBeforeInsert = currentFlightContextService.current();
         mapper.insertDataRecord(record);
+        UUID qarSessionId = null;
+        OffsetDateTime qarSessionStartedAt = null;
         for (Map<String, Object> row : parsed.businessRows()) {
             if ("QAR".equals(record.getDataTypeCode())) {
-                insertQarRow(mapper, record, row);
+                qarSessionId = insertQarRow(mapper, record, row);
+                qarSessionStartedAt = (OffsetDateTime) row.get("sampleAt");
             } else {
                 insertBusinessRow(mapper, record.getDataTypeCode(), row);
             }
         }
-        CurrentFlightContext context = currentFlightContextService.updateFrom(record);
-        if (context != null && context.hasRoute()) {
-            mapper.backfillMissingFlightContext(
-                    context.flightNo(),
-                    context.origin(),
-                    context.destination(),
-                    context.airlineCode(),
-                    currentFlightContextService.startedAt()
+        if ("QAR".equals(record.getDataTypeCode())) {
+            CurrentFlightContext context = currentFlightContextService.updateFromQar(
+                    record,
+                    qarSessionId,
+                    qarSessionStartedAt
             );
+            if (context != null && context.hasRoute()) {
+                mapper.backfillMissingFlightContext(
+                        context.flightNo(),
+                        context.origin(),
+                        context.destination(),
+                        context.airlineCode(),
+                        currentFlightContextService.startedAt()
+                );
+            }
+            CurrentFlightContext activeContext = context == null ? currentFlightContextService.current() : context;
+            updateCacheAfterCommit(() -> cockrellStateCache.retainOnly(
+                    activeContext == null ? null : activeContext.flightSessionId()
+            ));
+        } else if ("IFE_COCKRELL_BEHAVIOR".equals(record.getDataTypeCode())) {
+            CurrentFlightContext context = contextBeforeInsert;
+            parsed.businessRows().forEach(row -> updateCacheAfterCommit(
+                    () -> cockrellStateCache.update(context, row, record.getReceivedAt())
+            ));
         }
     }
 
-    private void insertQarRow(
+    private UUID insertQarRow(
             UdpIngestMapper mapper,
             DataRecord record,
             Map<String, Object> row
@@ -133,6 +158,20 @@ public class UdpIngestService {
         row.put("flightSessionId", sessionId);
         mapper.insertQarSample(row);
         flightSessionService.updateLatest(sessionId, record, row);
+        return sessionId;
+    }
+
+    private void updateCacheAfterCommit(Runnable action) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            action.run();
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                action.run();
+            }
+        });
     }
 
     private void insertBusinessRow(UdpIngestMapper mapper, String dataTypeCode, Map<String, Object> row) {

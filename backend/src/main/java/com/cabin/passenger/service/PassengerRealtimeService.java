@@ -12,7 +12,8 @@ import com.cabin.passenger.dto.PassengerRealtimeSnapshotResponse;
 import com.cabin.passenger.entity.EntertainmentWorkRow;
 import com.cabin.passenger.entity.PassengerActivityRow;
 import com.cabin.passenger.mapper.EntertainmentWorkMapper;
-import com.cabin.passenger.mapper.PassengerRealtimeMapper;
+import com.cabin.udp.dto.CurrentFlightContext;
+import com.cabin.udp.service.CurrentFlightContextService;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,32 +29,35 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PassengerRealtimeService {
     private static final int RECOMMENDATION_LIMIT = 3;
 
-    private final ObjectProvider<PassengerRealtimeMapper> mapperProvider;
     private final ObjectProvider<EntertainmentWorkMapper> workMapperProvider;
+    private final CurrentFlightContextService currentFlightContextService;
+    private final IfeCockrellCurrentStateCache cockrellStateCache;
 
     public PassengerRealtimeService(
-            ObjectProvider<PassengerRealtimeMapper> mapperProvider,
-            ObjectProvider<EntertainmentWorkMapper> workMapperProvider
+            ObjectProvider<EntertainmentWorkMapper> workMapperProvider,
+            CurrentFlightContextService currentFlightContextService,
+            IfeCockrellCurrentStateCache cockrellStateCache
     ) {
-        this.mapperProvider = mapperProvider;
         this.workMapperProvider = workMapperProvider;
+        this.currentFlightContextService = currentFlightContextService;
+        this.cockrellStateCache = cockrellStateCache;
     }
 
-    @Transactional(readOnly = true)
     public PassengerRealtimeSnapshotResponse getSnapshot() {
-        PassengerRealtimeMapper mapper = mapper();
-        String flightNo = mapper.findCurrentFlightNo();
-        if (flightNo == null || flightNo.isBlank()) {
+        CurrentFlightContext context = currentFlightContextService.current();
+        if (context == null || context.flightSessionId() == null) {
             return emptySnapshot();
         }
 
-        List<PassengerActivityRow> rows = mapper.findLatestActivities(flightNo);
+        List<PassengerActivityRow> rows = cockrellStateCache.snapshot(context.flightSessionId());
+        if (rows.isEmpty()) {
+            return emptySnapshot();
+        }
         List<EntertainmentWorkRow> works = workMapper().findEnabledWorks();
         Map<String, EntertainmentWorkRow> worksByCode = works.stream()
                 .collect(Collectors.toMap(
@@ -138,7 +142,7 @@ public class PassengerRealtimeService {
     ) {
         if (row == null) {
             return new PassengerActivityResponse(
-                    null, seat.seatNo(), seat.cabinClass(), null, "IDLE", null, List.of(),
+                    null, seat.seatNo(), seat.cabinClass(), null, null, null, List.of(),
                     null, null, null, null, null, null, null, null, null,
                     null, List.of()
             );
@@ -316,12 +320,13 @@ public class PassengerRealtimeService {
 
     private String activityKind(String behaviorType) {
         if (behaviorType == null) {
-            return "IDLE";
+            return null;
         }
         return switch (behaviorType) {
             case "MOVIE_PLAY" -> "VIDEO";
             case "MUSIC_PLAY" -> "MUSIC";
             case "WAP_BROWSING" -> "BROWSING";
+            case "SHOPPING" -> "SHOPPING";
             default -> "OTHER";
         };
     }
@@ -398,14 +403,6 @@ public class PassengerRealtimeService {
 
     private String normalizedTitle(String title) {
         return title == null ? "" : title.trim();
-    }
-
-    private PassengerRealtimeMapper mapper() {
-        PassengerRealtimeMapper mapper = mapperProvider.getIfAvailable();
-        if (mapper == null) {
-            throw new BusinessException(ResponseCode.DATABASE_UNAVAILABLE, "数据库暂不可用");
-        }
-        return mapper;
     }
 
     private EntertainmentWorkMapper workMapper() {

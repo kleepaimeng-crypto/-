@@ -36,10 +36,16 @@ class IfeModel:
         items = [self._to_633_item(event) for event in events]
         return self._paginate("ife_633.behavior", items, page_size)
 
-    def build_cockrell_pages(self, page_size: int) -> list[dict]:
-        events = [self._event_for_cockrell(passenger) for passenger in self.passengers]
-        items = [self._to_cockrell_item(event) for event in events]
-        return self._paginate("ife_cockrell.behavior", items, page_size)
+    def build_cockrell_events(self, mode: str, burst_size: int) -> list[dict]:
+        if mode == "single":
+            selected = [self.rng.choice(self.passengers)]
+        elif mode == "burst":
+            selected = self.rng.sample(self.passengers, min(len(self.passengers), max(1, burst_size)))
+        elif mode == "full":
+            selected = self.passengers
+        else:
+            raise ValueError(f"unsupported ifeCockrellMode: {mode}")
+        return [self._to_cockrell_item(self._event_for_cockrell(passenger)) for passenger in selected]
 
     def _event_for_633(self, passenger: Passenger) -> BehaviorEvent:
         choices = ["MOVIE_PLAY", "MUSIC_PLAY", "CAST_SCREEN", "WAP_BROWSING"]
@@ -76,6 +82,7 @@ class IfeModel:
     def _to_cockrell_item(self, event: BehaviorEvent) -> dict:
         item = self._base_item(event.passenger)
         item["behaviorInfo"] = self._behavior_info(event, include_cover=True)
+        item["extInfo"] = {"errorCode": "0000", "errorDesc": ""}
         return item
 
     def _behavior_info(self, event: BehaviorEvent, include_cover: bool) -> dict:
@@ -97,7 +104,7 @@ class IfeModel:
             "contentName": work.title,
             "contentType": "/".join(work.genres),
             "contentDuration": work.duration_seconds // 60,
-            "playAction": self.rng.choice(["PLAY", "PAUSE", "STOP", "SEEK"]),
+            "playAction": self.rng.choice(["PLAY", "PAUSE"]),
             "playPosition": self.rng.randint(0, work.duration_seconds),
             "resolution": self.rng.choice(["720P", "1080P", "4K"]),
         }
@@ -114,7 +121,7 @@ class IfeModel:
             "musicType": "/".join(work.genres),
             "artist": work.creator_name,
             "album": work.collection_name or "",
-            "playAction": self.rng.choice(["PLAY", "PAUSE", "NEXT", "PREV"]),
+            "playAction": self.rng.choice(["PLAY", "PAUSE"]),
             "playPosition": self.rng.randint(0, work.duration_seconds),
             "volume": self.rng.randint(20, 90),
         }

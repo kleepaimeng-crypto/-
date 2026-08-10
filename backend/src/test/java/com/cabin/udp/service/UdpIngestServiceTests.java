@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.cabin.config.UdpProperties;
 import com.cabin.flighttrack.service.FlightSessionService;
+import com.cabin.passenger.service.IfeCockrellCurrentStateCache;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
 import com.cabin.udp.entity.DataTypeConfig;
@@ -31,12 +32,14 @@ class UdpIngestServiceTests {
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
     private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
+    private final IfeCockrellCurrentStateCache cockrellStateCache = new IfeCockrellCurrentStateCache(objectMapper);
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
             objectMapper,
             parser,
             currentFlightContextService,
-            flightSessionService
+            flightSessionService,
+            cockrellStateCache
     );
     private final OffsetDateTime receivedAt = OffsetDateTime.parse("2026-07-04T12:00:00+08:00");
 
@@ -188,6 +191,27 @@ class UdpIngestServiceTests {
         );
     }
 
+    @Test
+    void unmatchedCockrellEventIsPersistedButDoesNotEnterCurrentFlightCache() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson());
+        ingest(config("IFE_COCKRELL_BEHAVIOR"), cockrellJson("MU9999"));
+
+        ArgumentCaptor<DataRecord> captor = ArgumentCaptor.forClass(DataRecord.class);
+        verify(mapper, times(2)).insertDataRecord(captor.capture());
+        DataRecord cockrell = captor.getAllValues().get(1);
+        assertThat(cockrell.getFlightNo()).isEqualTo("MU9999");
+        assertThat(cockrell.getAirlineCode()).isEqualTo("MU");
+        assertThat(cockrell.getOrigin()).isNull();
+        assertThat(cockrell.getDestination()).isNull();
+        verify(mapper).insertIfeCockrellBehavior(anyMap());
+        assertThat(currentFlightContextService.current().flightNo()).isEqualTo("CA4732");
+        assertThat(cockrellStateCache.snapshot(currentFlightContextService.current().flightSessionId())).isEmpty();
+    }
+
     private DataTypeConfig config() {
         return config("QAR");
     }
@@ -199,17 +223,20 @@ class UdpIngestServiceTests {
         config.setMessageType(switch (code) {
             case "SMART_WINDOW_STATUS" -> "smart_window.status";
             case "GROUND_TRAFFIC_RECORD" -> "ground.traffic_record";
+            case "IFE_COCKRELL_BEHAVIOR" -> "ife_cockrell.behavior";
             default -> "qar.frame";
         });
         config.setUdpPort(switch (code) {
             case "SMART_WINDOW_STATUS" -> 8094;
             case "GROUND_TRAFFIC_RECORD" -> 8092;
+            case "IFE_COCKRELL_BEHAVIOR" -> 8096;
             default -> 8090;
         });
         config.setSourceSystemCode("SIMULATOR");
         config.setSourceDeviceCode(switch (code) {
             case "SMART_WINDOW_STATUS" -> "SIM-WINDOW";
             case "GROUND_TRAFFIC_RECORD" -> "SIM-GROUND";
+            case "IFE_COCKRELL_BEHAVIOR" -> "SIM-IFE-COCKRELL";
             default -> "SIM-QAR";
         });
         return config;
@@ -265,6 +292,29 @@ class UdpIngestServiceTests {
                   ]
                 }
                 """;
+    }
+
+    private String cockrellJson(String flightId) {
+        return """
+                {
+                  "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "%s"},
+                  "paxInfo": {
+                    "pnr": "PNR-001",
+                    "seatNo": "F42",
+                    "cabinClass": "ECONOMY",
+                    "deviceId": "SEAT-F42",
+                    "userId": "PAX-001"
+                  },
+                  "behaviorInfo": {
+                    "behaviorType": "MOVIE_PLAY",
+                    "contentId": "VIDEO-001",
+                    "contentName": "测试影片",
+                    "contentType": "剧情",
+                    "playAction": "PLAY"
+                  },
+                  "extInfo": {"errorCode": "0000", "errorDesc": ""}
+                }
+                """.formatted(flightId);
     }
 
     private String trafficJson() {

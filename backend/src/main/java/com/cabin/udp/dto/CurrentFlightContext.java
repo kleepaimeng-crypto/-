@@ -1,12 +1,15 @@
 package com.cabin.udp.dto;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public record CurrentFlightContext(
         String flightNo,
         String origin,
         String destination,
         String airlineCode,
+        UUID flightSessionId,
+        OffsetDateTime sessionStartedAt,
         OffsetDateTime updatedAt
 ) {
     public boolean hasRoute() {

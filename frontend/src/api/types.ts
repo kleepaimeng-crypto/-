@@ -308,7 +308,7 @@ export interface PassengerSmartWindowSnapshotDto {
   windows: PassengerSmartWindowItemDto[]
 }
 
-export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'OTHER' | 'IDLE'
+export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'SHOPPING' | 'OTHER' | 'IDLE'
 
 export interface MediaRankingItemDto {
   type: string
@@ -354,7 +354,7 @@ export interface PassengerActivityDto {
   seatNo: string
   cabinClass: 'BUSINESS' | 'ECONOMY'
   behaviorType: string | null
-  activityKind: PassengerActivityKind
+  activityKind: PassengerActivityKind | null
   title: string | null
   types: string[]
   action: string | null

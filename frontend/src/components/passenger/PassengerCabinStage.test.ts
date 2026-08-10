@@ -8,9 +8,13 @@ function activity(seatNo: string, activityKind: PassengerActivityDto['activityKi
     passengerId: `PAX-${seatNo}`,
     seatNo,
     cabinClass: 'ECONOMY',
-    behaviorType: activityKind === 'VIDEO' ? 'MOVIE_PLAY' : 'WAP_BROWSING',
+    behaviorType: activityKind === 'VIDEO'
+      ? 'MOVIE_PLAY'
+      : activityKind === 'SHOPPING'
+        ? 'SHOPPING'
+        : 'WAP_BROWSING',
     activityKind,
-    title: activityKind === 'VIDEO' ? '星海远航' : 'example.com',
+    title: activityKind === 'VIDEO' ? '星海远航' : activityKind === 'SHOPPING' ? null : 'example.com',
     types: activityKind === 'VIDEO' ? ['奇幻'] : [],
     action: activityKind === 'VIDEO' ? 'PLAY' : null,
     domain: activityKind === 'BROWSING' ? 'example.com' : null,
@@ -96,7 +100,8 @@ describe('PassengerCabinStage activity list', () => {
     expect(cards).toHaveLength(2)
     expect(wrapper.text()).toContain('星海远航')
     expect(wrapper.text()).toContain('https://example.com')
-    expect(wrapper.text()).toContain('8.4 Mbps')
+    expect(wrapper.text()).not.toContain('当前带宽')
+    expect(wrapper.text()).not.toContain('8.4 Mbps')
     expect(wrapper.text()).toContain('银河竞技场')
     expect(wrapper.text()).toContain('同类型热门')
     expect(wrapper.text()).toContain('同类别热门补位')
@@ -135,6 +140,25 @@ describe('PassengerCabinStage activity list', () => {
 
     expect(wrapper.text()).toContain('舷窗数据不完整：116/118')
     expect(wrapper.text()).toContain('缺失 17、68')
+  })
+
+  it('renders shopping as a known activity instead of other', () => {
+    const wrapper = mount(PassengerCabinStage, {
+      props: {
+        activities: [activity('A48', 'SHOPPING')],
+        activityError: '',
+        activityLoading: false,
+        cabinScroller: null,
+        windowDisplay: null,
+        windowError: '',
+        windowLoading: false,
+      },
+    })
+
+    expect(wrapper.text()).toContain('购物')
+    expect(wrapper.text()).toContain('当前行为：购物')
+    expect(wrapper.text()).not.toContain('其他')
+    expect(wrapper.find('.watch-kind--shopping').exists()).toBe(true)
   })
 
   it('keeps rendering during a rolling update when the backend still returns the old activity shape', () => {

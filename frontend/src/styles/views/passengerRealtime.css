@@ -210,8 +210,8 @@
 
 .media-row {
   display: grid;
-  grid-template-columns: 50px minmax(72px, 1fr) 30px;
-  column-gap: 25px;
+  grid-template-columns: 65px minmax(72px, 1fr) 30px;
+  column-gap: 10px;
   align-items: center;
   color: #c9d4e7;
   font-size: 13px;
@@ -833,30 +833,13 @@
   color: #74b4ff;
 }
 
+.watch-kind--shopping {
+  color: #ffb35c;
+}
+
 .watch-kind--other,
 .watch-kind--idle {
   color: #9aa9bf;
-}
-
-.watch-bandwidth {
-  display: grid;
-  flex: 0 0 auto;
-  justify-items: end;
-  gap: 3px;
-}
-
-.watch-bandwidth span {
-  color: #6f819d;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
-
-.watch-bandwidth strong {
-  color: #5ee8f6;
-  font-size: 17px;
-  font-variant-numeric: tabular-nums;
-  font-weight: 750;
-  line-height: 1;
 }
 
 .watch-list-state {
