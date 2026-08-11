@@ -1,35 +1,36 @@
 package com.cabin.passenger.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.cabin.config.UdpProperties;
 import com.cabin.passenger.entity.EntertainmentWorkRow;
+import com.cabin.passenger.entity.PassengerActivityRow;
 import com.cabin.passenger.mapper.EntertainmentWorkMapper;
-import com.cabin.udp.dto.CurrentFlightContext;
-import com.cabin.udp.entity.DataRecord;
-import com.cabin.udp.service.CurrentFlightContextService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cabin.passenger.mapper.PassengerRealtimeMapper;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
 class PassengerRealtimeServiceTests {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final UUID SESSION_ID =
+            UUID.fromString("00000000-0000-0000-0000-000000000001");
+
     private final EntertainmentWorkMapper workMapper = mock(EntertainmentWorkMapper.class);
-    private final CurrentFlightContextService contextService =
-            new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
-    private final IfeCockrellCurrentStateCache stateCache = new IfeCockrellCurrentStateCache(objectMapper);
+    private final PassengerRealtimeMapper realtimeMapper = mock(PassengerRealtimeMapper.class);
     private final PassengerRealtimeService service = new PassengerRealtimeService(
-            provider(workMapper), contextService, stateCache
+            provider(workMapper), provider(realtimeMapper)
     );
 
     @Test
-    void returnsAllSeatsWithEmptyBehaviorWhenNoCurrentKkreEventExists() {
+    void returnsAllSeatsWithEmptyBehaviorWhenNoActiveFlightSessionExists() {
+        when(realtimeMapper.findLatestActiveFlightSessionId()).thenReturn(null);
+
         var result = service.getSnapshot();
 
         assertThat(result.hasData()).isFalse();
@@ -38,25 +39,12 @@ class PassengerRealtimeServiceTests {
     }
 
     @Test
-    void readsOnlyCurrentQarSessionCockrellState() {
+    void readsLatestCockrellActivitiesFromCurrentDatabaseSession() {
         OffsetDateTime eventAt = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
-        CurrentFlightContext context = establishSession(eventAt);
+        when(realtimeMapper.findLatestActiveFlightSessionId()).thenReturn(SESSION_ID);
+        when(realtimeMapper.findLatestActivities(eq(SESSION_ID), anyList()))
+                .thenReturn(List.of(activity("MOVIE_PLAY", eventAt)));
         when(workMapper.findEnabledWorks()).thenReturn(List.of(work()));
-
-        stateCache.update(context, Map.of(
-                "recordId", UUID.randomUUID(),
-                "flightNo", "CA1234",
-                "pnr", "ABC123",
-                "seatNo", "A11",
-                "cabinClass", "BUSINESS",
-                "deviceId", "DEV-001",
-                "passengerId", "PAX-00001",
-                "behaviorType", "MOVIE_PLAY",
-                "behaviorDetail", """
-                        {"contentId":"MOV-001-2026","contentName":"星海远航","contentType":"科幻/传奇","playAction":"PAUSE"}
-                        """,
-                "eventAt", eventAt
-        ), eventAt.plusSeconds(1));
 
         var result = service.getSnapshot();
         var activity = result.passengerActivities().items().getFirst();
@@ -66,26 +54,20 @@ class PassengerRealtimeServiceTests {
         assertThat(activity.activityKind()).isEqualTo("VIDEO");
         assertThat(activity.action()).isEqualTo("PAUSE");
         assertThat(activity.mediaWork().workCode()).isEqualTo("MOV-001-2026");
+        verify(realtimeMapper).findLatestActivities(eq(SESSION_ID), anyList());
     }
 
     @Test
     void mapsKnownShoppingBehaviorToShopping() {
         OffsetDateTime eventAt = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
-        CurrentFlightContext context = establishSession(eventAt);
+        PassengerActivityRow row = activity("SHOPPING", eventAt);
+        row.setMediaCode(null);
+        row.setTitle(null);
+        row.setTypesText(null);
+        row.setAction(null);
+        when(realtimeMapper.findLatestActiveFlightSessionId()).thenReturn(SESSION_ID);
+        when(realtimeMapper.findLatestActivities(eq(SESSION_ID), anyList())).thenReturn(List.of(row));
         when(workMapper.findEnabledWorks()).thenReturn(List.of());
-
-        stateCache.update(context, Map.of(
-                "recordId", UUID.randomUUID(),
-                "flightNo", "CA1234",
-                "pnr", "ABC123",
-                "seatNo", "A11",
-                "cabinClass", "BUSINESS",
-                "deviceId", "DEV-001",
-                "passengerId", "PAX-00001",
-                "behaviorType", "SHOPPING",
-                "behaviorDetail", "{\"orderList\":[]}",
-                "eventAt", eventAt
-        ), eventAt.plusSeconds(1));
 
         var activity = service.getSnapshot().passengerActivities().items().getFirst();
 
@@ -93,15 +75,20 @@ class PassengerRealtimeServiceTests {
         assertThat(activity.activityKind()).isEqualTo("SHOPPING");
     }
 
-    private CurrentFlightContext establishSession(OffsetDateTime startedAt) {
-        DataRecord record = new DataRecord();
-        record.setDataTypeCode("QAR");
-        record.setFlightNo("CA1234");
-        record.setOrigin("ZBAA");
-        record.setDestination("ZSPD");
-        record.setAirlineCode("CA");
-        record.setReceivedAt(startedAt);
-        return contextService.updateFromQar(record, UUID.randomUUID(), startedAt);
+    private PassengerActivityRow activity(String behaviorType, OffsetDateTime eventAt) {
+        PassengerActivityRow row = new PassengerActivityRow();
+        row.setPassengerId("PAX-00001");
+        row.setSeatNo("A11");
+        row.setCabinClass("BUSINESS");
+        row.setBehaviorType(behaviorType);
+        row.setMediaCode("MOV-001-2026");
+        row.setTitle("星海远航");
+        row.setTypesText("科幻/传奇");
+        row.setAction("PAUSE");
+        row.setEventAt(eventAt);
+        row.setBandwidthUpdatedAt(eventAt.plusSeconds(1));
+        row.setSourceRecordId(UUID.randomUUID());
+        return row;
     }
 
     private EntertainmentWorkRow work() {
@@ -123,8 +110,8 @@ class PassengerRealtimeServiceTests {
     }
 
     @SuppressWarnings("unchecked")
-    private ObjectProvider<EntertainmentWorkMapper> provider(EntertainmentWorkMapper value) {
-        ObjectProvider<EntertainmentWorkMapper> provider = mock(ObjectProvider.class);
+    private <T> ObjectProvider<T> provider(T value) {
+        ObjectProvider<T> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(value);
         return provider;
     }

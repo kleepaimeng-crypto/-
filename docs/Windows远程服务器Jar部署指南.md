@@ -148,6 +148,8 @@ cd D:\deploy\cabin-data-platform\backend
 
 ```powershell
 .\mvnw.cmd clean package -DskipTests
+或者
+mvn clean package -DskipTests
 ```
 
 构建成功后，jar 文件位于：

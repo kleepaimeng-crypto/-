@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import com.cabin.config.UdpProperties;
 import com.cabin.flighttrack.service.FlightSessionService;
-import com.cabin.passenger.service.IfeCockrellCurrentStateCache;
 import com.cabin.udp.mapper.UdpIngestMapper;
 import com.cabin.udp.entity.DataRecord;
 import com.cabin.udp.entity.DataTypeConfig;
@@ -17,6 +16,7 @@ import com.cabin.udp.dto.UdpIngestOutcome;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -32,14 +32,12 @@ class UdpIngestServiceTests {
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
     private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
-    private final IfeCockrellCurrentStateCache cockrellStateCache = new IfeCockrellCurrentStateCache(objectMapper);
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
             objectMapper,
             parser,
             currentFlightContextService,
-            flightSessionService,
-            cockrellStateCache
+            flightSessionService
     );
     private final OffsetDateTime receivedAt = OffsetDateTime.parse("2026-07-04T12:00:00+08:00");
 
@@ -134,6 +132,9 @@ class UdpIngestServiceTests {
         assertThat(outcome.parseStatus()).isEqualTo("PARSED");
         assertThat(outcome.businessRowCount()).isEqualTo(1);
         verify(mapper).insertQarSample(anyMap());
+        verify(mapper).backfillPendingCockrellSession(
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
     }
 
     @Test
@@ -192,7 +193,7 @@ class UdpIngestServiceTests {
     }
 
     @Test
-    void unmatchedCockrellEventIsPersistedButDoesNotEnterCurrentFlightCache() {
+    void unmatchedCockrellEventIsPersistedWithoutFlightSessionId() {
         when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
         when(mapper.insertQarSample(anyMap())).thenReturn(1);
         when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
@@ -207,9 +208,29 @@ class UdpIngestServiceTests {
         assertThat(cockrell.getAirlineCode()).isEqualTo("MU");
         assertThat(cockrell.getOrigin()).isNull();
         assertThat(cockrell.getDestination()).isNull();
-        verify(mapper).insertIfeCockrellBehavior(anyMap());
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfeCockrellBehavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue()).containsKey("flightSessionId");
+        assertThat(rowCaptor.getValue().get("flightSessionId")).isNull();
         assertThat(currentFlightContextService.current().flightNo()).isEqualTo("CA4732");
-        assertThat(cockrellStateCache.snapshot(currentFlightContextService.current().flightSessionId())).isEmpty();
+    }
+
+    @Test
+    void matchingCockrellEventIsPersistedWithCurrentFlightSessionId() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson());
+        ingest(config("IFE_COCKRELL_BEHAVIOR"), cockrellJson("CA4732"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfeCockrellBehavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue().get("flightSessionId")).isEqualTo(
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
     }
 
     private DataTypeConfig config() {

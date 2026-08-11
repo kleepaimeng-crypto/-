@@ -12,8 +12,7 @@ import com.cabin.passenger.dto.PassengerRealtimeSnapshotResponse;
 import com.cabin.passenger.entity.EntertainmentWorkRow;
 import com.cabin.passenger.entity.PassengerActivityRow;
 import com.cabin.passenger.mapper.EntertainmentWorkMapper;
-import com.cabin.udp.dto.CurrentFlightContext;
-import com.cabin.udp.service.CurrentFlightContextService;
+import com.cabin.passenger.mapper.PassengerRealtimeMapper;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.ObjectProvider;
@@ -35,26 +35,27 @@ public class PassengerRealtimeService {
     private static final int RECOMMENDATION_LIMIT = 3;
 
     private final ObjectProvider<EntertainmentWorkMapper> workMapperProvider;
-    private final CurrentFlightContextService currentFlightContextService;
-    private final IfeCockrellCurrentStateCache cockrellStateCache;
+    private final ObjectProvider<PassengerRealtimeMapper> realtimeMapperProvider;
 
     public PassengerRealtimeService(
             ObjectProvider<EntertainmentWorkMapper> workMapperProvider,
-            CurrentFlightContextService currentFlightContextService,
-            IfeCockrellCurrentStateCache cockrellStateCache
+            ObjectProvider<PassengerRealtimeMapper> realtimeMapperProvider
     ) {
         this.workMapperProvider = workMapperProvider;
-        this.currentFlightContextService = currentFlightContextService;
-        this.cockrellStateCache = cockrellStateCache;
+        this.realtimeMapperProvider = realtimeMapperProvider;
     }
 
     public PassengerRealtimeSnapshotResponse getSnapshot() {
-        CurrentFlightContext context = currentFlightContextService.current();
-        if (context == null || context.flightSessionId() == null) {
+        PassengerRealtimeMapper realtimeMapper = realtimeMapper();
+        UUID flightSessionId = realtimeMapper.findLatestActiveFlightSessionId();
+        if (flightSessionId == null) {
             return emptySnapshot();
         }
 
-        List<PassengerActivityRow> rows = cockrellStateCache.snapshot(context.flightSessionId());
+        List<String> seatNos = C929SeatManifest.seats().stream()
+                .map(C929SeatManifest.Seat::seatNo)
+                .toList();
+        List<PassengerActivityRow> rows = realtimeMapper.findLatestActivities(flightSessionId, seatNos);
         if (rows.isEmpty()) {
             return emptySnapshot();
         }
@@ -409,6 +410,14 @@ public class PassengerRealtimeService {
         EntertainmentWorkMapper mapper = workMapperProvider.getIfAvailable();
         if (mapper == null) {
             throw new BusinessException(ResponseCode.DATABASE_UNAVAILABLE, "数据库暂不可用");
+        }
+        return mapper;
+    }
+
+    private PassengerRealtimeMapper realtimeMapper() {
+        PassengerRealtimeMapper mapper = realtimeMapperProvider.getIfAvailable();
+        if (mapper == null) {
+            throw new BusinessException(ResponseCode.DATABASE_UNAVAILABLE, "乘客实时数据库暂不可用");
         }
         return mapper;
     }
