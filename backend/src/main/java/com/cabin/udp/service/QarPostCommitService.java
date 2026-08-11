@@ -2,53 +2,46 @@ package com.cabin.udp.service;
 
 import com.cabin.udp.dto.CurrentFlightContext;
 import com.cabin.udp.entity.DataRecord;
-import com.cabin.udp.mapper.UdpIngestMapper;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.UUID;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QarPostCommitService {
-    private final ObjectProvider<UdpIngestMapper> mapperProvider;
     private final CurrentFlightContextService currentFlightContextService;
+    private final QarBackfillScheduler backfillScheduler;
 
     public QarPostCommitService(
-            ObjectProvider<UdpIngestMapper> mapperProvider,
-            CurrentFlightContextService currentFlightContextService
+            CurrentFlightContextService currentFlightContextService,
+            QarBackfillScheduler backfillScheduler
     ) {
-        this.mapperProvider = mapperProvider;
         this.currentFlightContextService = currentFlightContextService;
+        this.backfillScheduler = backfillScheduler;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handle(
             DataRecord record,
             UUID flightSessionId,
             OffsetDateTime sessionStartedAt
     ) {
+        CurrentFlightContext before = currentFlightContextService.current();
         CurrentFlightContext context = currentFlightContextService.updateFromQar(
                 record,
                 flightSessionId,
                 sessionStartedAt
         );
-        UdpIngestMapper mapper = mapperProvider.getIfAvailable();
-        if (mapper == null) {
-            return;
-        }
-        if (context != null && context.hasRoute()) {
-            mapper.backfillMissingFlightContext(
+        boolean newSession = flightSessionId != null
+                && (before == null || !Objects.equals(before.flightSessionId(), flightSessionId));
+        if (newSession && context != null && context.hasRoute()) {
+            backfillScheduler.schedule(new QarBackfillRequest(
+                    flightSessionId,
                     context.flightNo(),
                     context.origin(),
                     context.destination(),
                     context.airlineCode(),
                     currentFlightContextService.startedAt()
-            );
-        }
-        if (flightSessionId != null) {
-            mapper.backfillPendingCockrellSession(flightSessionId);
+            ));
         }
     }
 }

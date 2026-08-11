@@ -2,6 +2,7 @@ package com.cabin.udp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,8 +33,9 @@ class UdpIngestServiceTests {
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
     private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
+    private final QarBackfillScheduler qarBackfillScheduler = mock(QarBackfillScheduler.class);
     private final QarCommitCoordinator qarCommitCoordinator = new QarCommitCoordinator(
-            new QarPostCommitService(provider(mapper), currentFlightContextService)
+            new QarPostCommitService(currentFlightContextService, qarBackfillScheduler)
     );
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
@@ -136,9 +138,7 @@ class UdpIngestServiceTests {
         assertThat(outcome.parseStatus()).isEqualTo("PARSED");
         assertThat(outcome.businessRowCount()).isEqualTo(1);
         verify(mapper).insertQarSample(anyMap());
-        verify(mapper).backfillPendingCockrellSession(
-                UUID.fromString("00000000-0000-0000-0000-000000000001")
-        );
+        verify(qarBackfillScheduler).schedule(any(QarBackfillRequest.class));
     }
 
     @Test
@@ -187,13 +187,7 @@ class UdpIngestServiceTests {
         ingest(config("SMART_WINDOW_STATUS"), smartWindowJson());
         ingest(config("QAR"), qarJson());
 
-        verify(mapper).backfillMissingFlightContext(
-                org.mockito.ArgumentMatchers.eq("CA4732"),
-                org.mockito.ArgumentMatchers.eq("ZBAA"),
-                org.mockito.ArgumentMatchers.eq("ZSPD"),
-                org.mockito.ArgumentMatchers.eq("CA"),
-                org.mockito.ArgumentMatchers.any(OffsetDateTime.class)
-        );
+        verify(qarBackfillScheduler).schedule(any(QarBackfillRequest.class));
     }
 
     @Test

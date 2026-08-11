@@ -352,7 +352,7 @@ public interface UdpIngestMapper {
                 JOIN data_record r ON r.id = b.record_id
                 JOIN target_session target ON true
                 WHERE b.flight_session_id IS NULL
-                  AND upper(b.flight_no) = upper(target.flight_no)
+                  AND b.flight_no = target.flight_no
                   AND r.aircraft_registration_no = target.aircraft_registration_no
                   AND COALESCE(r.source_host, '0.0.0.0'::inet) = target.source_host
                   AND b.event_at >= target.started_at - INTERVAL '5 minutes'
@@ -380,7 +380,7 @@ public interface UdpIngestMapper {
                 JOIN ife_cockrell_behavior b ON b.id = pending.id
                 JOIN data_record r ON r.id = b.record_id
                 JOIN flight_session fs
-                  ON upper(fs.flight_no) = upper(b.flight_no)
+                  ON fs.flight_no = b.flight_no
                  AND fs.aircraft_registration_no = r.aircraft_registration_no
                  AND fs.source_host = COALESCE(r.source_host, '0.0.0.0'::inet)
                  AND b.event_at >= fs.started_at - INTERVAL '5 minutes'
