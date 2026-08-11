@@ -16,6 +16,7 @@ import com.cabin.udp.dto.UdpIngestOutcome;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -31,12 +32,16 @@ class UdpIngestServiceTests {
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
     private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
+    private final QarCommitCoordinator qarCommitCoordinator = new QarCommitCoordinator(
+            new QarPostCommitService(provider(mapper), currentFlightContextService)
+    );
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
             objectMapper,
             parser,
             currentFlightContextService,
-            flightSessionService
+            flightSessionService,
+            qarCommitCoordinator
     );
     private final OffsetDateTime receivedAt = OffsetDateTime.parse("2026-07-04T12:00:00+08:00");
 
@@ -131,6 +136,9 @@ class UdpIngestServiceTests {
         assertThat(outcome.parseStatus()).isEqualTo("PARSED");
         assertThat(outcome.businessRowCount()).isEqualTo(1);
         verify(mapper).insertQarSample(anyMap());
+        verify(mapper).backfillPendingCockrellSession(
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
     }
 
     @Test
@@ -188,6 +196,47 @@ class UdpIngestServiceTests {
         );
     }
 
+    @Test
+    void unmatchedCockrellEventIsPersistedWithoutFlightSessionId() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson());
+        ingest(config("IFE_COCKRELL_BEHAVIOR"), cockrellJson("MU9999"));
+
+        ArgumentCaptor<DataRecord> captor = ArgumentCaptor.forClass(DataRecord.class);
+        verify(mapper, times(2)).insertDataRecord(captor.capture());
+        DataRecord cockrell = captor.getAllValues().get(1);
+        assertThat(cockrell.getFlightNo()).isEqualTo("MU9999");
+        assertThat(cockrell.getAirlineCode()).isEqualTo("MU");
+        assertThat(cockrell.getOrigin()).isNull();
+        assertThat(cockrell.getDestination()).isNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfeCockrellBehavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue()).containsKey("flightSessionId");
+        assertThat(rowCaptor.getValue().get("flightSessionId")).isNull();
+        assertThat(currentFlightContextService.current().flightNo()).isEqualTo("CA4732");
+    }
+
+    @Test
+    void matchingCockrellEventIsPersistedWithCurrentFlightSessionId() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson());
+        ingest(config("IFE_COCKRELL_BEHAVIOR"), cockrellJson("CA4732"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfeCockrellBehavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue().get("flightSessionId")).isEqualTo(
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
+    }
+
     private DataTypeConfig config() {
         return config("QAR");
     }
@@ -199,17 +248,20 @@ class UdpIngestServiceTests {
         config.setMessageType(switch (code) {
             case "SMART_WINDOW_STATUS" -> "smart_window.status";
             case "GROUND_TRAFFIC_RECORD" -> "ground.traffic_record";
+            case "IFE_COCKRELL_BEHAVIOR" -> "ife_cockrell.behavior";
             default -> "qar.frame";
         });
         config.setUdpPort(switch (code) {
             case "SMART_WINDOW_STATUS" -> 8094;
             case "GROUND_TRAFFIC_RECORD" -> 8092;
+            case "IFE_COCKRELL_BEHAVIOR" -> 8096;
             default -> 8090;
         });
         config.setSourceSystemCode("SIMULATOR");
         config.setSourceDeviceCode(switch (code) {
             case "SMART_WINDOW_STATUS" -> "SIM-WINDOW";
             case "GROUND_TRAFFIC_RECORD" -> "SIM-GROUND";
+            case "IFE_COCKRELL_BEHAVIOR" -> "SIM-IFE-COCKRELL";
             default -> "SIM-QAR";
         });
         return config;
@@ -265,6 +317,29 @@ class UdpIngestServiceTests {
                   ]
                 }
                 """;
+    }
+
+    private String cockrellJson(String flightId) {
+        return """
+                {
+                  "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "%s"},
+                  "paxInfo": {
+                    "pnr": "PNR-001",
+                    "seatNo": "F42",
+                    "cabinClass": "ECONOMY",
+                    "deviceId": "SEAT-F42",
+                    "userId": "PAX-001"
+                  },
+                  "behaviorInfo": {
+                    "behaviorType": "MOVIE_PLAY",
+                    "contentId": "VIDEO-001",
+                    "contentName": "测试影片",
+                    "contentType": "剧情",
+                    "playAction": "PLAY"
+                  },
+                  "extInfo": {"errorCode": "0000", "errorDesc": ""}
+                }
+                """.formatted(flightId);
     }
 
     private String trafficJson() {

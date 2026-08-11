@@ -25,7 +25,7 @@ export function usePassengerRealtime() {
     void reloadDashboard()
     refreshTimer = window.setInterval(() => {
       if (autoRefresh.value) void reloadDashboard(true)
-    }, 5000)
+    }, 2000)
   })
 
   onBeforeUnmount(() => {

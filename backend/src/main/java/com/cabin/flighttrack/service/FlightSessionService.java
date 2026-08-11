@@ -2,6 +2,8 @@ package com.cabin.flighttrack.service;
 
 import com.cabin.common.exception.BusinessException;
 import com.cabin.common.response.ResponseCode;
+import com.cabin.flighthistory.FlightFinishReason;
+import com.cabin.flighthistory.service.FlightSessionClosingService;
 import com.cabin.flighttrack.entity.FlightSessionRow;
 import com.cabin.flighttrack.mapper.FlightSessionMapper;
 import com.cabin.udp.entity.DataRecord;
@@ -19,9 +21,19 @@ public class FlightSessionService {
     private static final String UNKNOWN_HOST = "0.0.0.0";
 
     private final ObjectProvider<FlightSessionMapper> mapperProvider;
+    private final ObjectProvider<FlightSessionClosingService> closingServiceProvider;
 
     public FlightSessionService(ObjectProvider<FlightSessionMapper> mapperProvider) {
+        this(mapperProvider, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public FlightSessionService(
+            ObjectProvider<FlightSessionMapper> mapperProvider,
+            ObjectProvider<FlightSessionClosingService> closingServiceProvider
+    ) {
         this.mapperProvider = mapperProvider;
+        this.closingServiceProvider = closingServiceProvider;
     }
 
     public UUID resolve(DataRecord record, Map<String, Object> qarRow) {
@@ -42,7 +54,7 @@ public class FlightSessionService {
             return active.getId();
         }
         if (active != null) {
-            mapper.finish(active.getId());
+            closeActive(mapper, active, finishReason(active, record, frameCount));
         }
 
         FlightSessionRow created = new FlightSessionRow();
@@ -99,6 +111,27 @@ public class FlightSessionService {
         Duration receivedGap = Duration.between(active.getLastReceivedAt(), record.getReceivedAt());
         Duration sampleGap = Duration.between(active.getLastSampleAt(), sampleAt);
         return receivedGap.compareTo(SESSION_GAP) <= 0 && sampleGap.compareTo(SESSION_GAP) <= 0;
+    }
+
+    private FlightFinishReason finishReason(FlightSessionRow active, DataRecord record, long frameCount) {
+        if (!same(active.getFlightNo(), record.getFlightNo())
+                || !same(active.getOrigin(), record.getOrigin())
+                || !same(active.getDestination(), record.getDestination())) {
+            return FlightFinishReason.NEW_FLIGHT;
+        }
+        return frameCount <= RESET_FRAME_MAX && active.getLastFrameCount() > frameCount
+                ? FlightFinishReason.FRAME_RESET
+                : FlightFinishReason.NEW_FLIGHT;
+    }
+
+    private void closeActive(FlightSessionMapper mapper, FlightSessionRow active, FlightFinishReason reason) {
+        FlightSessionClosingService closingService = closingServiceProvider == null
+                ? null : closingServiceProvider.getIfAvailable();
+        if (closingService == null) {
+            mapper.finish(active.getId());
+            return;
+        }
+        closingService.closeLocked(active, reason);
     }
 
     private FlightSessionMapper mapper() {

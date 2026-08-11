@@ -21,6 +21,8 @@ public record PassengerActivityResponse(
         Long windowBytes,
         OffsetDateTime eventAt,
         OffsetDateTime bandwidthUpdatedAt,
-        UUID sourceRecordId
+        UUID sourceRecordId,
+        EntertainmentWorkResponse mediaWork,
+        List<EntertainmentRecommendationResponse> recommendations
 ) {
 }

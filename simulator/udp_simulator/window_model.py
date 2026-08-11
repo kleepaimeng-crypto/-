@@ -17,8 +17,8 @@ class WindowState:
 
 class SmartWindowModel:
     def __init__(self, context: ScenarioContext, window_count: int, rng: random.Random) -> None:
-        if window_count != 116:
-            raise ValueError(f"A330-200 windowCount must be 116, got {window_count}")
+        if window_count != 118:
+            raise ValueError(f"C929-700 windowCount must be 118, got {window_count}")
         self.context = context
         self.window_count = window_count
         self.rng = rng
@@ -55,10 +55,10 @@ class SmartWindowModel:
         }
 
     def _initial_window(self, window_id: int) -> WindowState:
-        side_sequence = window_id if window_id <= 58 else window_id - 58
-        if side_sequence <= 17:
+        side_sequence = window_id if window_id <= 59 else window_id - 59
+        if side_sequence <= 20:
             zone_id = 1
-        elif side_sequence <= 37:
+        elif side_sequence <= 39:
             zone_id = 2
         else:
             zone_id = 3

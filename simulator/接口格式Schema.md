@@ -15,7 +15,11 @@
 - HTTP 方法：忽略，不需要实现 GET 接口。
 - 数据模式：模拟器主动按时间、频率或场景脚本向本地 UDP 端口推送数据。
 
-### 0.1 推荐本地 UDP 通道
+### 0.1 科可瑞尔 IFE 例外规则
+
+`ife_cockrell.behavior` 使用客户固定的单事件根对象 `sysInfo`、`paxInfo`、`behaviorInfo`、`extInfo`，不得附加本节的 `messageType`、`sentAt`、`payload`、`items` 或分页包装。每个航段启动后立即连续发送 282 条独立 UDP 数据报完成座位状态初始化；同一航段后续默认每 5 秒随机发送 1 条事件。端口固定为 `8096`。
+
+### 0.2 推荐本地 UDP 通道
 
 | 通道 | 数据对象 | Payload 格式 | 本地端口 |
 | --- | --- | --- | --- |
@@ -25,7 +29,7 @@
 | `ground.session_summary` | 会话摘要数据 | JSON | 待配置 |
 | `smart_window.status` | 智能舷窗状态 | JSON | 待配置 |
 | `ife_633.behavior` | 633 IFE 乘客行为 | JSON | 待配置 |
-| `ife_cockrell.behavior` | 科克瑞尔 IFE 乘客行为 | JSON | 待配置 |
+| `ife_cockrell.behavior` | 科克瑞尔 IFE 乘客行为 | 直根对象单事件 JSON | 8096 |
 
 ## 1. QAR 数据格式
 
@@ -241,7 +245,7 @@
 
 | 字段名 | 类型 | 说明 | 取值 | 必填 |
 | --- | --- | --- | --- | --- |
-| `windowId` | int | 舷窗编号 | `1~116` | 是 |
+| `windowId` | int | 舷窗编号 | `1~118` | 是 |
 | `zoneId` | int | 舱位区域 | `1=前舱`，`2=中舱`，`3=后舱` | 是 |
 | `brightnessLevel` | int | 明暗挡位 | `0~10`，0 最暗，10 最亮 | 是 |
 | `connectStatus` | bool | 连通性状态 | `1=连通`，`0=不连通` | 是 |

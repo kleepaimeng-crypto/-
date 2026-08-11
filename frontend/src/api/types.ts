@@ -308,7 +308,7 @@ export interface PassengerSmartWindowSnapshotDto {
   windows: PassengerSmartWindowItemDto[]
 }
 
-export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'OTHER' | 'IDLE'
+export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'SHOPPING' | 'OTHER' | 'IDLE'
 
 export interface MediaRankingItemDto {
   type: string
@@ -322,12 +322,39 @@ export interface PassengerMediaStatisticsDto {
   musicRanking: MediaRankingItemDto[]
 }
 
+export type EntertainmentCategory = 'VIDEO' | 'MUSIC'
+export type EntertainmentRecommendationReason = 'SAME_TYPE' | 'CATEGORY_POPULAR'
+
+export interface EntertainmentWorkDto {
+  workCode: string
+  category: EntertainmentCategory
+  title: string
+  types: string[]
+  summary: string
+  creatorName: string
+  collectionName: string | null
+  durationSeconds: number
+  releaseYear: number
+  language: string
+  region: string
+}
+
+export interface EntertainmentRecommendationDto {
+  workCode: string
+  category: EntertainmentCategory
+  title: string
+  types: string[]
+  creatorName: string
+  currentViewerCount: number
+  reason: EntertainmentRecommendationReason
+}
+
 export interface PassengerActivityDto {
   passengerId: string | null
   seatNo: string
   cabinClass: 'BUSINESS' | 'ECONOMY'
   behaviorType: string | null
-  activityKind: PassengerActivityKind
+  activityKind: PassengerActivityKind | null
   title: string | null
   types: string[]
   action: string | null
@@ -339,6 +366,8 @@ export interface PassengerActivityDto {
   eventAt: string | null
   bandwidthUpdatedAt: string | null
   sourceRecordId: string | null
+  mediaWork: EntertainmentWorkDto | null
+  recommendations: EntertainmentRecommendationDto[]
 }
 
 export interface PassengerActivitiesDto {
@@ -371,6 +400,7 @@ export interface FlightTrackPointDto {
 }
 
 export interface FlightTrackInfoDto {
+  flightSessionId: string
   aircraftRegistrationNo: string | null
   aircraftModel: string | null
   airlineCode: string | null
@@ -392,4 +422,53 @@ export interface FlightTrackCurrentDto {
   pollIntervalSeconds: number
   freshnessSeconds: number
   track: FlightTrackPointDto[]
+}
+
+export interface FlightTelemetryPointDto {
+  sampleAt: string
+  sampleTimeText: string
+  frameCount: number
+  latitude: number | null
+  longitude: number | null
+  altitudeFt: number | null
+  groundSpeedKt: number | null
+  computedAirSpeedKt: number | null
+  trackAngleDeg: number | null
+  headingDeg: number | null
+  pitchDeg: number | null
+  rollDeg: number | null
+  distanceToGoNm: number | null
+  destinationEtaText: string | null
+}
+
+export type FlightFinishReason = 'LANDED' | 'TIMEOUT' | 'NEW_FLIGHT' | 'FRAME_RESET'
+
+export interface FlightHistorySessionDto {
+  id: string
+  flightNo: string
+  origin: string
+  destination: string
+  aircraftRegistrationNo: string
+  aircraftModel: string | null
+  airlineCode: string | null
+  startedAt: string
+  endedAt: string
+  durationSeconds: number
+  pointCount: number
+  finishReason: FlightFinishReason
+  archivedAt: string
+}
+
+export interface FlightHistoryPointDto extends FlightTelemetryPointDto {
+  airGroundStatus: string
+}
+
+export interface FlightHistoryTrackDto {
+  session: FlightHistorySessionDto
+  rangeStartAt: string
+  rangeEndAt: string
+  sourcePointCount: number
+  returnedPointCount: number
+  sampled: boolean
+  track: FlightHistoryPointDto[]
 }

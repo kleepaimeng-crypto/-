@@ -11,7 +11,7 @@ import { useFlightTrack } from '../composables/useFlightTrack'
 import { calculateFixedCanvasScale } from '../utils/fixedCanvas'
 
 const router = useRouter()
-const { autoRefresh, current, error, loading, reload, toggleAutoRefresh } = useFlightTrack()
+const { current, error, loading } = useFlightTrack()
 const canvasScale = ref(1)
 const mapStage = ref<InstanceType<typeof FlightMapStage> | null>(null)
 const chartPoints = computed(() => latestRollingPoints(current.value?.track ?? [], 16))
@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
         <nav class="workspace-nav" aria-label="主导航">
           <button class="workspace-nav__item" @click="router.push('/')">数据管理</button>
           <button class="workspace-nav__item is-active">飞机轨迹实时系统</button>
-          <button class="workspace-nav__item" disabled>飞机轨迹回放系统</button>
+          <button class="workspace-nav__item" @click="router.push('/flight-history')">飞机轨迹回放系统</button>
           <button class="workspace-nav__item" disabled>数据统计</button>
           <button
             v-if="authSession.state.user?.roleCode === 'SUPER_ADMIN'"
@@ -149,12 +149,6 @@ onBeforeUnmount(() => {
             @click="locatePlane"
           >
             ⌖
-          </button>
-          <button class="flight-tool-button" @click="toggleAutoRefresh">
-            {{ autoRefresh ? '暂停刷新' : '恢复刷新' }}
-          </button>
-          <button class="flight-tool-button" :disabled="loading" @click="reload()">
-            {{ loading ? '刷新中' : '立即刷新' }}
           </button>
         </div>
       </section>

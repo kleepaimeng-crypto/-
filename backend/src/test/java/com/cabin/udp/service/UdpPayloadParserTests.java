@@ -61,6 +61,7 @@ class UdpPayloadParserTests {
         assertThat(parsed.businessRows()).singleElement().satisfies(row -> {
             assertThat(row.get("coverMimeType")).isEqualTo("image/png");
             assertThat(row.get("coverChecksum").toString()).hasSize(64);
+            assertThat(row.get("errorDescription")).isNull();
             assertThat(row.get("behaviorDetail").toString()).doesNotContain("coverBase64");
             assertThat(row.get("behaviorDetail").toString()).doesNotContain("coverMimeType");
         });
@@ -292,36 +293,30 @@ class UdpPayloadParserTests {
     private String ifeCockrellJson() {
         return """
                 {
-                  "messageType": "ife_cockrell.behavior",
-                  "sentAt": "2026-07-04T12:00:00+08:00",
-                  "items": [
-                    {
-                      "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "CA4732"},
-                      "paxInfo": {
-                        "pnr": "ABC123",
-                        "seatNo": "12A",
-                        "cabinClass": "ECONOMY",
-                        "deviceId": "DEV-001",
-                        "userId": "PAX-001"
-                      },
-                      "behaviorInfo": {
-                        "behaviorType": "SHOPPING",
-                        "orderList": [
+                  "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "CA4732"},
+                  "paxInfo": {
+                    "pnr": "ABC123",
+                    "seatNo": "12A",
+                    "cabinClass": "ECONOMY",
+                    "deviceId": "DEV-001",
+                    "userId": "PAX-001"
+                  },
+                  "behaviorInfo": {
+                    "behaviorType": "SHOPPING",
+                    "orderList": [
+                      {
+                        "orderId": "ORDER-001",
+                        "goodsList": [
                           {
-                            "orderId": "ORDER-001",
-                            "goodsList": [
-                              {
-                                "goodsId": "GOODS-001",
-                                "coverBase64": "Zm9v",
-                                "coverMimeType": "image/png"
-                              }
-                            ]
+                            "goodsId": "GOODS-001",
+                            "coverBase64": "Zm9v",
+                            "coverMimeType": "image/png"
                           }
                         ]
-                      },
-                      "extInfo": {}
-                    }
-                  ]
+                      }
+                    ]
+                  },
+                  "extInfo": {"errorCode": "0000", "errorDesc": ""}
                 }
                 """;
     }

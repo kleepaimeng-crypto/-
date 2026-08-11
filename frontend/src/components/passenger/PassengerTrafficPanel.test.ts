@@ -12,7 +12,7 @@ const snapshot: PassengerRealtimeSnapshotDto = {
     musicTotalCount: 48,
     musicRanking: [{ type: '民谣', count: 48 }],
   },
-  passengerActivities: { total: 237, items: [] },
+  passengerActivities: { total: 282, items: [] },
 }
 
 describe('PassengerTrafficPanel', () => {

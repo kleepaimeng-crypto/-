@@ -17,17 +17,19 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Coordinate } from 'ol/coordinate'
 import type { FeatureLike } from 'ol/Feature'
-import type { FlightTrackCurrentDto } from '../../api/types'
+import type { FlightTelemetryPointDto, FlightTrackCurrentDto } from '../../api/types'
 import { flownTrackPoints, projectTrack, trackHeading } from './flightMapGeometry'
 
 const props = defineProps<{
-  current: FlightTrackCurrentDto | null
+  current?: FlightTrackCurrentDto | null
+  track?: FlightTelemetryPointDto[]
+  currentPoint?: FlightTelemetryPointDto | null
   loading: boolean
   error: string
 }>()
 
-const minZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MIN_ZOOM, 3)
-const maxTileZoom = numberEnv(import.meta.env.VITE_OFFLINE_MAP_MAX_ZOOM, 10)
+const minZoom = numberEnv(import.meta.env.VITE_MAP_MIN_ZOOM, 3)
+const maxMapZoom = numberEnv(import.meta.env.VITE_MAP_MAX_ZOOM, 10)
 const initialZoom = 9
 const defaultMapZoom = 4
 const chinaMapCenter = fromLonLat([104.5, 35.5])
@@ -62,6 +64,8 @@ let administrativeMapLoader: AdministrativeMapLoader | undefined
 let administrativeMapLayer: VectorLayer<VectorSource> | undefined
 let currentMapZoom = defaultMapZoom
 let countyLoadTimer: number | undefined
+let planeAnimationFrame: number | undefined
+let displayedSessionId: string | undefined
 
 type AdministrativeMapLevel = 'country' | 'province' | 'city' | 'county' | 'unknown'
 
@@ -198,13 +202,14 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (countyLoadTimer !== undefined) window.clearTimeout(countyLoadTimer)
+  if (planeAnimationFrame !== undefined) window.cancelAnimationFrame(planeAnimationFrame)
   map?.setTarget(undefined)
   map = undefined
   administrativeMapLoader = undefined
   administrativeMapLayer = undefined
 })
 
-watch(() => props.current, () => {
+watch(() => [props.current, props.track, props.currentPoint], () => {
   updateTrack()
 }, { deep: true })
 
@@ -236,7 +241,7 @@ function setupMap(): void {
       ],
       view: new View({
         center: chinaMapCenter,
-        maxZoom: maxTileZoom,
+        maxZoom: maxMapZoom,
         minZoom,
         zoom: defaultMapZoom,
       }),
@@ -450,30 +455,102 @@ function labelHaloWidth(level: AdministrativeMapLevel): number {
 
 function updateTrack(): void {
   if (!map || !trackFeature || !planeFeature) return
-  const current = props.current
-  if (!current) {
+  const latestPoint = props.currentPoint ?? props.current?.latestPoint
+  const sourceTrack = props.track ?? props.current?.track ?? []
+  const renderable = sourceTrack.filter(isRenderablePoint)
+  if (!latestPoint || renderable.length === 0) {
     trackFeature.getGeometry()?.setCoordinates([])
     planeFeature.setGeometry(undefined)
     latestCoordinate = undefined
+    displayedSessionId = undefined
     return
   }
-  const points = flownTrackPoints(current.track, current.latestPoint)
+  const fallback = isRenderablePoint(latestPoint) ? latestPoint : renderable.at(-1)
+  if (!fallback) return
+  const points = flownTrackPoints(renderable, fallback)
   const coordinates = projectTrack(points)
   trackFeature.getGeometry()?.setCoordinates(coordinates)
-  latestCoordinate = coordinates.at(-1)
-  if (!latestCoordinate) {
+  const targetCoordinate = coordinates.at(-1)
+  if (!targetCoordinate) {
     planeFeature.setGeometry(undefined)
     return
   }
-  planeFeature.setGeometry(new Point(latestCoordinate))
-  planeFeature.set('heading', trackHeading(points, current.latestPoint))
-  if (!mapViewInitialized) {
-    map.getView().setCenter(latestCoordinate)
+  const targetHeading = trackHeading(points, fallback)
+  const nextSessionId = props.current?.flight.flightSessionId
+  const sessionChanged = nextSessionId !== undefined && displayedSessionId !== undefined
+    && nextSessionId !== displayedSessionId
+  if (!mapViewInitialized || sessionChanged) {
+    if (planeAnimationFrame !== undefined) window.cancelAnimationFrame(planeAnimationFrame)
+    planeAnimationFrame = undefined
+    setPlanePosition(targetCoordinate, targetHeading)
+    map.getView().setCenter(targetCoordinate)
     map.getView().setZoom(initialZoom)
     mapViewInitialized = true
-  } else if (followingPlane) {
-    map.getView().setCenter(latestCoordinate)
+  } else if (props.current && !props.currentPoint) {
+    animateRealtimePlane(targetCoordinate, targetHeading, sampleIntervalMs(points))
+  } else {
+    setPlanePosition(targetCoordinate, targetHeading)
+    if (followingPlane) map.getView().setCenter(targetCoordinate)
   }
+  if (nextSessionId !== undefined) displayedSessionId = nextSessionId
+}
+
+function animateRealtimePlane(target: Coordinate, targetHeading: number, sampleInterval: number | null): void {
+  if (!planeFeature) return
+  if (planeAnimationFrame !== undefined) window.cancelAnimationFrame(planeAnimationFrame)
+  const start = planeFeature.getGeometry()?.getCoordinates()
+  const startHeading = Number(planeFeature.get('heading') ?? targetHeading)
+  if (!start || sameCoordinate(start, target)) {
+    setPlanePosition(target, targetHeading)
+    if (followingPlane) map?.getView().setCenter(target)
+    return
+  }
+  // QAR points can arrive less often than the HTTP polling interval. Follow
+  // their actual sampling gap so the marker keeps moving until the next point.
+  const estimatedInterval = (props.current?.pollIntervalSeconds ?? 5) * 1_000
+  const duration = Math.min(30_000, Math.max(1_500, (sampleInterval ?? estimatedInterval) + 750))
+  const startedAt = performance.now()
+  const frame = (now: number): void => {
+    const progress = Math.min(1, (now - startedAt) / duration)
+    const coordinate: Coordinate = [
+      start[0] + (target[0] - start[0]) * progress,
+      start[1] + (target[1] - start[1]) * progress,
+    ]
+    setPlanePosition(coordinate, interpolateHeading(startHeading, targetHeading, progress))
+    if (followingPlane) map?.getView().setCenter(coordinate)
+    if (progress < 1) planeAnimationFrame = window.requestAnimationFrame(frame)
+    else planeAnimationFrame = undefined
+  }
+  planeAnimationFrame = window.requestAnimationFrame(frame)
+}
+
+function sampleIntervalMs(points: FlightTelemetryPointDto[]): number | null {
+  const latest = points.at(-1)
+  const previous = points.at(-2)
+  if (!latest || !previous) return null
+  const interval = Date.parse(latest.sampleAt) - Date.parse(previous.sampleAt)
+  return Number.isFinite(interval) && interval > 0 ? interval : null
+}
+
+function setPlanePosition(coordinate: Coordinate, heading: number): void {
+  if (!planeFeature) return
+  latestCoordinate = coordinate
+  planeFeature.setGeometry(new Point(coordinate))
+  planeFeature.set('heading', heading)
+}
+
+function interpolateHeading(start: number, target: number, progress: number): number {
+  const delta = ((target - start + 540) % 360) - 180
+  return (start + delta * progress + 360) % 360
+}
+
+function sameCoordinate(left: Coordinate, right: Coordinate): boolean {
+  return Math.abs(left[0] - right[0]) < 0.01 && Math.abs(left[1] - right[1]) < 0.01
+}
+
+function isRenderablePoint(point: FlightTelemetryPointDto): point is FlightTelemetryPointDto & { latitude: number; longitude: number } {
+  return typeof point.latitude === 'number' && Number.isFinite(point.latitude)
+    && typeof point.longitude === 'number' && Number.isFinite(point.longitude)
 }
 
 function stopFollowingPlane(): void {
@@ -547,8 +624,8 @@ function intersectsBbox(
 <template>
   <section class="flight-map-stage" aria-label="飞机实时轨迹地图">
     <div ref="mapContainer" class="flight-ol-map" :class="{ 'is-ready': mapReady }"></div>
-    <div v-if="loading && !current" class="flight-map-state">读取 QAR 轨迹中</div>
-    <div v-else-if="!current" class="flight-map-state">{{ error || mapError || '等待模拟器 QAR 数据' }}</div>
+    <div v-if="loading && !currentPoint && !current" class="flight-map-state">读取 QAR 轨迹中</div>
+    <div v-else-if="!currentPoint && !current" class="flight-map-state">{{ error || mapError || '等待 QAR 轨迹数据' }}</div>
     <div v-else-if="error" class="flight-map-warning">{{ error }}</div>
     <div v-else-if="mapError" class="flight-map-warning">{{ mapError }}</div>
   </section>

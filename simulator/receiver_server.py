@@ -58,7 +58,7 @@ class ReceiverState:
 
             rows: dict[int, list[dict[str, Any]]] = defaultdict(list)
             for window_id, window in sorted(self.windows.items()):
-                side_sequence = window_id if window_id <= 58 else window_id - 58
+                side_sequence = window_id if window_id <= 59 else window_id - 59
                 rows[side_sequence].append(window)
 
             return {

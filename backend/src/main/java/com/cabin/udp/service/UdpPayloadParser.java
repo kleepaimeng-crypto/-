@@ -62,7 +62,7 @@ public class UdpPayloadParser {
                 case "GROUND_SESSION_SUMMARY" -> parseSession(record, root);
                 case "SMART_WINDOW_STATUS" -> parseSmartWindow(record, root);
                 case "IFE_633_BEHAVIOR" -> parseIfe(record, root, false);
-                case "IFE_COCKRELL_BEHAVIOR" -> parseIfe(record, root, true);
+                case "IFE_COCKRELL_BEHAVIOR" -> parseCockrellEvent(record, root);
                 default -> throw new PayloadParseException("unsupported data type " + config.getCode());
             };
             enrichAirline(parsed.record());
@@ -304,6 +304,38 @@ public class UdpPayloadParser {
         record.setFlightNo(firstString(rows, "flightNo"));
         markParsed(record, rows.size(), errors);
         return new ParsedUdpPayload(record, rows);
+    }
+
+    private ParsedUdpPayload parseCockrellEvent(DataRecord record, JsonNode root) {
+        JsonNode sysInfo = requiredObject(root, "sysInfo");
+        JsonNode paxInfo = requiredObject(root, "paxInfo");
+        ObjectNode behaviorInfo = objectCopy(requiredObject(root, "behaviorInfo"));
+        JsonNode extInfo = root.path("extInfo");
+        CoverInfo coverInfo = extractCoverInfo(behaviorInfo);
+        removeCoverBase64(behaviorInfo);
+        removeCoverMetadata(behaviorInfo);
+
+        Map<String, Object> row = row(record.getId(), 0);
+        OffsetDateTime eventAt = requiredCompactTime(sysInfo, "timestamp");
+        row.put("eventAt", eventAt);
+        row.put("flightNo", requiredText(sysInfo, "flightId"));
+        row.put("pnr", requiredText(paxInfo, "pnr"));
+        row.put("seatNo", requiredText(paxInfo, "seatNo"));
+        row.put("cabinClass", requiredText(paxInfo, "cabinClass"));
+        row.put("deviceId", requiredText(paxInfo, "deviceId"));
+        row.put("passengerId", requiredText(paxInfo, "userId"));
+        row.put("behaviorType", requiredText(behaviorInfo, "behaviorType"));
+        row.put("behaviorDetail", toJson(behaviorInfo));
+        row.put("errorCode", textOrNull(extInfo, "errorCode"));
+        row.put("errorDescription", textOrNull(extInfo, "errorDesc"));
+        row.put("coverMimeType", coverInfo.mimeType());
+        row.put("coverChecksum", coverInfo.checksum());
+
+        record.setSentAt(eventAt);
+        record.setFlightNo((String) row.get("flightNo"));
+        record.setPayloadCount(1);
+        markParsed(record, 1, List.of());
+        return new ParsedUdpPayload(record, List.of(row));
     }
 
     private DataRecord baseRecord(

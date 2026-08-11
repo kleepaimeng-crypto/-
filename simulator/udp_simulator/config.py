@@ -35,7 +35,7 @@ DEFAULT_INTERVALS = {
     "ground.session_summary": DEFAULT_SEND_INTERVAL_SECONDS,
     "smart_window.status": DEFAULT_SEND_INTERVAL_SECONDS,
     "ife_633.behavior": DEFAULT_SEND_INTERVAL_SECONDS,
-    "ife_cockrell.behavior": DEFAULT_SEND_INTERVAL_SECONDS,
+    "ife_cockrell.behavior": 5.0,
 }
 
 
@@ -44,10 +44,12 @@ class SimulatorConfig:
     udp_host: str = UDP_HOST
     ports: dict[str, int] = field(default_factory=lambda: dict(DEFAULT_PORTS))
     send_intervals_seconds: dict[str, float] = field(default_factory=lambda: dict(DEFAULT_INTERVALS))
-    passenger_count: int = 237
-    window_count: int = 116
-    window_rows: int = 58
+    passenger_count: int = 282
+    window_count: int = 118
+    window_rows: int = 59
     ife_page_size: int = 50
+    ife_cockrell_mode: str = "single"
+    ife_cockrell_burst_size: int = 50
     random_seed: int | None = None
 
     @classmethod
@@ -66,6 +68,10 @@ class SimulatorConfig:
         config.window_count = int(data.get("windowCount", config.window_count))
         config.window_rows = int(data.get("windowRows", config.window_rows))
         config.ife_page_size = int(data.get("ifePageSize", config.ife_page_size))
+        config.ife_cockrell_mode = str(data.get("ifeCockrellMode", config.ife_cockrell_mode)).lower()
+        config.ife_cockrell_burst_size = int(
+            data.get("ifeCockrellBurstSize", config.ife_cockrell_burst_size)
+        )
         config.random_seed = data.get("randomSeed", config.random_seed)
 
         ports = data.get("ports", {})

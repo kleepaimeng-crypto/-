@@ -76,7 +76,7 @@ class DataRecordServiceTests {
 
         DataRecordDetailResponse detail = service.getDetail(recordId, false);
 
-        assertThat(detail.rawPayload().get("frameCount").asInt()).isEqualTo(42);
+        assertThat(detail.rawPayload()).containsEntry("frameCount", 42);
         assertThat(detail.parsedSummary()).containsEntry("frameCount", 42);
         assertThat(detail.metadata().dataTypeCode()).isEqualTo("QAR");
     }

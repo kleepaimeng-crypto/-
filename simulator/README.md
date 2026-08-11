@@ -2,7 +2,13 @@
 
 本项目按 `接口格式Schema.md` 和 `数据模拟器开发指导.md` 实现本地 UDP 数据模拟器。
 
-默认场景为 Airbus A330-200：237 名乘客（公务舱 30、经济舱 207）和 116 个智慧舷窗（左右各 58）。座位号统一为字母加排号格式（例如 `A11`）；座位和舷窗只改变现有字段的取值与数量，不扩展 UDP JSON 字段。
+默认场景为 COMAC C929-700：282 名乘客（商务舱 38、经济舱 244）和 118 个智慧舷窗（左右各 59）。座位号统一为字母加排号格式（例如 `A11`）；座位和舷窗只改变现有字段的取值与数量，不扩展 UDP JSON 字段。
+
+模拟器使用北京、上海、广州、成都、杭州 5 个机场，可组成 20 条有方向航线。持续运行时，同一架飞机会依次模拟 `departure → climb → cruise → descent → landing → landed` 完整阶段。到达 `A → B` 的目的地后，下一次 QAR 周期直接开始 `B → C`；`C` 不会是 `A` 或 `B`，因此不会原地起飞或立即返航。
+
+每个航段使用新的航班号、`taskId` 和帧计数，但保持同一批乘客、PNR、偏好、座位和智慧舷窗状态。由于落地后不等待 5 分钟，新航段会触发后端将上一航段按 `NEW_FLIGHT` 收尾并归档。
+
+科可瑞尔 IFE（`ife_cockrell.behavior`，UDP `8096`）每个航段启动后立即先发送 282 条独立单乘客事件，用于初始化该航段的全部座位状态；同一航段后续默认每 5 秒随机发送 1 条事件。633 IFE 仍保持原有分页批量发送方式。
 
 ## 运行
 
@@ -23,6 +29,8 @@ python run_simulator.py --once --summary
 ```powershell
 python run_simulator.py --config simulator_config.example.json --summary
 ```
+
+默认配置使用固定随机种子，因此多航段序列可复现。删除 `randomSeed` 或将其设为 `null` 后，每次启动会生成不同的随机序列。
 
 ## 接收端展示
 
@@ -62,7 +70,7 @@ python run_simulator.py --config simulator_config.example.json --summary
 | `ife_633.behavior` | 8095 |
 | `ife_cockrell.behavior` | 8096 |
 
-默认发送周期为 10 秒，每个接口可在 `simulator_config.example.json` 中单独配置。
+除科可瑞尔外，默认发送周期为 10 秒；科可瑞尔后续发送默认每 5 秒一次。每个接口可在 `simulator_config.example.json` 中单独配置。科可瑞尔首轮全量初始化不等待该周期；后续发送遵循 `ife_cockrell.behavior` 的周期。可用 `ifeCockrellMode` 配置后续模式（默认 `single`，另有 `burst`、`full`），`ifeCockrellBurstSize` 配置 `burst` 数量。
 
 ## 验证
 

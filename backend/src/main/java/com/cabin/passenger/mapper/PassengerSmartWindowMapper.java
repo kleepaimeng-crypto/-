@@ -14,7 +14,7 @@ public interface PassengerSmartWindowMapper {
             FROM data_record r
             WHERE r.is_deleted = false
               AND r.data_type_code = 'SMART_WINDOW_STATUS'
-              AND r.payload_count <= 116
+              AND r.payload_count <= 118
             ORDER BY r.sent_at DESC, r.received_at DESC, r.id DESC
             LIMIT 1
             """)
@@ -30,7 +30,7 @@ public interface PassengerSmartWindowMapper {
                 event_at AS updated_at
             FROM smart_window_status
             WHERE record_id = #{recordId}
-              AND window_id BETWEEN 1 AND 116
+              AND window_id BETWEEN 1 AND 118
             ORDER BY window_id
             """)
     List<SmartWindowRow> findSnapshotWindows(@Param("recordId") UUID recordId);

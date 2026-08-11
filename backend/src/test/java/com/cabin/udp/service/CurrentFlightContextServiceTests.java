@@ -41,13 +41,14 @@ class CurrentFlightContextServiceTests {
     @Test
     void appliesRouteOnlyWhenFlightMatchesOrIsMissing() {
         service.updateFrom(record("QAR", "CA4732", "ZBAA", "ZSPD", "CA"));
-        DataRecord otherFlight = record("GROUND_TASK", "CA9999", null, null, "CA");
+        DataRecord otherFlight = record("GROUND_TASK", "MU9999", null, null, null);
 
         service.applyTo(otherFlight);
 
-        assertThat(otherFlight.getFlightNo()).isEqualTo("CA9999");
+        assertThat(otherFlight.getFlightNo()).isEqualTo("MU9999");
         assertThat(otherFlight.getOrigin()).isNull();
         assertThat(otherFlight.getDestination()).isNull();
+        assertThat(otherFlight.getAirlineCode()).isEqualTo("MU");
     }
 
     @Test

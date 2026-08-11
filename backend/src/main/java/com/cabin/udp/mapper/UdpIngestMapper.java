@@ -3,6 +3,7 @@ package com.cabin.udp.mapper;
 import com.cabin.udp.entity.DataRecord;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -297,6 +298,7 @@ public interface UdpIngestMapper {
     @Insert("""
             INSERT INTO ife_cockrell_behavior (
                 record_id,
+                flight_session_id,
                 item_no,
                 event_at,
                 flight_no,
@@ -314,6 +316,7 @@ public interface UdpIngestMapper {
             )
             VALUES (
                 CAST(#{row.recordId} AS uuid),
+                CAST(#{row.flightSessionId,jdbcType=OTHER} AS uuid),
                 #{row.itemNo},
                 #{row.eventAt},
                 #{row.flightNo},
@@ -331,6 +334,88 @@ public interface UdpIngestMapper {
             )
             """)
     int insertIfeCockrellBehavior(@Param("row") Map<String, Object> row);
+
+    @Update("""
+            WITH target_session AS (
+                SELECT
+                    id,
+                    flight_no,
+                    aircraft_registration_no,
+                    source_host,
+                    started_at,
+                    COALESCE(ended_at, last_sample_at) AS session_end
+                FROM flight_session
+                WHERE id = CAST(#{sessionId} AS uuid)
+            ), pending_behavior AS (
+                SELECT b.id
+                FROM ife_cockrell_behavior b
+                JOIN data_record r ON r.id = b.record_id
+                JOIN target_session target ON true
+                WHERE b.flight_session_id IS NULL
+                  AND upper(b.flight_no) = upper(target.flight_no)
+                  AND r.aircraft_registration_no = target.aircraft_registration_no
+                  AND COALESCE(r.source_host, '0.0.0.0'::inet) = target.source_host
+                  AND b.event_at >= target.started_at - INTERVAL '5 minutes'
+                  AND b.event_at <= target.session_end + INTERVAL '5 minutes'
+            ), scored_candidates AS (
+                SELECT
+                    pending.id AS behavior_id,
+                    fs.id AS session_id,
+                    CASE
+                        WHEN b.event_at BETWEEN fs.started_at
+                                AND COALESCE(fs.ended_at, fs.last_sample_at)
+                        THEN 0
+                        ELSE 1
+                    END AS match_priority,
+                    CASE
+                        WHEN b.event_at < fs.started_at
+                        THEN EXTRACT(EPOCH FROM (fs.started_at - b.event_at))
+                        WHEN b.event_at > COALESCE(fs.ended_at, fs.last_sample_at)
+                        THEN EXTRACT(EPOCH FROM (
+                            b.event_at - COALESCE(fs.ended_at, fs.last_sample_at)
+                        ))
+                        ELSE 0
+                    END AS distance_seconds
+                FROM pending_behavior pending
+                JOIN ife_cockrell_behavior b ON b.id = pending.id
+                JOIN data_record r ON r.id = b.record_id
+                JOIN flight_session fs
+                  ON upper(fs.flight_no) = upper(b.flight_no)
+                 AND fs.aircraft_registration_no = r.aircraft_registration_no
+                 AND fs.source_host = COALESCE(r.source_host, '0.0.0.0'::inet)
+                 AND b.event_at >= fs.started_at - INTERVAL '5 minutes'
+                 AND b.event_at <= COALESCE(fs.ended_at, fs.last_sample_at) + INTERVAL '5 minutes'
+            ), ranked_candidates AS (
+                SELECT
+                    behavior_id,
+                    session_id,
+                    RANK() OVER (
+                        PARTITION BY behavior_id
+                        ORDER BY match_priority, distance_seconds
+                    ) AS score_rank
+                FROM scored_candidates
+            ), counted_candidates AS (
+                SELECT
+                    behavior_id,
+                    session_id,
+                    score_rank,
+                    COUNT(*) FILTER (WHERE score_rank = 1)
+                        OVER (PARTITION BY behavior_id) AS best_candidate_count
+                FROM ranked_candidates
+            ), unique_best AS (
+                SELECT behavior_id, session_id
+                FROM counted_candidates
+                WHERE score_rank = 1
+                  AND best_candidate_count = 1
+                  AND session_id = CAST(#{sessionId} AS uuid)
+            )
+            UPDATE ife_cockrell_behavior b
+            SET flight_session_id = best.session_id
+            FROM unique_best best
+            WHERE b.id = best.behavior_id
+              AND b.flight_session_id IS NULL
+            """)
+    int backfillPendingCockrellSession(@Param("sessionId") UUID sessionId);
 
     @Update("""
             UPDATE data_record

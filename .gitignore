@@ -20,6 +20,12 @@ logs/
 application-local.yml
 application-*.local.yml
 
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
 # system
 .DS_Store
 Thumbs.db

@@ -39,28 +39,75 @@ class ScenarioContext:
     aircraft_model: str
     passenger_count: int
     window_rows: int
+    segment_sequence: int = 1
+    phase: str = "departure"
+    status: str = "running"
+    ended_at: datetime | None = None
 
     @property
     def scenario_name(self) -> str:
-        return f"{self.origin.city} -> {self.destination.city} 巡航模拟"
+        return f"{self.origin.city} -> {self.destination.city} 全航程模拟"
 
 
 def create_scenario(passenger_count: int, window_rows: int, rng: random.Random) -> ScenarioContext:
     origin, destination = rng.sample(AIRPORTS, 2)
     now = datetime.now(CN_TZ).replace(microsecond=0)
-    flight_number = f"CA{rng.randint(1000, 9999)}"
-    task_id = f"{flight_number}-FLIGHT-{now.strftime('%Y%m%d')}-001"
+    return create_scenario_for_route(
+        passenger_count=passenger_count,
+        window_rows=window_rows,
+        rng=rng,
+        origin=origin,
+        destination=destination,
+        segment_sequence=1,
+        simulated_now=now,
+    )
+
+
+def create_scenario_for_route(
+    passenger_count: int,
+    window_rows: int,
+    rng: random.Random,
+    origin: Airport,
+    destination: Airport,
+    segment_sequence: int,
+    simulated_now: datetime,
+    excluded_flight_numbers: set[str] | None = None,
+) -> ScenarioContext:
+    if origin.code == destination.code:
+        raise ValueError("Flight origin and destination must be different")
+    flight_number = random_flight_number(rng, excluded_flight_numbers or set())
+    task_id = f"{flight_number}-FLIGHT-{simulated_now.strftime('%Y%m%d')}-{segment_sequence:03d}"
     return ScenarioContext(
         task_id=task_id,
         flight_number=flight_number,
         origin=origin,
         destination=destination,
-        scenario_start_time=now,
-        simulated_now=now,
-        aircraft_model="Airbus A330-200",
+        scenario_start_time=simulated_now,
+        simulated_now=simulated_now,
+        aircraft_model="COMAC C929-700",
         passenger_count=passenger_count,
         window_rows=window_rows,
+        segment_sequence=segment_sequence,
     )
+
+
+def choose_next_destination(previous_origin: Airport, current_origin: Airport, rng: random.Random) -> Airport:
+    candidates = [
+        airport
+        for airport in AIRPORTS
+        if airport.code not in {previous_origin.code, current_origin.code}
+    ]
+    if not candidates:
+        raise ValueError("No eligible destination airport is available")
+    return rng.choice(candidates)
+
+
+def random_flight_number(rng: random.Random, excluded: set[str]) -> str:
+    for _ in range(10_000):
+        flight_number = f"CA{rng.randint(1000, 9999)}"
+        if flight_number not in excluded:
+            return flight_number
+    raise RuntimeError("Unable to generate a unique flight number")
 
 
 def iso_time(value: datetime) -> str:

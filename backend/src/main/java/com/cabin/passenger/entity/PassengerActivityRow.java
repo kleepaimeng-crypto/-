@@ -9,6 +9,7 @@ public class PassengerActivityRow {
     private String seatNo;
     private String cabinClass;
     private String behaviorType;
+    private String mediaCode;
     private String title;
     private String typesText;
     private String action;
@@ -29,6 +30,8 @@ public class PassengerActivityRow {
     public void setCabinClass(String cabinClass) { this.cabinClass = cabinClass; }
     public String getBehaviorType() { return behaviorType; }
     public void setBehaviorType(String behaviorType) { this.behaviorType = behaviorType; }
+    public String getMediaCode() { return mediaCode; }
+    public void setMediaCode(String mediaCode) { this.mediaCode = mediaCode; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getTypesText() { return typesText; }

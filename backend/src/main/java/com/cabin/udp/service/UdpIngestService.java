@@ -25,24 +25,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UdpIngestService {
+    private static final long SESSION_CLOCK_SKEW_MINUTES = 5;
+
     private final ObjectProvider<UdpIngestMapper> mapperProvider;
     private final ObjectMapper objectMapper;
     private final UdpPayloadParser parser;
     private final CurrentFlightContextService currentFlightContextService;
     private final FlightSessionService flightSessionService;
+    private final QarCommitCoordinator qarCommitCoordinator;
 
     public UdpIngestService(
             ObjectProvider<UdpIngestMapper> mapperProvider,
             ObjectMapper objectMapper,
             UdpPayloadParser parser,
             CurrentFlightContextService currentFlightContextService,
-            FlightSessionService flightSessionService
+            FlightSessionService flightSessionService,
+            QarCommitCoordinator qarCommitCoordinator
     ) {
         this.mapperProvider = mapperProvider;
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.currentFlightContextService = currentFlightContextService;
         this.flightSessionService = flightSessionService;
+        this.qarCommitCoordinator = qarCommitCoordinator;
     }
 
     @Transactional
@@ -104,27 +109,31 @@ public class UdpIngestService {
     private void persist(ParsedUdpPayload parsed) {
         UdpIngestMapper mapper = mapper();
         DataRecord record = currentFlightContextService.applyTo(parsed.record());
+        CurrentFlightContext contextBeforeInsert = currentFlightContextService.current();
         mapper.insertDataRecord(record);
+        UUID qarSessionId = null;
+        OffsetDateTime qarSessionStartedAt = null;
         for (Map<String, Object> row : parsed.businessRows()) {
             if ("QAR".equals(record.getDataTypeCode())) {
-                insertQarRow(mapper, record, row);
+                qarSessionId = insertQarRow(mapper, record, row);
+                qarSessionStartedAt = (OffsetDateTime) row.get("sampleAt");
             } else {
+                if ("IFE_COCKRELL_BEHAVIOR".equals(record.getDataTypeCode())) {
+                    row.put("flightSessionId", matchingCockrellSessionId(contextBeforeInsert, row));
+                }
                 insertBusinessRow(mapper, record.getDataTypeCode(), row);
             }
         }
-        CurrentFlightContext context = currentFlightContextService.updateFrom(record);
-        if (context != null && context.hasRoute()) {
-            mapper.backfillMissingFlightContext(
-                    context.flightNo(),
-                    context.origin(),
-                    context.destination(),
-                    context.airlineCode(),
-                    currentFlightContextService.startedAt()
+        if ("QAR".equals(record.getDataTypeCode())) {
+            qarCommitCoordinator.afterCommit(
+                    record,
+                    qarSessionId,
+                    qarSessionStartedAt
             );
         }
     }
 
-    private void insertQarRow(
+    private UUID insertQarRow(
             UdpIngestMapper mapper,
             DataRecord record,
             Map<String, Object> row
@@ -133,6 +142,30 @@ public class UdpIngestService {
         row.put("flightSessionId", sessionId);
         mapper.insertQarSample(row);
         flightSessionService.updateLatest(sessionId, record, row);
+        return sessionId;
+    }
+
+    private UUID matchingCockrellSessionId(
+            CurrentFlightContext context,
+            Map<String, Object> row
+    ) {
+        if (context == null || context.flightSessionId() == null || !context.hasRoute()) {
+            return null;
+        }
+        Object flightNo = row.get("flightNo");
+        Object eventAt = row.get("eventAt");
+        if (!(flightNo instanceof String eventFlightNo) || !(eventAt instanceof OffsetDateTime eventTime)) {
+            return null;
+        }
+        if (!context.flightNo().equalsIgnoreCase(eventFlightNo)) {
+            return null;
+        }
+        OffsetDateTime sessionStartedAt = context.sessionStartedAt();
+        if (sessionStartedAt != null
+                && eventTime.isBefore(sessionStartedAt.minusMinutes(SESSION_CLOCK_SKEW_MINUTES))) {
+            return null;
+        }
+        return context.flightSessionId();
     }
 
     private void insertBusinessRow(UdpIngestMapper mapper, String dataTypeCode, Map<String, Object> row) {

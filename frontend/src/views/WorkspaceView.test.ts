@@ -167,6 +167,38 @@ describe('WorkspaceView filters', () => {
     await batchButton.trigger('click')
     expect(wrapper.find('.dialog-panel').exists()).toBe(false)
   })
+
+  it('loads and displays the raw JSON as read-only content in the edit dialog', async () => {
+    dataApi.getDataRecords.mockResolvedValueOnce({
+      items: [recordItem()],
+      page: 1,
+      pageSize: 20,
+      total: 1,
+      totalPages: 1,
+    })
+    dataApi.getDataRecord.mockResolvedValueOnce({
+      id: 'record-id',
+      metadata: {},
+      rawPayload: { messageType: 'qar.frame', frame: 42 },
+      rawText: null,
+      parsedSummary: {},
+      tags: [],
+      annotations: [],
+      deleted: false,
+    })
+    wrapper = mount(WorkspaceView)
+    await settleRequests()
+
+    await wrapper.findAll('.row-action')[0]?.trigger('click')
+    await settleRequests()
+
+    expect(dataApi.getDataRecord).toHaveBeenCalledWith('record-id')
+    const payload = wrapper.find('.edit-payload-section')
+    expect(payload.exists()).toBe(true)
+    expect(payload.attributes('open')).toBeUndefined()
+    expect(payload.text()).toContain('原始报文 JSON（只读）')
+    expect(payload.text()).toContain('"messageType": "qar.frame"')
+  })
 })
 
 async function settleRequests(): Promise<void> {

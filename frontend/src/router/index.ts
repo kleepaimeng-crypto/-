@@ -30,6 +30,12 @@ export const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/flight-history',
+      name: 'flight-history',
+      component: () => import('../views/FlightHistoryView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/users',
       name: 'users',
       component: () => import('../views/UserManagementView.vue'),

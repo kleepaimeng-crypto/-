@@ -2,27 +2,32 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
 import type {
+  EntertainmentRecommendationDto,
+  EntertainmentWorkDto,
   PassengerActivityDto,
   PassengerSmartWindowItemDto,
   PassengerSmartWindowSnapshotDto,
 } from '../../api/types'
-import { formatBytes, formatDate, formatMbps } from '../../utils/displayFormatters'
+import { formatBytes } from '../../utils/displayFormatters'
 import {
+  C929_WINDOW_COUNT,
+  isFirstRowWindow,
   windowSide,
   windowVisualBrightness,
   windowZone,
 } from '../../utils/smartWindowDisplay'
 
-type WatchKind = 'video' | 'music' | 'browsing' | 'other' | 'idle'
+type WatchKind = 'video' | 'music' | 'browsing' | 'shopping' | 'other' | 'idle'
 type CabinSectionKey = 'front' | 'middle' | 'rear'
 
 interface WatchPreviewRow {
   seat: string
   type: WatchKind
   title: string
-  meta: string
-  role: string
+  types: string[]
   detail: string
+  mediaWork: EntertainmentWorkDto | null
+  recommendations: EntertainmentRecommendationDto[]
   active: boolean
 }
 
@@ -51,11 +56,13 @@ interface WindowLabelView {
 const seatNodeSelector = 'g[id^="Business-Seat-"], g[id^="Economy-Seat-"]'
 const seatIdPattern = /\bid="(?:Business|Economy)-Seat-([A-Z][0-9]+)"/g
 const windowNodeSelector = 'g[id^="Window-"]'
-const cabinBlueprintUrl = '/assets/CA_332-1%201.svg'
+const cabinBlueprintUrl = '/assets/C929-700-Black.jpg?v=20260724-hd-v1'
+const seatOverlayUrl = '/assets/C929_set.svg?v=20260724-front-seat-fit-v2'
+const windowOverlayUrl = '/assets/C929_windows.svg?v=20260724'
 const cabinSections: CabinSection[] = [
-  { key: 'front', label: '前舱', anchorSeat: 'C11', fallbackRatio: 0.08 },
-  { key: 'middle', label: '中舱', anchorSeat: 'D14', fallbackRatio: 0.34 },
-  { key: 'rear', label: '后舱', anchorSeat: 'D43', fallbackRatio: 0.7 },
+  { key: 'front', label: '前舱', anchorSeat: 'A11', fallbackRatio: 0.08 },
+  { key: 'middle', label: '中舱', anchorSeat: 'A31', fallbackRatio: 0.43 },
+  { key: 'rear', label: '后舱', anchorSeat: 'D44', fallbackRatio: 0.72 },
 ]
 
 const selectedSeat = ref('D48')
@@ -117,17 +124,20 @@ function buildWatchPreviewRow(activity: PassengerActivityDto, active: boolean): 
     seat: activity.seatNo,
     type,
     title: activity.title || (type === 'idle' ? '暂无观看或浏览行为' : watchKindLabel(type)),
-    meta: activity.types.length > 0 ? activity.types.join(' / ') : (activity.behaviorType || '暂无类型'),
-    role: `当前带宽：${formatMbps(activity.bandwidthMbps)} · 窗口流量：${formatBytes(activity.windowBytes)}`,
+    types: activity.mediaWork?.types ?? activity.types ?? [],
     detail: activityKindDetail(activity),
+    mediaWork: activity.mediaWork ?? null,
+    recommendations: activity.recommendations ?? [],
     active,
   }
 }
 
 function watchKind(activity: PassengerActivityDto): WatchKind {
+  if (!activity.behaviorType || !activity.eventAt) return 'idle'
   if (activity.activityKind === 'VIDEO') return 'video'
   if (activity.activityKind === 'MUSIC') return 'music'
   if (activity.activityKind === 'BROWSING') return 'browsing'
+  if (activity.activityKind === 'SHOPPING') return 'shopping'
   if (activity.activityKind === 'IDLE') return 'idle'
   return 'other'
 }
@@ -136,6 +146,7 @@ function watchKindLabel(kind: WatchKind): string {
   if (kind === 'video') return '视频'
   if (kind === 'music') return '音乐'
   if (kind === 'browsing') return '浏览'
+  if (kind === 'shopping') return '购物'
   if (kind === 'idle') return '空闲'
   return '其他'
 }
@@ -144,8 +155,39 @@ function activityKindDetail(activity: PassengerActivityDto): string {
   if (activity.activityKind === 'BROWSING') {
     return `${activity.domain || '未知域名'} · ${activity.url || '暂无 URL'} · 累计 ${formatBytes(activity.trafficBytes)}`
   }
-  const action = activity.action || '暂无动作'
-  return `${action} · 行为时间 ${formatDate(activity.eventAt)}`
+  if (activity.activityKind === 'IDLE') {
+    return '当前座位暂无影音或网络行为'
+  }
+  if (activity.activityKind === 'SHOPPING') {
+    return '当前行为：购物'
+  }
+  if (activity.activityKind === 'VIDEO' || activity.activityKind === 'MUSIC') {
+    return activity.mediaWork ? '' : `${activity.action || '播放中'} · 作品资料待收录`
+  }
+  return activity.behaviorType ? `当前行为：${activity.behaviorType}` : '暂无可展示的行为详情'
+}
+
+function formatMediaMetadata(work: EntertainmentWorkDto): string {
+  const creatorLabel = work.category === 'VIDEO' ? '导演' : '艺术家'
+  const collectionLabel = work.category === 'VIDEO' ? '系列' : '专辑'
+  const parts = [`${creatorLabel} ${work.creatorName}`]
+  if (work.collectionName) parts.push(`${collectionLabel} ${work.collectionName}`)
+  parts.push(String(work.releaseYear), formatMediaDuration(work.durationSeconds))
+  return parts.join(' · ')
+}
+
+function formatMediaDuration(durationSeconds: number): string {
+  const totalMinutes = Math.max(1, Math.round(durationSeconds / 60))
+  if (totalMinutes < 60) {
+    return `${totalMinutes} 分钟`
+  }
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  return minutes === 0 ? `${hours} 小时` : `${hours} 小时 ${minutes} 分钟`
+}
+
+function recommendationReasonLabel(reason: EntertainmentRecommendationDto['reason']): string {
+  return reason === 'SAME_TYPE' ? '同类型热门' : '同类别热门补位'
 }
 
 function missingWindowSummary(snapshot: PassengerSmartWindowSnapshotDto): string {
@@ -257,7 +299,7 @@ function extractWindowId(groupId: string): number | null {
   const match = /^Window-(\d{3})$/.exec(groupId)
   if (!match?.[1]) return null
   const windowId = Number(match[1])
-  return Number.isInteger(windowId) && windowId >= 1 && windowId <= 116 ? windowId : null
+  return Number.isInteger(windowId) && windowId >= 1 && windowId <= C929_WINDOW_COUNT ? windowId : null
 }
 
 function refreshWindowLayer(): void {
@@ -305,7 +347,7 @@ function syncWindowLayer(): void {
       ? `brightness(${windowVisualBrightness(item.brightnessLevel)})`
       : 'brightness(0.35) grayscale(1)'
 
-    if (!item && !missing) return
+    if ((!item && !missing) || !isFirstRowWindow(windowId)) return
 
     try {
       const box = group.getBBox()
@@ -571,7 +613,7 @@ function applyDefaultCabinSection(): void {
 
 async function loadSeatOverlaySvg(): Promise<void> {
   try {
-    const response = await fetch('/assets/plane-seat-overlay-renamed.svg', { cache: 'force-cache' })
+    const response = await fetch(seatOverlayUrl, { cache: 'no-store' })
 
     if (!response.ok) {
       return
@@ -585,7 +627,7 @@ async function loadSeatOverlaySvg(): Promise<void> {
 
 async function loadWindowOverlaySvg(): Promise<void> {
   try {
-    const response = await fetch('/assets/airplane_windows.svg', { cache: 'force-cache' })
+    const response = await fetch(windowOverlayUrl, { cache: 'no-store' })
     if (!response.ok) return
     windowOverlaySvg.value = await response.text()
   } catch {
@@ -710,18 +752,65 @@ onBeforeUnmount(() => {
           @keydown="handleWatchCardKeydown($event, item.seat)"
         >
           <header class="watch-seat-line">
-            <span class="seat-icon"></span>
-            <strong>{{ item.seat }}</strong>
-            <i :class="`watch-kind watch-kind--${item.type}`">{{ watchKindLabel(item.type) }}</i>
-          </header>
-          <div class="watch-detail-body">
-            <div class="watch-thumb">{{ item.active ? '当前选中座位' : watchKindLabel(item.type) }}</div>
-            <div class="watch-copy">
-              <strong>{{ item.title }}</strong>
-              <span>{{ item.meta }}</span>
-              <p class="watch-role">{{ item.role }}</p>
-              <p>{{ item.detail }}</p>
+            <div class="watch-seat-identity">
+              <span class="seat-icon"></span>
+              <strong>{{ item.seat }}</strong>
+              <i :class="`watch-kind watch-kind--${item.type}`">{{ watchKindLabel(item.type) }}</i>
             </div>
+          </header>
+
+          <div v-if="item.type === 'video' || item.type === 'music'" class="watch-media-content">
+            <section class="watch-current-work">
+              <div class="watch-section-label">
+                <span>当前作品</span>
+                <em>{{ item.types.length > 0 ? item.types.join(' / ') : '类型待补充' }}</em>
+              </div>
+              <h3>{{ item.title }}</h3>
+              <p v-if="item.mediaWork" class="watch-work-meta">
+                {{ formatMediaMetadata(item.mediaWork) }}
+              </p>
+              <p v-if="item.mediaWork" class="watch-work-summary">
+                {{ item.mediaWork.summary }}
+              </p>
+              <p v-else class="watch-work-summary watch-work-summary--missing">
+                {{ item.detail }}
+              </p>
+            </section>
+
+            <section class="watch-recommendations">
+              <div class="watch-section-label">
+                <span>个性化推荐</span>
+                <em>按本航班实时热度</em>
+              </div>
+              <ol v-if="item.recommendations.length > 0">
+                <li
+                  v-for="(recommendation, index) in item.recommendations"
+                  :key="recommendation.workCode"
+                  class="watch-recommendation-row"
+                >
+                  <span class="watch-recommendation-rank">{{ String(index + 1).padStart(2, '0') }}</span>
+                  <div class="watch-recommendation-copy">
+                    <strong>{{ recommendation.title }}</strong>
+                    <span>{{ recommendation.types.join(' / ') }} · {{ recommendation.creatorName }}</span>
+                  </div>
+                  <div class="watch-recommendation-status">
+                    <strong>{{ recommendation.currentViewerCount }} 人</strong>
+                    <span>{{ recommendationReasonLabel(recommendation.reason) }}</span>
+                  </div>
+                </li>
+              </ol>
+              <p v-else class="watch-recommendation-empty">暂无更多同类作品</p>
+            </section>
+          </div>
+
+          <div v-else class="watch-nonmedia-content">
+            <div class="watch-section-label">
+              <span>当前行为</span>
+              <em>{{ item.type === 'idle' ? '座位空闲' : watchKindLabel(item.type) }}</em>
+            </div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.detail }}</p>
+            <div class="watch-recommendation-empty">暂无影音推荐</div>
           </div>
         </article>
         <div v-if="activityError && activities.length > 0" class="watch-refresh-warning">

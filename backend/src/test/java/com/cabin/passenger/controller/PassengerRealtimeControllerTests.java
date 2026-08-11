@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.cabin.common.exception.GlobalExceptionHandler;
+import com.cabin.passenger.dto.EntertainmentRecommendationResponse;
+import com.cabin.passenger.dto.EntertainmentWorkResponse;
 import com.cabin.passenger.dto.MediaRankResponse;
 import com.cabin.passenger.dto.MediaStatisticsResponse;
 import com.cabin.passenger.dto.PassengerActivitiesResponse;
@@ -32,20 +34,35 @@ class PassengerRealtimeControllerTests {
         PassengerActivityResponse activity = new PassengerActivityResponse(
                 "PAX-00001", "A11", "BUSINESS", "MOVIE_PLAY", "VIDEO",
                 "星海远航", List.of("奇幻"), "PLAY", null, null, null,
-                null, null, updatedAt, null, null
+                null, null, updatedAt, null, null,
+                new EntertainmentWorkResponse(
+                        "MOV-001-2026", "VIDEO", "星海远航", List.of("奇幻"),
+                        "一段发生在深空中的远航故事。", "林澈", "星海纪事",
+                        7680, 2026, "中文", "中国"
+                ),
+                List.of(new EntertainmentRecommendationResponse(
+                        "MOV-016-2026", "VIDEO", "星门旧梦", List.of("奇幻"),
+                        "黎川", 12, "SAME_TYPE"
+                ))
         );
         when(service.getSnapshot()).thenReturn(new PassengerRealtimeSnapshotResponse(
                 true,
                 updatedAt,
                 new MediaStatisticsResponse(1, List.of(new MediaRankResponse("奇幻", 1)), 0, List.of()),
-                new PassengerActivitiesResponse(237, List.of(activity))
+                new PassengerActivitiesResponse(282, List.of(activity))
         ));
 
         mockMvc.perform(get("/api/v1/passenger-realtime/snapshot"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("OK"))
                 .andExpect(jsonPath("$.data.mediaStatistics.videoRanking[0].count").value(1))
-                .andExpect(jsonPath("$.data.passengerActivities.total").value(237))
-                .andExpect(jsonPath("$.data.passengerActivities.items[0].seatNo").value("A11"));
+                .andExpect(jsonPath("$.data.passengerActivities.total").value(282))
+                .andExpect(jsonPath("$.data.passengerActivities.items[0].seatNo").value("A11"))
+                .andExpect(jsonPath("$.data.passengerActivities.items[0].mediaWork.workCode")
+                        .value("MOV-001-2026"))
+                .andExpect(jsonPath("$.data.passengerActivities.items[0].recommendations[0].currentViewerCount")
+                        .value(12))
+                .andExpect(jsonPath("$.data.passengerActivities.items[0].recommendations[0].reason")
+                        .value("SAME_TYPE"));
     }
 }
