@@ -218,6 +218,12 @@ $env:SPRING_PROFILES_ACTIVE = "prod"
 ```powershell
 cd D:\deploy\cabin-backend
 powershell -ExecutionPolicy Bypass -File .\start-backend.ps1
+
+或者
+java -jar xxx.jar
+nohup java -jar xxx.jar > app.log 2>&1 &
+检查
+ps -ef | grep java
 ```
 
 看到 Spring Boot 启动日志后，打开新 PowerShell 验证：

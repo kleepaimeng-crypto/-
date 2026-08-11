@@ -32,12 +32,16 @@ class UdpIngestServiceTests {
     private final CurrentFlightContextService currentFlightContextService =
             new CurrentFlightContextService(new UdpProperties(false, 0, 0, null, null, null, null));
     private final FlightSessionService flightSessionService = mock(FlightSessionService.class);
+    private final QarCommitCoordinator qarCommitCoordinator = new QarCommitCoordinator(
+            new QarPostCommitService(provider(mapper), currentFlightContextService)
+    );
     private final UdpIngestService service = new UdpIngestService(
             provider(mapper),
             objectMapper,
             parser,
             currentFlightContextService,
-            flightSessionService
+            flightSessionService,
+            qarCommitCoordinator
     );
     private final OffsetDateTime receivedAt = OffsetDateTime.parse("2026-07-04T12:00:00+08:00");
 

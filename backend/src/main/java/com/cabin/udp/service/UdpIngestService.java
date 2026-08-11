@@ -32,19 +32,22 @@ public class UdpIngestService {
     private final UdpPayloadParser parser;
     private final CurrentFlightContextService currentFlightContextService;
     private final FlightSessionService flightSessionService;
+    private final QarCommitCoordinator qarCommitCoordinator;
 
     public UdpIngestService(
             ObjectProvider<UdpIngestMapper> mapperProvider,
             ObjectMapper objectMapper,
             UdpPayloadParser parser,
             CurrentFlightContextService currentFlightContextService,
-            FlightSessionService flightSessionService
+            FlightSessionService flightSessionService,
+            QarCommitCoordinator qarCommitCoordinator
     ) {
         this.mapperProvider = mapperProvider;
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.currentFlightContextService = currentFlightContextService;
         this.flightSessionService = flightSessionService;
+        this.qarCommitCoordinator = qarCommitCoordinator;
     }
 
     @Transactional
@@ -122,23 +125,11 @@ public class UdpIngestService {
             }
         }
         if ("QAR".equals(record.getDataTypeCode())) {
-            CurrentFlightContext context = currentFlightContextService.updateFromQar(
+            qarCommitCoordinator.afterCommit(
                     record,
                     qarSessionId,
                     qarSessionStartedAt
             );
-            if (context != null && context.hasRoute()) {
-                mapper.backfillMissingFlightContext(
-                        context.flightNo(),
-                        context.origin(),
-                        context.destination(),
-                        context.airlineCode(),
-                        currentFlightContextService.startedAt()
-                );
-            }
-            if (qarSessionId != null) {
-                mapper.backfillPendingCockrellSession(qarSessionId);
-            }
         }
     }
 
