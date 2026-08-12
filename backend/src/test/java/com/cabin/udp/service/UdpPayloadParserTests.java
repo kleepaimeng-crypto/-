@@ -67,6 +67,25 @@ class UdpPayloadParserTests {
         });
     }
 
+    @Test
+    void normalizesBothSupportedSeatNumberFormats() throws Exception {
+        ParsedUdpPayload cockrell = parse(
+                "IFE_COCKRELL_BEHAVIOR",
+                "ife_cockrell.behavior",
+                ifeCockrellJson()
+        );
+        ParsedUdpPayload currentFormat = parse(
+                "IFE_COCKRELL_BEHAVIOR",
+                "ife_cockrell.behavior",
+                ifeCockrellJson().replace("\"12A\"", "\"a12\"")
+        );
+        ParsedUdpPayload ife633 = parse("IFE_633_BEHAVIOR", "ife_633.behavior", ife633Json());
+
+        assertThat(cockrell.businessRows().getFirst()).containsEntry("seatNo", "A12");
+        assertThat(currentFormat.businessRows().getFirst()).containsEntry("seatNo", "A12");
+        assertThat(ife633.businessRows().getFirst()).containsEntry("seatNo", "A12");
+    }
+
     private void assertParsed(String code, String messageType, String json, int rowCount) throws Exception {
         ParsedUdpPayload parsed = parse(code, messageType, json);
         assertThat(parsed.record().getParseStatus()).isEqualTo("PARSED");
