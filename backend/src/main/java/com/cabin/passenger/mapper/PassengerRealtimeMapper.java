@@ -47,7 +47,7 @@ public interface PassengerRealtimeMapper {
             CROSS JOIN LATERAL (
                 SELECT
                     b.passenger_id,
-                    b.seat_no,
+                    requested.seat_no,
                     b.cabin_class,
                     b.behavior_type,
                     CASE b.behavior_type
@@ -86,7 +86,10 @@ public interface PassengerRealtimeMapper {
                 FROM ife_cockrell_behavior b
                 JOIN data_record r ON r.id = b.record_id
                 WHERE b.flight_session_id = CAST(#{flightSessionId} AS uuid)
-                  AND b.seat_no = requested.seat_no
+                  AND b.seat_no IN (
+                      requested.seat_no,
+                      substring(requested.seat_no FROM 2) || substring(requested.seat_no FROM 1 FOR 1)
+                  )
                   AND r.is_deleted = false
                 ORDER BY b.event_at DESC, b.created_at DESC, b.id DESC
                 LIMIT 1

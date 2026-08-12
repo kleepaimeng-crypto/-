@@ -1,5 +1,6 @@
 package com.cabin.udp.service;
 
+import com.cabin.common.util.SeatNumberNormalizer;
 import com.cabin.config.UdpProperties;
 import com.cabin.udp.entity.DataRecord;
 import com.cabin.udp.entity.DataTypeConfig;
@@ -176,7 +177,7 @@ public class UdpPayloadParser {
                 row.put("windowEnd", requiredOffsetTime(item, "windowEnd"));
                 row.put("terminalId", requiredText(item, "terminalId"));
                 row.put("displayTerminalId", textOrNull(item, "displayTerminalId"));
-                row.put("seatLabel", textOrNull(item, "seatLabel"));
+                row.put("seatLabel", normalizedSeatOrNull(item, "seatLabel"));
                 row.put("application", requiredText(item, "application"));
                 row.put("protocol", requiredText(item, "protocol"));
                 row.put("direction", requiredText(item, "direction"));
@@ -212,7 +213,7 @@ public class UdpPayloadParser {
                 row.put("taskId", requiredText(item, "taskId"));
                 row.put("terminalId", requiredText(item, "terminalId"));
                 row.put("displayTerminalId", textOrNull(item, "displayTerminalId"));
-                row.put("seatLabel", textOrNull(item, "seatLabel"));
+                row.put("seatLabel", normalizedSeatOrNull(item, "seatLabel"));
                 row.put("application", requiredText(item, "application"));
                 row.put("protocol", requiredText(item, "protocol"));
                 row.put("startedAt", requiredOffsetTime(item, "startedAt"));
@@ -284,7 +285,7 @@ public class UdpPayloadParser {
                 row.put("eventAt", requiredCompactTime(sysInfo, "timestamp"));
                 row.put("flightNo", requiredText(sysInfo, "flightId"));
                 row.put("pnr", requiredText(paxInfo, "pnr"));
-                row.put("seatNo", requiredText(paxInfo, "seatNo"));
+                row.put("seatNo", requiredNormalizedSeat(paxInfo, "seatNo"));
                 row.put("cabinClass", requiredText(paxInfo, "cabinClass"));
                 row.put("deviceId", requiredText(paxInfo, "deviceId"));
                 row.put("passengerId", requiredText(paxInfo, "userId"));
@@ -320,7 +321,7 @@ public class UdpPayloadParser {
         row.put("eventAt", eventAt);
         row.put("flightNo", requiredText(sysInfo, "flightId"));
         row.put("pnr", requiredText(paxInfo, "pnr"));
-        row.put("seatNo", requiredText(paxInfo, "seatNo"));
+        row.put("seatNo", requiredNormalizedSeat(paxInfo, "seatNo"));
         row.put("cabinClass", requiredText(paxInfo, "cabinClass"));
         row.put("deviceId", requiredText(paxInfo, "deviceId"));
         row.put("passengerId", requiredText(paxInfo, "userId"));
@@ -400,6 +401,14 @@ public class UdpPayloadParser {
         if (actual != null && !expected.equals(actual)) {
             throw new PayloadParseException("messageType expected " + expected + " but was " + actual);
         }
+    }
+
+    private String requiredNormalizedSeat(JsonNode node, String field) {
+        return SeatNumberNormalizer.normalize(requiredText(node, field));
+    }
+
+    private String normalizedSeatOrNull(JsonNode node, String field) {
+        return SeatNumberNormalizer.normalize(textOrNull(node, field));
     }
 
     private OffsetDateTime parseQarSampleAt(String text, OffsetDateTime receivedAt) {
