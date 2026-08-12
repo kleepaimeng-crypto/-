@@ -9,7 +9,7 @@ public record CurrentFlightContext(
         String destination,
         String airlineCode,
         UUID flightSessionId,
-        OffsetDateTime sessionStartedAt,
+        OffsetDateTime sessionReceivedAt,
         OffsetDateTime updatedAt
 ) {
     public boolean hasRoute() {

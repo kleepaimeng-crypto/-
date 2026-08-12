@@ -61,17 +61,17 @@ public class CurrentFlightContextService {
     public CurrentFlightContext updateFromQar(
             DataRecord record,
             UUID flightSessionId,
-            OffsetDateTime sessionStartedAt
+            OffsetDateTime sessionReceivedAt
     ) {
-        return updateFrom(record, flightSessionId, sessionStartedAt);
+        return updateFrom(record, flightSessionId, sessionReceivedAt);
     }
 
     private CurrentFlightContext updateFrom(
             DataRecord record,
             UUID flightSessionId,
-            OffsetDateTime sessionStartedAt
+            OffsetDateTime sessionReceivedAt
     ) {
-        CurrentFlightContext candidate = candidateFrom(record, flightSessionId, sessionStartedAt);
+        CurrentFlightContext candidate = candidateFrom(record, flightSessionId, sessionReceivedAt);
         if (candidate == null) {
             return null;
         }
@@ -83,14 +83,14 @@ public class CurrentFlightContextService {
             if (before != null
                     && flightSessionId != null
                     && flightSessionId.equals(before.flightSessionId())
-                    && before.sessionStartedAt() != null) {
+                    && before.sessionReceivedAt() != null) {
                 candidate = new CurrentFlightContext(
                         candidate.flightNo(),
                         candidate.origin(),
                         candidate.destination(),
                         candidate.airlineCode(),
                         candidate.flightSessionId(),
-                        before.sessionStartedAt(),
+                        before.sessionReceivedAt(),
                         candidate.updatedAt()
                 );
             }
@@ -135,7 +135,7 @@ public class CurrentFlightContextService {
     private CurrentFlightContext candidateFrom(
             DataRecord record,
             UUID flightSessionId,
-            OffsetDateTime sessionStartedAt
+            OffsetDateTime sessionReceivedAt
     ) {
         String flightNo = trimToNull(record.getFlightNo());
         String origin = trimToNull(record.getOrigin());
@@ -153,7 +153,7 @@ public class CurrentFlightContextService {
                 destination,
                 airlineCode,
                 flightSessionId,
-                sessionStartedAt,
+                sessionReceivedAt,
                 record.getReceivedAt()
         );
     }

@@ -341,9 +341,8 @@ public interface UdpIngestMapper {
                     id,
                     flight_no,
                     aircraft_registration_no,
-                    source_host,
-                    started_at,
-                    COALESCE(ended_at, last_sample_at) AS session_end
+                    created_at AS first_received_at,
+                    last_received_at
                 FROM flight_session
                 WHERE id = CAST(#{sessionId} AS uuid)
             ), pending_behavior AS (
@@ -354,25 +353,23 @@ public interface UdpIngestMapper {
                 WHERE b.flight_session_id IS NULL
                   AND b.flight_no = target.flight_no
                   AND r.aircraft_registration_no = target.aircraft_registration_no
-                  AND COALESCE(r.source_host, '0.0.0.0'::inet) = target.source_host
-                  AND b.event_at >= target.started_at - INTERVAL '5 minutes'
-                  AND b.event_at <= target.session_end + INTERVAL '5 minutes'
+                  AND r.received_at >= target.first_received_at - INTERVAL '5 minutes'
+                  AND r.received_at <= target.last_received_at + INTERVAL '5 minutes'
             ), scored_candidates AS (
                 SELECT
                     pending.id AS behavior_id,
                     fs.id AS session_id,
                     CASE
-                        WHEN b.event_at BETWEEN fs.started_at
-                                AND COALESCE(fs.ended_at, fs.last_sample_at)
+                        WHEN r.received_at BETWEEN fs.created_at AND fs.last_received_at
                         THEN 0
                         ELSE 1
                     END AS match_priority,
                     CASE
-                        WHEN b.event_at < fs.started_at
-                        THEN EXTRACT(EPOCH FROM (fs.started_at - b.event_at))
-                        WHEN b.event_at > COALESCE(fs.ended_at, fs.last_sample_at)
+                        WHEN r.received_at < fs.created_at
+                        THEN EXTRACT(EPOCH FROM (fs.created_at - r.received_at))
+                        WHEN r.received_at > fs.last_received_at
                         THEN EXTRACT(EPOCH FROM (
-                            b.event_at - COALESCE(fs.ended_at, fs.last_sample_at)
+                            r.received_at - fs.last_received_at
                         ))
                         ELSE 0
                     END AS distance_seconds
@@ -382,9 +379,8 @@ public interface UdpIngestMapper {
                 JOIN flight_session fs
                   ON fs.flight_no = b.flight_no
                  AND fs.aircraft_registration_no = r.aircraft_registration_no
-                 AND fs.source_host = COALESCE(r.source_host, '0.0.0.0'::inet)
-                 AND b.event_at >= fs.started_at - INTERVAL '5 minutes'
-                 AND b.event_at <= COALESCE(fs.ended_at, fs.last_sample_at) + INTERVAL '5 minutes'
+                 AND r.received_at >= fs.created_at - INTERVAL '5 minutes'
+                 AND r.received_at <= fs.last_received_at + INTERVAL '5 minutes'
             ), ranked_candidates AS (
                 SELECT
                     behavior_id,

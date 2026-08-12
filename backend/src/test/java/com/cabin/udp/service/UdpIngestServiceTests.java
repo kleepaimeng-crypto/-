@@ -231,6 +231,23 @@ class UdpIngestServiceTests {
         );
     }
 
+    @Test
+    void matchingCockrellUsesReceiveTimeInsteadOfPayloadEventTime() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfeCockrellBehavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson().replace("11:59:58", "23:04:55"));
+        ingest(config("IFE_COCKRELL_BEHAVIOR"), cockrellJson("CA4732"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfeCockrellBehavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue().get("flightSessionId")).isEqualTo(
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
+    }
+
     private DataTypeConfig config() {
         return config("QAR");
     }

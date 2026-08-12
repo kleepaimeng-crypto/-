@@ -23,13 +23,13 @@ public class QarPostCommitService {
     public void handle(
             DataRecord record,
             UUID flightSessionId,
-            OffsetDateTime sessionStartedAt
+            OffsetDateTime sessionReceivedAt
     ) {
         CurrentFlightContext before = currentFlightContextService.current();
         CurrentFlightContext context = currentFlightContextService.updateFromQar(
                 record,
                 flightSessionId,
-                sessionStartedAt
+                sessionReceivedAt
         );
         boolean newSession = flightSessionId != null
                 && (before == null || !Objects.equals(before.flightSessionId(), flightSessionId));

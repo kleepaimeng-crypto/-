@@ -112,14 +112,18 @@ public class UdpIngestService {
         CurrentFlightContext contextBeforeInsert = currentFlightContextService.current();
         mapper.insertDataRecord(record);
         UUID qarSessionId = null;
-        OffsetDateTime qarSessionStartedAt = null;
+        OffsetDateTime qarSessionReceivedAt = null;
         for (Map<String, Object> row : parsed.businessRows()) {
             if ("QAR".equals(record.getDataTypeCode())) {
                 qarSessionId = insertQarRow(mapper, record, row);
-                qarSessionStartedAt = (OffsetDateTime) row.get("sampleAt");
+                qarSessionReceivedAt = record.getReceivedAt();
             } else {
                 if ("IFE_COCKRELL_BEHAVIOR".equals(record.getDataTypeCode())) {
-                    row.put("flightSessionId", matchingCockrellSessionId(contextBeforeInsert, row));
+                    row.put("flightSessionId", matchingCockrellSessionId(
+                            contextBeforeInsert,
+                            row,
+                            record.getReceivedAt()
+                    ));
                 }
                 insertBusinessRow(mapper, record.getDataTypeCode(), row);
             }
@@ -128,7 +132,7 @@ public class UdpIngestService {
             qarCommitCoordinator.afterCommit(
                     record,
                     qarSessionId,
-                    qarSessionStartedAt
+                    qarSessionReceivedAt
             );
         }
     }
@@ -147,22 +151,22 @@ public class UdpIngestService {
 
     private UUID matchingCockrellSessionId(
             CurrentFlightContext context,
-            Map<String, Object> row
+            Map<String, Object> row,
+            OffsetDateTime receivedAt
     ) {
         if (context == null || context.flightSessionId() == null || !context.hasRoute()) {
             return null;
         }
         Object flightNo = row.get("flightNo");
-        Object eventAt = row.get("eventAt");
-        if (!(flightNo instanceof String eventFlightNo) || !(eventAt instanceof OffsetDateTime eventTime)) {
+        if (!(flightNo instanceof String eventFlightNo) || receivedAt == null) {
             return null;
         }
         if (!context.flightNo().equalsIgnoreCase(eventFlightNo)) {
             return null;
         }
-        OffsetDateTime sessionStartedAt = context.sessionStartedAt();
-        if (sessionStartedAt != null
-                && eventTime.isBefore(sessionStartedAt.minusMinutes(SESSION_CLOCK_SKEW_MINUTES))) {
+        OffsetDateTime sessionReceivedAt = context.sessionReceivedAt();
+        if (sessionReceivedAt != null
+                && receivedAt.isBefore(sessionReceivedAt.minusMinutes(SESSION_CLOCK_SKEW_MINUTES))) {
             return null;
         }
         return context.flightSessionId();

@@ -18,18 +18,18 @@ public class QarCommitCoordinator {
     public void afterCommit(
             DataRecord record,
             UUID flightSessionId,
-            OffsetDateTime sessionStartedAt
+            OffsetDateTime sessionReceivedAt
     ) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || !TransactionSynchronizationManager.isSynchronizationActive()) {
-            postCommitService.handle(record, flightSessionId, sessionStartedAt);
+            postCommitService.handle(record, flightSessionId, sessionReceivedAt);
             return;
         }
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                postCommitService.handle(record, flightSessionId, sessionStartedAt);
+                postCommitService.handle(record, flightSessionId, sessionReceivedAt);
             }
         });
     }
