@@ -36,6 +36,9 @@ class PassengerRealtimeServiceTests {
         assertThat(result.hasData()).isFalse();
         assertThat(result.passengerActivities().items()).hasSize(282)
                 .allMatch(item -> item.behaviorType() == null && item.activityKind() == null);
+        assertThat(result.passengerActivities().items().subList(0, 8))
+                .allMatch(item -> "FIRST".equals(item.cabinClass()));
+        assertThat(result.passengerActivities().items().get(8).cabinClass()).isEqualTo("BUSINESS");
     }
 
     @Test

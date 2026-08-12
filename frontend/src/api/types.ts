@@ -352,7 +352,7 @@ export interface EntertainmentRecommendationDto {
 export interface PassengerActivityDto {
   passengerId: string | null
   seatNo: string
-  cabinClass: 'BUSINESS' | 'ECONOMY'
+  cabinClass: 'FIRST' | 'BUSINESS' | 'ECONOMY'
   behaviorType: string | null
   activityKind: PassengerActivityKind | null
   title: string | null
