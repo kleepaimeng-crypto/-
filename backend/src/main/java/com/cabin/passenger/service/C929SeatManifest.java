@@ -16,7 +16,7 @@ final class C929SeatManifest {
     private static List<Seat> buildSeats() {
         List<Seat> seats = new ArrayList<>(282);
         for (int row = 11; row <= 12; row++) {
-            addRow(seats, row, "ADGK", "BUSINESS");
+            addRow(seats, row, "ADGK", "FIRST");
         }
         for (int row = 13; row <= 17; row++) {
             addRow(seats, row, "ACDGHK", "BUSINESS");
