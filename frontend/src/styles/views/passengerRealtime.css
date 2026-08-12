@@ -837,6 +837,10 @@
   color: #ffb35c;
 }
 
+.watch-kind--cast-screen {
+  color: #c98cff;
+}
+
 .watch-kind--other,
 .watch-kind--idle {
   color: #9aa9bf;

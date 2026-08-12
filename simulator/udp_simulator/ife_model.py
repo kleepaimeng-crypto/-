@@ -31,10 +31,9 @@ class IfeModel:
         self.passengers = passengers
         self.rng = rng
 
-    def build_633_pages(self, page_size: int) -> list[dict]:
-        events = [self._event_for_633(passenger) for passenger in self.passengers]
-        items = [self._to_633_item(event) for event in events]
-        return self._paginate("ife_633.behavior", items, page_size)
+    def build_633_event(self) -> dict:
+        passenger = self.rng.choice(self.passengers)
+        return self._to_633_item(self._event_for_633(passenger))
 
     def build_cockrell_events(self, mode: str, burst_size: int) -> list[dict]:
         if mode == "single":
@@ -198,20 +197,3 @@ class IfeModel:
             "coverMimeType": mime_type,
             "coverChecksum": hashlib.sha256(encoded.encode("ascii")).hexdigest(),
         }
-
-    def _paginate(self, message_type: str, items: list[dict], page_size: int) -> list[dict]:
-        pages = []
-        total = len(items)
-        page_size = max(1, page_size)
-        for index in range(0, total, page_size):
-            pages.append(
-                {
-                    "messageType": message_type,
-                    "sentAt": self.context.simulated_now.isoformat(),
-                    "page": index // page_size + 1,
-                    "pageSize": page_size,
-                    "total": total,
-                    "items": items[index : index + page_size],
-                }
-            )
-        return pages

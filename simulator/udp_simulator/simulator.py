@@ -130,7 +130,7 @@ class DataSimulator:
     def _ife_633_payloads(self, elapsed_seconds: float) -> list[dict]:
         if self.context.status == "finished":
             return []
-        return self.ife_model.build_633_pages(self.config.ife_page_size)
+        return [self.ife_model.build_633_event()]
 
     def _ife_cockrell_payloads(self, elapsed_seconds: float) -> list[dict]:
         if self.context.status == "finished":

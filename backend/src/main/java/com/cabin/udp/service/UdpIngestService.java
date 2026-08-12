@@ -118,8 +118,8 @@ public class UdpIngestService {
                 qarSessionId = insertQarRow(mapper, record, row);
                 qarSessionReceivedAt = record.getReceivedAt();
             } else {
-                if ("IFE_COCKRELL_BEHAVIOR".equals(record.getDataTypeCode())) {
-                    row.put("flightSessionId", matchingCockrellSessionId(
+                if (isIfeBehavior(record.getDataTypeCode())) {
+                    row.put("flightSessionId", matchingIfeSessionId(
                             contextBeforeInsert,
                             row,
                             record.getReceivedAt()
@@ -149,7 +149,12 @@ public class UdpIngestService {
         return sessionId;
     }
 
-    private UUID matchingCockrellSessionId(
+    private boolean isIfeBehavior(String dataTypeCode) {
+        return "IFE_633_BEHAVIOR".equals(dataTypeCode)
+                || "IFE_COCKRELL_BEHAVIOR".equals(dataTypeCode);
+    }
+
+    private UUID matchingIfeSessionId(
             CurrentFlightContext context,
             Map<String, Object> row,
             OffsetDateTime receivedAt

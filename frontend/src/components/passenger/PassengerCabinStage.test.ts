@@ -12,7 +12,9 @@ function activity(seatNo: string, activityKind: PassengerActivityDto['activityKi
       ? 'MOVIE_PLAY'
       : activityKind === 'SHOPPING'
         ? 'SHOPPING'
-        : 'WAP_BROWSING',
+        : activityKind === 'CAST_SCREEN'
+          ? 'CAST_SCREEN'
+          : 'WAP_BROWSING',
     activityKind,
     title: activityKind === 'VIDEO' ? '星海远航' : activityKind === 'SHOPPING' ? null : 'example.com',
     types: activityKind === 'VIDEO' ? ['奇幻'] : [],
@@ -22,6 +24,11 @@ function activity(seatNo: string, activityKind: PassengerActivityDto['activityKi
     trafficBytes: activityKind === 'BROWSING' ? 1024 : null,
     bandwidthMbps: 8.42,
     windowBytes: 5262500,
+    targetDevice: activityKind === 'CAST_SCREEN' ? 'SVDU-F01' : null,
+    castAction: activityKind === 'CAST_SCREEN' ? 'CAST' : null,
+    castStatus: activityKind === 'CAST_SCREEN' ? 'CONNECTED' : null,
+    resolution: activityKind === 'CAST_SCREEN' ? '1080P' : null,
+    castDurationSeconds: activityKind === 'CAST_SCREEN' ? 600 : null,
     eventAt: '2026-07-08T09:00:00+08:00',
     bandwidthUpdatedAt: '2026-07-08T09:00:01+08:00',
     sourceRecordId: '00000000-0000-4000-8000-000000000001',
@@ -159,6 +166,27 @@ describe('PassengerCabinStage activity list', () => {
     expect(wrapper.text()).toContain('当前行为：购物')
     expect(wrapper.text()).not.toContain('其他')
     expect(wrapper.find('.watch-kind--shopping').exists()).toBe(true)
+  })
+
+  it('renders cast screen details as a known activity', () => {
+    const wrapper = mount(PassengerCabinStage, {
+      props: {
+        activities: [activity('A11', 'CAST_SCREEN')],
+        activityError: '',
+        activityLoading: false,
+        cabinScroller: null,
+        windowDisplay: null,
+        windowError: '',
+        windowLoading: false,
+      },
+    })
+
+    expect(wrapper.text()).toContain('投屏')
+    expect(wrapper.text()).toContain('SVDU-F01')
+    expect(wrapper.text()).toContain('CONNECTED')
+    expect(wrapper.text()).toContain('1080P')
+    expect(wrapper.text()).toContain('持续 600 秒')
+    expect(wrapper.find('.watch-kind--cast-screen').exists()).toBe(true)
   })
 
   it('keeps rendering during a rolling update when the backend still returns the old activity shape', () => {

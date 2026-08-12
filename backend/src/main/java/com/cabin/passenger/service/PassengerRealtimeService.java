@@ -145,6 +145,7 @@ public class PassengerRealtimeService {
             return new PassengerActivityResponse(
                     null, seat.seatNo(), seat.cabinClass(), null, null, null, List.of(),
                     null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null,
                     null, List.of()
             );
         }
@@ -166,6 +167,11 @@ public class PassengerRealtimeService {
                 row.getTrafficBytes(),
                 row.getBandwidthMbps(),
                 row.getWindowBytes(),
+                row.getTargetDevice(),
+                row.getCastAction(),
+                row.getCastStatus(),
+                row.getResolution(),
+                row.getCastDurationSeconds(),
                 row.getEventAt(),
                 row.getBandwidthUpdatedAt(),
                 row.getSourceRecordId(),
@@ -328,6 +334,7 @@ public class PassengerRealtimeService {
             case "MUSIC_PLAY" -> "MUSIC";
             case "WAP_BROWSING" -> "BROWSING";
             case "SHOPPING" -> "SHOPPING";
+            case "CAST_SCREEN" -> "CAST_SCREEN";
             default -> "OTHER";
         };
     }

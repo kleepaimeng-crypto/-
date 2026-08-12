@@ -19,7 +19,11 @@
 
 `ife_cockrell.behavior` 使用客户固定的单事件根对象 `sysInfo`、`paxInfo`、`behaviorInfo`、`extInfo`，不得附加本节的 `messageType`、`sentAt`、`payload`、`items` 或分页包装。每个航段启动后立即连续发送 282 条独立 UDP 数据报完成座位状态初始化；同一航段后续默认每 5 秒随机发送 1 条事件。端口固定为 `8096`。
 
-### 0.2 推荐本地 UDP 通道
+### 0.2 633 IFE 例外规则
+
+`ife_633.behavior` 同样使用单事件根对象 `sysInfo`、`paxInfo`、`behaviorInfo`、`extInfo`，不使用 `messageType`、`sentAt`、`items` 或分页包装。模拟器启动及切换航班时不发送全舱快照，每个发送周期只随机发送 1 条独立事件。端口固定为 `8095`。
+
+### 0.3 推荐本地 UDP 通道
 
 | 通道 | 数据对象 | Payload 格式 | 本地端口 |
 | --- | --- | --- | --- |

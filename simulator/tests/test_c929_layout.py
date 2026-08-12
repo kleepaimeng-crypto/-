@@ -44,11 +44,12 @@ class C929LayoutTests(unittest.TestCase):
         context = create_scenario(282, 59, rng)
         model = IfeModel(context, passengers, rng)
 
-        pages_633 = model.build_633_pages(50)
+        event_633 = model.build_633_event()
         events_cockrell = model.build_cockrell_events("full", 50)
-        self.assertEqual([50, 50, 50, 50, 50, 32], [len(page["items"]) for page in pages_633])
         self.assertEqual(282, len(events_cockrell))
-        self.assertTrue(all(page["total"] == 282 for page in pages_633))
+        self.assertEqual({"sysInfo", "paxInfo", "behaviorInfo", "extInfo"}, set(event_633))
+        self.assertNotIn("items", event_633)
+        self.assertNotIn("messageType", event_633)
 
         item = events_cockrell[0]
         self.assertEqual({"sysInfo", "paxInfo", "behaviorInfo", "extInfo"}, set(item))
@@ -149,6 +150,20 @@ class C929LayoutTests(unittest.TestCase):
         simulator._start_next_flight()
         next_flight_initial = simulator._ife_cockrell_payloads(10)
         self.assertEqual(282, len(next_flight_initial))
+
+    def test_633_sends_only_one_event_without_startup_snapshot(self) -> None:
+        simulator = DataSimulator(SimulatorConfig(random_seed=20260810), dry_run=True)
+        self.addCleanup(simulator.close)
+
+        initial = simulator._ife_633_payloads(10)
+        later = simulator._ife_633_payloads(10)
+
+        self.assertEqual(1, len(initial))
+        self.assertEqual(1, len(later))
+        self.assertEqual({"sysInfo", "paxInfo", "behaviorInfo", "extInfo"}, set(initial[0]))
+
+        simulator._start_next_flight()
+        self.assertEqual(1, len(simulator._ife_633_payloads(10)))
 
     def test_smart_windows_are_118_with_symmetric_zone_counts(self) -> None:
         rng = random.Random(20260703)

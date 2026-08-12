@@ -8,6 +8,7 @@ import com.cabin.udp.entity.DataTypeConfig;
 import com.cabin.udp.dto.ParsedUdpPayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class UdpPayloadParserTests {
@@ -84,6 +85,42 @@ class UdpPayloadParserTests {
         assertThat(cockrell.businessRows().getFirst()).containsEntry("seatNo", "A12");
         assertThat(currentFormat.businessRows().getFirst()).containsEntry("seatNo", "A12");
         assertThat(ife633.businessRows().getFirst()).containsEntry("seatNo", "A12");
+    }
+
+    @Test
+    void rejectsLegacyBatchedIfe633Payload() throws Exception {
+        String legacy = """
+                {
+                  "messageType": "ife_633.behavior",
+                  "items": []
+                }
+                """;
+
+        ParsedUdpPayload parsed = parse("IFE_633_BEHAVIOR", "ife_633.behavior", legacy);
+
+        assertThat(parsed.record().getParseStatus()).isEqualTo("FAILED");
+        assertThat(parsed.record().getRawPayload()).isEqualTo(legacy);
+        assertThat(parsed.businessRows()).isEmpty();
+    }
+
+    @Test
+    void parsesEverySingleEventIfe633BehaviorWithItemNumberOne() throws Exception {
+        for (String behaviorType : List.of(
+                "MOVIE_PLAY", "MUSIC_PLAY", "CAST_SCREEN", "WAP_BROWSING"
+        )) {
+            ParsedUdpPayload parsed = parse(
+                    "IFE_633_BEHAVIOR",
+                    "ife_633.behavior",
+                    ife633Json().replace("MOVIE_PLAY", behaviorType)
+            );
+
+            assertThat(parsed.record().getParseStatus()).isEqualTo("PARSED");
+            assertThat(parsed.record().getPayloadCount()).isEqualTo(1);
+            assertThat(parsed.businessRows()).singleElement().satisfies(row -> {
+                assertThat(row).containsEntry("itemNo", 1);
+                assertThat(row).containsEntry("behaviorType", behaviorType);
+            });
+        }
     }
 
     private void assertParsed(String code, String messageType, String json, int rowCount) throws Exception {
@@ -285,26 +322,20 @@ class UdpPayloadParserTests {
     private String ife633Json() {
         return """
                 {
-                  "messageType": "ife_633.behavior",
-                  "sentAt": "2026-07-04T12:00:00+08:00",
-                  "items": [
-                    {
-                      "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "CA4732"},
-                      "paxInfo": {
-                        "pnr": "ABC123",
-                        "seatNo": "12A",
-                        "cabinClass": "ECONOMY",
-                        "deviceId": "DEV-001",
-                        "userId": "PAX-001"
-                      },
-                      "behaviorInfo": {
-                        "behaviorType": "MOVIE_PLAY",
-                        "contentId": "MOV-001",
-                        "contentName": "星海远航"
-                      },
-                      "extInfo": {}
-                    }
-                  ]
+                  "sysInfo": {"timestamp": "2026-07-04 12:00:00.123", "flightId": "CA4732"},
+                  "paxInfo": {
+                    "pnr": "ABC123",
+                    "seatNo": "12A",
+                    "cabinClass": "ECONOMY",
+                    "deviceId": "DEV-001",
+                    "userId": "PAX-001"
+                  },
+                  "behaviorInfo": {
+                    "behaviorType": "MOVIE_PLAY",
+                    "contentId": "MOV-001",
+                    "contentName": "星海远航"
+                  },
+                  "extInfo": {}
                 }
                 """;
     }

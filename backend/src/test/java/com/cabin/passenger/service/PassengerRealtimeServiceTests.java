@@ -78,6 +78,33 @@ class PassengerRealtimeServiceTests {
         assertThat(activity.activityKind()).isEqualTo("SHOPPING");
     }
 
+    @Test
+    void mapsCastScreenDetailsWithoutMediaRecommendations() {
+        OffsetDateTime eventAt = OffsetDateTime.parse("2026-07-07T10:00:00+08:00");
+        PassengerActivityRow row = activity("CAST_SCREEN", eventAt);
+        row.setMediaCode(null);
+        row.setTitle("SVDU-F01");
+        row.setTypesText(null);
+        row.setAction("CAST");
+        row.setTargetDevice("SVDU-F01");
+        row.setCastAction("CAST");
+        row.setCastStatus("CONNECTED");
+        row.setResolution("1080P");
+        row.setCastDurationSeconds(600);
+        when(realtimeMapper.findLatestActiveFlightSessionId()).thenReturn(SESSION_ID);
+        when(realtimeMapper.findLatestActivities(eq(SESSION_ID), anyList())).thenReturn(List.of(row));
+        when(workMapper.findEnabledWorks()).thenReturn(List.of());
+
+        var activity = service.getSnapshot().passengerActivities().items().getFirst();
+
+        assertThat(activity.activityKind()).isEqualTo("CAST_SCREEN");
+        assertThat(activity.targetDevice()).isEqualTo("SVDU-F01");
+        assertThat(activity.castStatus()).isEqualTo("CONNECTED");
+        assertThat(activity.resolution()).isEqualTo("1080P");
+        assertThat(activity.castDurationSeconds()).isEqualTo(600);
+        assertThat(activity.recommendations()).isEmpty();
+    }
+
     private PassengerActivityRow activity(String behaviorType, OffsetDateTime eventAt) {
         PassengerActivityRow row = new PassengerActivityRow();
         row.setPassengerId("PAX-00001");

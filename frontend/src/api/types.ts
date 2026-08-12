@@ -308,7 +308,7 @@ export interface PassengerSmartWindowSnapshotDto {
   windows: PassengerSmartWindowItemDto[]
 }
 
-export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'SHOPPING' | 'OTHER' | 'IDLE'
+export type PassengerActivityKind = 'VIDEO' | 'MUSIC' | 'BROWSING' | 'SHOPPING' | 'CAST_SCREEN' | 'OTHER' | 'IDLE'
 
 export interface MediaRankingItemDto {
   type: string
@@ -363,6 +363,11 @@ export interface PassengerActivityDto {
   trafficBytes: number | null
   bandwidthMbps: number | null
   windowBytes: number | null
+  targetDevice: string | null
+  castAction: string | null
+  castStatus: string | null
+  resolution: string | null
+  castDurationSeconds: number | null
   eventAt: string | null
   bandwidthUpdatedAt: string | null
   sourceRecordId: string | null

@@ -34,7 +34,7 @@ class PassengerRealtimeControllerTests {
         PassengerActivityResponse activity = new PassengerActivityResponse(
                 "PAX-00001", "A11", "BUSINESS", "MOVIE_PLAY", "VIDEO",
                 "星海远航", List.of("奇幻"), "PLAY", null, null, null,
-                null, null, updatedAt, null, null,
+                null, null, null, null, null, null, null, updatedAt, null, null,
                 new EntertainmentWorkResponse(
                         "MOV-001-2026", "VIDEO", "星海远航", List.of("奇幻"),
                         "一段发生在深空中的远航故事。", "林澈", "星海纪事",

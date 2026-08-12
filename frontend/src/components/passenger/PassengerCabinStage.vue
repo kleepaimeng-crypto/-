@@ -17,7 +17,7 @@ import {
   windowZone,
 } from '../../utils/smartWindowDisplay'
 
-type WatchKind = 'video' | 'music' | 'browsing' | 'shopping' | 'other' | 'idle'
+type WatchKind = 'video' | 'music' | 'browsing' | 'shopping' | 'cast-screen' | 'other' | 'idle'
 type CabinSectionKey = 'front' | 'middle' | 'rear'
 
 interface WatchPreviewRow {
@@ -138,6 +138,7 @@ function watchKind(activity: PassengerActivityDto): WatchKind {
   if (activity.activityKind === 'MUSIC') return 'music'
   if (activity.activityKind === 'BROWSING') return 'browsing'
   if (activity.activityKind === 'SHOPPING') return 'shopping'
+  if (activity.activityKind === 'CAST_SCREEN') return 'cast-screen'
   if (activity.activityKind === 'IDLE') return 'idle'
   return 'other'
 }
@@ -147,6 +148,7 @@ function watchKindLabel(kind: WatchKind): string {
   if (kind === 'music') return '音乐'
   if (kind === 'browsing') return '浏览'
   if (kind === 'shopping') return '购物'
+  if (kind === 'cast-screen') return '投屏'
   if (kind === 'idle') return '空闲'
   return '其他'
 }
@@ -160,6 +162,16 @@ function activityKindDetail(activity: PassengerActivityDto): string {
   }
   if (activity.activityKind === 'SHOPPING') {
     return '当前行为：购物'
+  }
+  if (activity.activityKind === 'CAST_SCREEN') {
+    const target = activity.targetDevice || '未知设备'
+    const action = activity.castAction || '未知动作'
+    const status = activity.castStatus || '未知状态'
+    const resolution = activity.resolution || '分辨率未知'
+    const duration = activity.castDurationSeconds == null
+      ? '时长未知'
+      : `持续 ${activity.castDurationSeconds} 秒`
+    return `${target} · ${action} · ${status} · ${resolution} · ${duration}`
   }
   if (activity.activityKind === 'VIDEO' || activity.activityKind === 'MUSIC') {
     return activity.mediaWork ? '' : `${activity.action || '播放中'} · 作品资料待收录`

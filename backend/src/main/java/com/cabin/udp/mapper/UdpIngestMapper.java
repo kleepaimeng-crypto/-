@@ -264,6 +264,7 @@ public interface UdpIngestMapper {
     @Insert("""
             INSERT INTO ife_633_behavior (
                 record_id,
+                flight_session_id,
                 item_no,
                 event_at,
                 flight_no,
@@ -279,6 +280,7 @@ public interface UdpIngestMapper {
             )
             VALUES (
                 CAST(#{row.recordId} AS uuid),
+                CAST(#{row.flightSessionId,jdbcType=OTHER} AS uuid),
                 #{row.itemNo},
                 #{row.eventAt},
                 #{row.flightNo},
@@ -412,6 +414,68 @@ public interface UdpIngestMapper {
               AND b.flight_session_id IS NULL
             """)
     int backfillPendingCockrellSession(@Param("sessionId") UUID sessionId);
+
+    @Update("""
+            WITH target_session AS (
+                SELECT id, flight_no, aircraft_registration_no,
+                       created_at AS first_received_at, last_received_at
+                FROM flight_session
+                WHERE id = CAST(#{sessionId} AS uuid)
+            ), pending_behavior AS (
+                SELECT b.id
+                FROM ife_633_behavior b
+                JOIN data_record r ON r.id = b.record_id
+                JOIN target_session target ON true
+                WHERE b.flight_session_id IS NULL
+                  AND b.flight_no = target.flight_no
+                  AND r.aircraft_registration_no = target.aircraft_registration_no
+                  AND r.received_at >= #{applicationStartedAt}
+                  AND r.received_at >= target.first_received_at - INTERVAL '5 minutes'
+                  AND r.received_at <= target.last_received_at + INTERVAL '5 minutes'
+            ), scored_candidates AS (
+                SELECT pending.id AS behavior_id, fs.id AS session_id,
+                    CASE WHEN r.received_at BETWEEN fs.created_at AND fs.last_received_at
+                         THEN 0 ELSE 1 END AS match_priority,
+                    CASE WHEN r.received_at < fs.created_at
+                         THEN EXTRACT(EPOCH FROM (fs.created_at - r.received_at))
+                         WHEN r.received_at > fs.last_received_at
+                         THEN EXTRACT(EPOCH FROM (r.received_at - fs.last_received_at))
+                         ELSE 0 END AS distance_seconds
+                FROM pending_behavior pending
+                JOIN ife_633_behavior b ON b.id = pending.id
+                JOIN data_record r ON r.id = b.record_id
+                JOIN flight_session fs
+                  ON fs.flight_no = b.flight_no
+                 AND fs.aircraft_registration_no = r.aircraft_registration_no
+                 AND r.received_at >= fs.created_at - INTERVAL '5 minutes'
+                 AND r.received_at <= fs.last_received_at + INTERVAL '5 minutes'
+            ), ranked_candidates AS (
+                SELECT behavior_id, session_id,
+                    RANK() OVER (PARTITION BY behavior_id
+                                 ORDER BY match_priority, distance_seconds) AS score_rank
+                FROM scored_candidates
+            ), counted_candidates AS (
+                SELECT behavior_id, session_id, score_rank,
+                    COUNT(*) FILTER (WHERE score_rank = 1)
+                        OVER (PARTITION BY behavior_id) AS best_candidate_count
+                FROM ranked_candidates
+            ), unique_best AS (
+                SELECT behavior_id, session_id
+                FROM counted_candidates
+                WHERE score_rank = 1
+                  AND best_candidate_count = 1
+                  AND session_id = CAST(#{sessionId} AS uuid)
+            )
+            UPDATE ife_633_behavior b
+            SET flight_session_id = best.session_id
+            FROM unique_best best
+            WHERE b.id = best.behavior_id
+              AND b.flight_session_id IS NULL
+            """)
+    int backfillPendingIfe633Session(
+            @Param("sessionId") UUID sessionId,
+            @Param("applicationStartedAt") OffsetDateTime applicationStartedAt
+    );
 
     @Update("""
             UPDATE data_record

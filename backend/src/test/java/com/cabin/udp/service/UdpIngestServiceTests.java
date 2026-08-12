@@ -232,6 +232,25 @@ class UdpIngestServiceTests {
     }
 
     @Test
+    void matchingIfe633EventIsPersistedWithCurrentFlightSessionId() {
+        when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
+        when(mapper.insertQarSample(anyMap())).thenReturn(1);
+        when(mapper.insertIfe633Behavior(anyMap())).thenReturn(1);
+
+        ingest(config("QAR"), qarJson());
+        ingest(config("IFE_633_BEHAVIOR"), cockrellJson("CA4732"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> rowCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mapper).insertIfe633Behavior(rowCaptor.capture());
+        assertThat(rowCaptor.getValue()).containsEntry(
+                "flightSessionId",
+                UUID.fromString("00000000-0000-0000-0000-000000000001")
+        );
+        assertThat(rowCaptor.getValue()).containsEntry("itemNo", 1);
+    }
+
+    @Test
     void matchingCockrellUsesReceiveTimeInsteadOfPayloadEventTime() {
         when(mapper.insertDataRecord(org.mockito.ArgumentMatchers.any(DataRecord.class))).thenReturn(1);
         when(mapper.insertQarSample(anyMap())).thenReturn(1);
@@ -260,18 +279,21 @@ class UdpIngestServiceTests {
             case "SMART_WINDOW_STATUS" -> "smart_window.status";
             case "GROUND_TRAFFIC_RECORD" -> "ground.traffic_record";
             case "IFE_COCKRELL_BEHAVIOR" -> "ife_cockrell.behavior";
+            case "IFE_633_BEHAVIOR" -> "ife_633.behavior";
             default -> "qar.frame";
         });
         config.setUdpPort(switch (code) {
             case "SMART_WINDOW_STATUS" -> 8094;
             case "GROUND_TRAFFIC_RECORD" -> 8092;
             case "IFE_COCKRELL_BEHAVIOR" -> 8096;
+            case "IFE_633_BEHAVIOR" -> 8095;
             default -> 8090;
         });
         config.setSourceSystemCode("SIMULATOR");
         config.setSourceDeviceCode(switch (code) {
             case "SMART_WINDOW_STATUS" -> "SIM-WINDOW";
             case "GROUND_TRAFFIC_RECORD" -> "SIM-GROUND";
+            case "IFE_633_BEHAVIOR" -> "SIM-IFE-633";
             case "IFE_COCKRELL_BEHAVIOR" -> "SIM-IFE-COCKRELL";
             default -> "SIM-QAR";
         });

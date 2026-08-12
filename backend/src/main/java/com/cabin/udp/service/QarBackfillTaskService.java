@@ -33,12 +33,17 @@ public class QarBackfillTaskService {
                 request.applicationStartedAt()
         );
         int cockrellRows = mapper.backfillPendingCockrellSession(request.flightSessionId());
+        int ife633Rows = mapper.backfillPendingIfe633Session(
+                request.flightSessionId(),
+                request.applicationStartedAt()
+        );
         long elapsedMillis = (System.nanoTime() - startedAt) / 1_000_000;
         log.info(
-                "QAR post-commit backfill completed for session {}: contextRows={}, cockrellRows={}, elapsedMs={}",
+                "QAR post-commit backfill completed for session {}: contextRows={}, cockrellRows={}, ife633Rows={}, elapsedMs={}",
                 request.flightSessionId(),
                 flightContextRows,
                 cockrellRows,
+                ife633Rows,
                 elapsedMillis
         );
     }

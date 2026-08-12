@@ -18,6 +18,11 @@ public class PassengerActivityRow {
     private Long trafficBytes;
     private BigDecimal bandwidthMbps;
     private Long windowBytes;
+    private String targetDevice;
+    private String castAction;
+    private String castStatus;
+    private String resolution;
+    private Integer castDurationSeconds;
     private OffsetDateTime eventAt;
     private OffsetDateTime bandwidthUpdatedAt;
     private UUID sourceRecordId;
@@ -48,6 +53,16 @@ public class PassengerActivityRow {
     public void setBandwidthMbps(BigDecimal bandwidthMbps) { this.bandwidthMbps = bandwidthMbps; }
     public Long getWindowBytes() { return windowBytes; }
     public void setWindowBytes(Long windowBytes) { this.windowBytes = windowBytes; }
+    public String getTargetDevice() { return targetDevice; }
+    public void setTargetDevice(String targetDevice) { this.targetDevice = targetDevice; }
+    public String getCastAction() { return castAction; }
+    public void setCastAction(String castAction) { this.castAction = castAction; }
+    public String getCastStatus() { return castStatus; }
+    public void setCastStatus(String castStatus) { this.castStatus = castStatus; }
+    public String getResolution() { return resolution; }
+    public void setResolution(String resolution) { this.resolution = resolution; }
+    public Integer getCastDurationSeconds() { return castDurationSeconds; }
+    public void setCastDurationSeconds(Integer castDurationSeconds) { this.castDurationSeconds = castDurationSeconds; }
     public OffsetDateTime getEventAt() { return eventAt; }
     public void setEventAt(OffsetDateTime eventAt) { this.eventAt = eventAt; }
     public OffsetDateTime getBandwidthUpdatedAt() { return bandwidthUpdatedAt; }

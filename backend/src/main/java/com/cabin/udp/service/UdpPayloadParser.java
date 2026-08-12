@@ -62,7 +62,7 @@ public class UdpPayloadParser {
                 case "GROUND_TRAFFIC_RECORD" -> parseTraffic(record, root);
                 case "GROUND_SESSION_SUMMARY" -> parseSession(record, root);
                 case "SMART_WINDOW_STATUS" -> parseSmartWindow(record, root);
-                case "IFE_633_BEHAVIOR" -> parseIfe(record, root, false);
+                case "IFE_633_BEHAVIOR" -> parseIfe633Event(record, root);
                 case "IFE_COCKRELL_BEHAVIOR" -> parseCockrellEvent(record, root);
                 default -> throw new PayloadParseException("unsupported data type " + config.getCode());
             };
@@ -260,51 +260,31 @@ public class UdpPayloadParser {
         return new ParsedUdpPayload(record, rows);
     }
 
-    private ParsedUdpPayload parseIfe(DataRecord record, JsonNode root, boolean cockrell) {
-        verifyMessageType(root, cockrell ? "ife_cockrell.behavior" : "ife_633.behavior");
-        ArrayNode items = requiredArray(root, "items");
-        record.setPayloadCount(Math.max(1, items.size()));
+    private ParsedUdpPayload parseIfe633Event(DataRecord record, JsonNode root) {
+        JsonNode sysInfo = requiredObject(root, "sysInfo");
+        JsonNode paxInfo = requiredObject(root, "paxInfo");
+        ObjectNode behaviorInfo = objectCopy(requiredObject(root, "behaviorInfo"));
+        JsonNode extInfo = root.path("extInfo");
 
-        List<Map<String, Object>> rows = new ArrayList<>();
-        List<String> errors = new ArrayList<>();
-        for (int index = 0; index < items.size(); index++) {
-            try {
-                JsonNode item = items.get(index);
-                JsonNode sysInfo = requiredObject(item, "sysInfo");
-                JsonNode paxInfo = requiredObject(item, "paxInfo");
-                ObjectNode behaviorInfo = objectCopy(requiredObject(item, "behaviorInfo"));
-                JsonNode extInfo = item.path("extInfo");
+        Map<String, Object> row = row(record.getId(), 0);
+        OffsetDateTime eventAt = requiredCompactTime(sysInfo, "timestamp");
+        row.put("eventAt", eventAt);
+        row.put("flightNo", requiredText(sysInfo, "flightId"));
+        row.put("pnr", requiredText(paxInfo, "pnr"));
+        row.put("seatNo", requiredNormalizedSeat(paxInfo, "seatNo"));
+        row.put("cabinClass", requiredText(paxInfo, "cabinClass"));
+        row.put("deviceId", requiredText(paxInfo, "deviceId"));
+        row.put("passengerId", requiredText(paxInfo, "userId"));
+        row.put("behaviorType", requiredText(behaviorInfo, "behaviorType"));
+        row.put("behaviorDetail", toJson(behaviorInfo));
+        row.put("errorCode", textOrNull(extInfo, "errorCode"));
+        row.put("errorDescription", textOrNull(extInfo, "errorDesc"));
 
-                CoverInfo coverInfo = cockrell ? extractCoverInfo(behaviorInfo) : CoverInfo.empty();
-                removeCoverBase64(behaviorInfo);
-                if (cockrell) {
-                    removeCoverMetadata(behaviorInfo);
-                }
-
-                Map<String, Object> row = row(record.getId(), index);
-                row.put("eventAt", requiredCompactTime(sysInfo, "timestamp"));
-                row.put("flightNo", requiredText(sysInfo, "flightId"));
-                row.put("pnr", requiredText(paxInfo, "pnr"));
-                row.put("seatNo", requiredNormalizedSeat(paxInfo, "seatNo"));
-                row.put("cabinClass", requiredText(paxInfo, "cabinClass"));
-                row.put("deviceId", requiredText(paxInfo, "deviceId"));
-                row.put("passengerId", requiredText(paxInfo, "userId"));
-                row.put("behaviorType", requiredText(behaviorInfo, "behaviorType"));
-                row.put("behaviorDetail", toJson(behaviorInfo));
-                row.put("errorCode", textOrNull(extInfo, "errorCode"));
-                row.put("errorDescription", textOrNull(extInfo, "errorDescription"));
-                if (cockrell) {
-                    row.put("coverMimeType", coverInfo.mimeType());
-                    row.put("coverChecksum", coverInfo.checksum());
-                }
-                rows.add(row);
-            } catch (RuntimeException exception) {
-                errors.add(itemError(index, exception));
-            }
-        }
-        record.setFlightNo(firstString(rows, "flightNo"));
-        markParsed(record, rows.size(), errors);
-        return new ParsedUdpPayload(record, rows);
+        record.setSentAt(eventAt);
+        record.setFlightNo((String) row.get("flightNo"));
+        record.setPayloadCount(1);
+        markParsed(record, 1, List.of());
+        return new ParsedUdpPayload(record, List.of(row));
     }
 
     private ParsedUdpPayload parseCockrellEvent(DataRecord record, JsonNode root) {

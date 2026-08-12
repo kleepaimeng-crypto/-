@@ -47,7 +47,6 @@ class SimulatorConfig:
     passenger_count: int = 282
     window_count: int = 118
     window_rows: int = 59
-    ife_page_size: int = 50
     ife_cockrell_mode: str = "single"
     ife_cockrell_burst_size: int = 50
     random_seed: int | None = None
@@ -67,7 +66,6 @@ class SimulatorConfig:
         config.passenger_count = int(data.get("passengerCount", config.passenger_count))
         config.window_count = int(data.get("windowCount", config.window_count))
         config.window_rows = int(data.get("windowRows", config.window_rows))
-        config.ife_page_size = int(data.get("ifePageSize", config.ife_page_size))
         config.ife_cockrell_mode = str(data.get("ifeCockrellMode", config.ife_cockrell_mode)).lower()
         config.ife_cockrell_burst_size = int(
             data.get("ifeCockrellBurstSize", config.ife_cockrell_burst_size)
