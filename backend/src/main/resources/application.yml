@@ -31,6 +31,10 @@ management:
         include: health,info,flyway
 
 cabin:
+  cockpit-video:
+    enabled: ${COCKPIT_VIDEO_ENABLED:true}
+    playback-url: ${COCKPIT_VIDEO_PLAYBACK_URL:http://127.0.0.1:8889/cockpit/}
+
   udp:
     enabled: ${UDP_ENABLED:true}
     socket-receive-buffer-bytes: ${UDP_SOCKET_RECEIVE_BUFFER_BYTES:1048576}

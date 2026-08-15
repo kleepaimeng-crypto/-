@@ -19,6 +19,7 @@ describe('PassengerTrafficPanel', () => {
   it('renders integer media counts without Mbps', async () => {
     const wrapper = mount(PassengerTrafficPanel, {
       props: { autoRefresh: true, snapshot, loading: false, error: '' },
+      global: { stubs: { CockpitVideoMonitor: true } },
     })
 
     expect(wrapper.text()).not.toContain('当前影音类型排行')
@@ -45,6 +46,7 @@ describe('PassengerTrafficPanel', () => {
     }
     const wrapper = mount(PassengerTrafficPanel, {
       props: { autoRefresh: false, snapshot: emptySnapshot, loading: false, error: '' },
+      global: { stubs: { CockpitVideoMonitor: true } },
     })
 
     expect(wrapper.text()).toContain('当前暂无视频观看乘客')

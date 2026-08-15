@@ -203,6 +203,30 @@
   color: #8998b1;
 }
 
+.cockpit-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cockpit-video-reload {
+  min-height: 26px;
+  padding: 0 10px;
+  border: 1px solid rgba(70, 128, 255, 0.32);
+  border-radius: 14px;
+  background: rgba(8, 15, 26, 0.78);
+  color: #aebfda;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.cockpit-video-reload:hover,
+.cockpit-video-reload:focus-visible {
+  border-color: rgba(255, 138, 0, 0.68);
+  color: #ffd0a0;
+  outline: none;
+}
+
 .media-list {
   display: grid;
   gap: 6px;
@@ -291,6 +315,33 @@
   inset: 18px;
   border: 1px solid rgba(87, 112, 151, 0.16);
   content: "";
+}
+
+.cockpit-monitor.has-player::before {
+  display: none;
+}
+
+.cockpit-monitor.has-player {
+  display: block;
+}
+
+.cockpit-video-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+.cockpit-video-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #080f1a;
+  color: #8492aa;
+  font-size: 13px;
+  pointer-events: none;
 }
 
 .cockpit-monitor strong {

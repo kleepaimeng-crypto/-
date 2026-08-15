@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { PassengerRealtimeSnapshotDto } from '../../api/types'
 import { barWidth, formatCount } from '../../utils/displayFormatters'
+import CockpitVideoMonitor from './CockpitVideoMonitor.vue'
 
 const props = defineProps<{
   autoRefresh: boolean
@@ -74,15 +75,6 @@ function maxCount(items: { count: number }[]): number {
       </section>
     </div>
 
-    <section class="cockpit-card">
-      <div class="cockpit-card__heading">
-        <h3>驾驶舱实时监控</h3>
-        <span>视频流未接入</span>
-      </div>
-      <div class="cockpit-monitor">
-        <span>驾驶舱监控待接入</span>
-        <strong>暂不请求视频接口</strong>
-      </div>
-    </section>
+    <CockpitVideoMonitor />
   </section>
 </template>

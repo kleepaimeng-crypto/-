@@ -387,6 +387,14 @@ export interface PassengerRealtimeSnapshotDto {
   passengerActivities: PassengerActivitiesDto
 }
 
+export type CockpitVideoProtocol = 'WEBRTC'
+
+export interface CockpitVideoConfigDto {
+  enabled: boolean
+  protocol: CockpitVideoProtocol
+  playbackUrl: string | null
+}
+
 export interface FlightTrackPointDto {
   sampleAt: string
   sampleTimeText: string
