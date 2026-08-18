@@ -28,3 +28,23 @@ COCKPIT_VIDEO_PLAYBACK_URL=http://127.0.0.1:8889/cockpit
 ```
 
 MediaMTX 中的 RTSP `source` 由部署人员单独配置。不得把带账号密码的 RTSP URL 填入 `COCKPIT_VIDEO_PLAYBACK_URL`。
+
+## 后续保留方案：开发环境自动启动 MediaMTX
+
+当前实现仍由部署人员手动启动 `mediamtx-main`。后续如需在 IDEA 中点击 `BackendApplication` 后自动启动本地 MediaMTX，可由 Java 后端管理 **独立的** `mediamtx-main` 进程：
+
+```text
+BackendApplication 启动
+→ 后端启动 mediamtx-main
+→ MediaMTX 按其自身 mediamtx.yml 拉取甲方 RTSP
+→ MediaMTX 提供 WebRTC 播放页
+→ 前端 iframe 播放
+```
+
+- 仅在本地 `dev` 环境启用，例如使用 `COCKPIT_VIDEO_MEDIAMTX_AUTO_START=true`；后端退出时同时停止其启动的进程，日志输出到后端控制台。
+- MediaMTX 仍是独立媒体进程；Java 只负责可选的进程生命周期，不代理 RTSP、不转码，也不读取或返回 RTSP 地址及凭据。
+- 正式 Docker/Linux 部署不应执行 Windows 的 `mediamtx.exe`；应将 MediaMTX 作为独立服务或容器运行，并由部署系统负责自启动与重启。
+- 甲方直接提供可访问的 RTSP 时，只需要 `mediamtx-main`。`mediamtx-source` 仅用于 OBS 通过 RTMP 进行本地模拟，不属于甲方 RTSP 接入链路。
+
+
+

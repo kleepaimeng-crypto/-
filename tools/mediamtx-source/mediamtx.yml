@@ -290,7 +290,7 @@ rtspTrustedProxies: []
 # Global settings -> RTMP server
 
 # Enable the RTMP server, which allows to publish and read streams with the RTMP protocol.
-rtmp: false
+rtmp: true
 # Use the secure protocol variant (RTMPS).
 # Available values are "no", "strict", "optional".
 rtmpEncryption: "no"
