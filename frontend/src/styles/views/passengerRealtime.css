@@ -110,20 +110,27 @@
 }
 
 .passenger-panel--traffic {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .passenger-media-group {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  min-height: 0;
+  grid-template-rows: 44px repeat(2, minmax(0, 1fr));
   gap: 4px;
 }
 
 .passenger-media-group > .panel-title,
 .passenger-media-group > .media-card {
   margin-inline: 20px;
+}
+
+.passenger-media-group > .media-card {
+  min-height: 0;
 }
 
 .mini-toggle {
@@ -163,7 +170,7 @@
 
 .cockpit-card {
   display: flex;
-  flex: 1;
+  flex: 0 0 auto;
   min-height: 0;
   flex-direction: column;
   padding: 0;
@@ -183,7 +190,7 @@
 
 .cockpit-card__heading {
   min-height: 44px;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
   margin-inline: 10px;
   padding: 0 12px 0 32px;
   border-radius: 10px;
@@ -290,11 +297,11 @@
 .cockpit-monitor {
   position: relative;
   display: grid;
-  flex: 1;
+  flex: 0 0 auto;
   width: auto;
   margin-inline: 10px;
   min-height: 0;
-  aspect-ratio: auto;
+  aspect-ratio: 16 / 9;
   place-content: center;
   gap: 8px;
   overflow: hidden;
@@ -699,9 +706,9 @@
 .watch-detail-window {
   position: absolute;
   z-index: 9;
-  top: 18px;
+  top: var(--side-panel-y-offset);
   right: 30px;
-  bottom: 18px;
+  bottom: var(--side-panel-y-offset);
   display: flex;
   width: 470px;
   min-height: 0;
