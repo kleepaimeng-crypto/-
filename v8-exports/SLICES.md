@@ -6,12 +6,11 @@
 - 新增导出任务 Service、Mapper 和 Controller，使用既有 `file_job` 的 `EXPORT` 类型。
 - 创建任务时固化筛选快照，任务运行时分页查询 `data_record.raw_payload`。
 
-验证：创建 CSV、PDF 任务；筛选范围与数据管理列表一致；无 JSON 记录时状态明确。
+验证：创建 CSV 任务；筛选范围与数据管理列表一致；无 JSON 记录时状态明确。
 
-## 2. 切片 2：CSV 和 PDF 生成
+## 2. 切片 2：CSV 生成
 
 - CSV 以 `raw_json` 作为唯一业务列，使用 UTF-8 with BOM 和标准 CSV 转义。
-- PDF 以等宽字体、自动换行和自然分页输出格式化 JSON。
 - 使用流式文件写入；不得将全部导出结果或 Base64 报文一次性载入内存。
 - `raw_payload` 为空的记录计入跳过数量，任务结果为 `PARTIAL` 或 `FAILED`。
 
@@ -28,7 +27,6 @@
 ## 4. 切片 4：回归与验收
 
 - 核对 CSV 各行 JSON 可重新解析，字段和值与 `raw_payload` 一致。
-- 核对 PDF 长 JSON 不截断。
 - 验证导出不影响 UDP 接收、数据管理查询、乘客实时、轨迹、舷窗和 IFE。
 
 ```powershell

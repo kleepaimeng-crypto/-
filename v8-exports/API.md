@@ -34,7 +34,7 @@ Authorization: Bearer <platform JWT>
 
 规则：
 
-- `format` 只能是 `CSV` 或 `PDF`。
+- `format` 固定为 `CSV`。
 - `filters.dataTypeCode` 必填，且必须是已启用的数据类型。
 - 其他筛选字段、排序字段和排序方向与数据管理列表查询保持一致。
 - 创建成功只表示任务已创建，不表示文件已生成。
@@ -79,8 +79,7 @@ GET /api/v1/exports/{jobId}/file
 ```
 
 - 仅 `SUCCEEDED` 或 `PARTIAL` 状态可下载。
-- CSV 返回 `text/csv; charset=UTF-8` 并使用附件下载文件名。
-- PDF 返回 `application/pdf` 并使用附件下载文件名。
+- 返回 `text/csv; charset=UTF-8` 并使用附件下载文件名。
 - 不接受文件路径、格式或筛选条件等额外下载参数。
 
 ## 4. 文件内容契约
@@ -93,7 +92,3 @@ raw_json
 ```
 
 文件可以被 CSV 阅读器读取；第一列的值是完整 JSON 字符串。超长 Base64 JSON 可能超过 Excel 可显示的单元格上限，但不得在服务端截断。
-
-### 4.2 PDF
-
-PDF 使用格式化 JSON，按导出顺序连续输出。PDF 的页眉、标题和报文序号仅用于阅读定位，不构成对原始 JSON 的修改。
