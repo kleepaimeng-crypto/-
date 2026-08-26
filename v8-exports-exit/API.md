@@ -14,30 +14,19 @@ Authorization: Bearer <platform JWT>
 
 ```json
 {
-  "format": "CSV",
-  "filters": {
-    "dataTypeCode": "QAR",
-    "tagIds": [],
-    "airlineCode": "CA",
-    "flightNo": "CA8533",
-    "sourceDeviceCode": null,
-    "aircraftModel": null,
-    "origin": null,
-    "destination": null,
-    "receivedFrom": "2026-08-25T00:00:00+08:00",
-    "receivedTo": "2026-08-25T23:59:59+08:00"
-  },
-  "sortBy": "receivedAt",
-  "sortDirection": "desc"
+  "groups": [
+    { "dataTypeCode": "QAR", "recordIds": ["id-1", "id-2"] },
+    { "dataTypeCode": "IFE_633_BEHAVIOR", "recordIds": ["id-3"] }
+  ]
 }
 ```
 
 规则：
 
-- `format` 固定为 `CSV`。
-- `filters.dataTypeCode` 必填，且必须是已启用的数据类型。
-- 其他筛选字段、排序字段和排序方向与数据管理列表查询保持一致。
-- 创建成功只表示任务已创建，不表示文件已生成。
+- `groups` 至少包含一组；每组包含一个数据类型和该类型下已勾选的记录 ID。
+- 同一请求中的数据类型不得重复。
+- 后端必须校验每条记录未删除且确实属于该组数据类型。
+- 每个分组创建一个独立 CSV 任务；创建成功只表示任务已创建，不表示文件已生成。
 
 响应：
 
@@ -45,7 +34,7 @@ Authorization: Bearer <platform JWT>
 {
   "code": "OK",
   "message": "success",
-  "data": {
+  "data": [{
     "id": "0c6b5c16-2e2b-4f26-89fd-a25a1df64f4c",
     "jobType": "EXPORT",
     "dataTypeCode": "QAR",
@@ -56,7 +45,7 @@ Authorization: Bearer <platform JWT>
     "failedRows": 0,
     "resultFileName": null,
     "createdAt": "2026-08-25T10:00:00+08:00"
-  },
+  }],
   "traceId": "..."
 }
 ```

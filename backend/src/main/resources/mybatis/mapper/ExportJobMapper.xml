@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.data.mapper.ExportJobMapper">
+    <insert id="insert">
+        INSERT INTO file_job (
+            id, job_type, data_type_code, file_format, status,
+            filter_snapshot, requested_by
+        ) VALUES (
+            #{id,jdbcType=OTHER}, 'EXPORT', #{dataTypeCode}, 'CSV', 'PENDING',
+            CAST(#{filterSnapshot} AS jsonb), #{requestedBy,jdbcType=OTHER}
+        )
+    </insert>
+
+    <update id="markRunning">
+        UPDATE file_job
+        SET status = 'RUNNING', started_at = now(), updated_at = now()
+        WHERE id = #{id,jdbcType=OTHER}
+          AND job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+          AND status = 'PENDING'
+    </update>
+
+    <update id="complete">
+        UPDATE file_job
+        SET status = #{status}, result_file_name = #{fileName}, storage_path = #{storagePath},
+            file_size = #{fileSize}, total_rows = #{totalRows}, success_rows = #{successRows},
+            failed_rows = #{failedRows}, error_message = NULL, completed_at = now(), updated_at = now()
+        WHERE id = #{id,jdbcType=OTHER}
+          AND job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+    </update>
+
+    <update id="fail">
+        UPDATE file_job
+        SET status = 'FAILED', error_message = #{errorMessage}, completed_at = now(), updated_at = now()
+        WHERE id = #{id,jdbcType=OTHER}
+          AND job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM file_job
+        WHERE id = #{id,jdbcType=OTHER}
+          AND job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+    </delete>
+
+    <select id="findById" resultType="com.cabin.data.entity.ExportJobRow">
+        SELECT id, status, data_type_code, result_file_name AS file_name, storage_path,
+               file_format AS format, total_rows, success_rows, failed_rows, error_message,
+               created_at, completed_at
+        FROM file_job
+        WHERE id = #{id,jdbcType=OTHER}
+          AND job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+    </select>
+
+    <select id="findPage" resultType="com.cabin.data.entity.ExportJobRow">
+        SELECT id, status, data_type_code, result_file_name AS file_name, storage_path,
+               file_format AS format, total_rows, success_rows, failed_rows, error_message,
+               created_at, completed_at
+        FROM file_job
+        WHERE job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+        ORDER BY created_at DESC, id DESC
+        LIMIT #{pageSize}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countByRequestedBy" resultType="long">
+        SELECT count(*)
+        FROM file_job
+        WHERE job_type = 'EXPORT'
+          AND requested_by = #{requestedBy,jdbcType=OTHER}
+    </select>
+</mapper>

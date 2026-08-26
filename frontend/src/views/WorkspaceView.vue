@@ -12,14 +12,13 @@ import {
   updateRecordMetadata,
 } from '../api/dataRecords'
 import type { DataRecordQuery, MetadataUpdatePayload } from '../api/dataRecords'
-import { createExport, createImport, getExportHistory, getImportHistory } from '../api/fileJobs'
+import { createExport, createImport, deleteExport, downloadExportFile, getExportHistory, getImportHistory } from '../api/fileJobs'
 import type { ExportCreatePayload, ImportCreatePayload } from '../api/fileJobs'
 import type {
   DataOptionsDto,
   DataRecordDetailDto,
   DataRecordListItemDto,
   DataTypeCode,
-  ExportFormat,
   FileJobSummaryDto,
 } from '../api/types'
 import FixedCanvasShell from '../components/FixedCanvasShell.vue'
@@ -30,11 +29,10 @@ const route = useRoute()
 const EMPTY_OPTIONS: DataOptionsDto = {
   dataTypes: [], airlines: [], aircraftModels: [], aircraftRegistrations: [], devices: [], airports: [], tags: [],
 }
-const DATA_TYPE_LABELS: Record<DataTypeCode, string> = {
+const DATA_TYPE_LABELS: Partial<Record<DataTypeCode, string>> = {
   QAR: 'QAR 飞行数据',
   GROUND_TASK: '仿真任务数据',
   GROUND_TRAFFIC_RECORD: '流量窗口数据',
-  GROUND_SESSION_SUMMARY: '会话摘要数据',
   SMART_WINDOW_STATUS: '智能舷窗状态',
   IFE_633_BEHAVIOR: '633 IFE 乘客行为',
   IFE_COCKRELL_BEHAVIOR: '科克瑞尔 IFE 乘客行为',
@@ -46,6 +44,7 @@ const records = ref<DataRecordListItemDto[]>([])
 const exportHistory = ref<FileJobSummaryDto[]>([])
 const importHistory = ref<FileJobSummaryDto[]>([])
 const selectedIds = ref<string[]>([])
+const selectedTypeById = new Map<string, DataTypeCode>()
 const loading = ref(false)
 const actionLoading = ref(false)
 const listError = ref('')
@@ -61,7 +60,7 @@ const appliedFlightNo = ref('')
 
 const filters = reactive({
   tagId: '', airlineCode: '', flightNo: '', sourceDeviceCode: '', aircraftModel: '',
-  origin: '', destination: '', dataTypeCode: '', receivedFrom: '', receivedTo: '',
+  origin: '', destination: '', dataTypeCodes: [] as DataTypeCode[], receivedFrom: '', receivedTo: '',
 })
 const sort = reactive<{ by: DataRecordQuery['sortBy']; direction: DataRecordQuery['sortDirection'] }>({
   by: 'receivedAt', direction: 'desc',
@@ -75,6 +74,8 @@ const editDetail = ref<DataRecordDetailDto | null>(null)
 const editDetailLoading = ref(false)
 const editDetailError = ref('')
 const deleteOpen = ref(false)
+const exportDeleteOpen = ref(false)
+const exportDeleteTarget = ref<FileJobSummaryDto | null>(null)
 const importOpen = ref(false)
 const activeRecord = ref<DataRecordListItemDto | null>(null)
 const actionError = ref('')
@@ -85,9 +86,6 @@ const editForm = reactive<MetadataUpdatePayload>({
   aircraftRegistrationNo: '', aircraftModel: null, airlineCode: null, flightNo: null,
   origin: null, destination: null, sourceDeviceCode: '', expectedVersion: 1,
 })
-const exportForm = reactive<{ dataTypeCode: DataTypeCode; format: ExportFormat }>({
-  dataTypeCode: 'QAR', format: 'CSV',
-})
 const importForm = reactive<{
   dataTypeCode: DataTypeCode
   file: File | null
@@ -95,7 +93,8 @@ const importForm = reactive<{
   aircraftRegistrationNo: string
 }>({ dataTypeCode: 'QAR', file: null, sourceDeviceCode: '', aircraftRegistrationNo: '' })
 
-const allSelected = computed(() => records.value.length > 0 && selectedIds.value.length === records.value.length)
+const allSelected = computed(() => records.value.length > 0
+  && records.value.every((record) => selectedIds.value.includes(record.id)))
 const routeLabel = computed(() => {
   if (!filters.origin && !filters.destination) return '航段'
   return `${filters.origin || '起飞'} → ${filters.destination || '到达'}`
@@ -105,7 +104,7 @@ const dateLabel = computed(() => {
   return `${displayDate(filters.receivedFrom) || '开始'} — ${displayDate(filters.receivedTo) || '结束'}`
 })
 const canAutoRefresh = computed(() => page.value === 1 && selectedIds.value.length === 0
-  && !detailOpen.value && !editOpen.value && !deleteOpen.value && !importOpen.value)
+  && !detailOpen.value && !editOpen.value && !deleteOpen.value && !exportDeleteOpen.value && !importOpen.value)
 const canManageData = computed(() => {
   const roleCode = authSession.state.user?.roleCode
   return roleCode === 'SUPER_ADMIN' || roleCode === 'ADMIN'
@@ -125,6 +124,7 @@ const pageNumbers = computed(() => {
 })
 
 let refreshTimer: number | undefined
+let exportRefreshTimer: number | undefined
 
 function buildQuery(): DataRecordQuery {
   return {
@@ -135,7 +135,7 @@ function buildQuery(): DataRecordQuery {
     aircraftModel: filters.aircraftModel || undefined,
     origin: filters.origin || undefined,
     destination: filters.destination || undefined,
-    dataTypeCode: filters.dataTypeCode || undefined,
+    dataTypeCode: filters.dataTypeCodes.join(',') || undefined,
     receivedFrom: toStartOfDayIso(filters.receivedFrom),
     receivedTo: toExclusiveEndIso(filters.receivedTo),
     page: page.value,
@@ -161,7 +161,6 @@ async function loadRecords(background = false): Promise<void> {
     records.value = result.items
     total.value = result.total
     totalPages.value = result.totalPages
-    selectedIds.value = selectedIds.value.filter((id) => result.items.some((record) => record.id === id))
   } catch (error) {
     records.value = []
     total.value = 0
@@ -180,6 +179,18 @@ async function loadHistories(): Promise<void> {
   if (exportsResult.status === 'rejected' || importsResult.status === 'rejected') {
     historyError.value = '任务历史接口待后端接入'
   }
+  syncExportHistoryRefresh()
+}
+
+function syncExportHistoryRefresh(): void {
+  const hasActiveExport = exportHistory.value.some((job) => job.status === 'PENDING' || job.status === 'RUNNING')
+  if (hasActiveExport && exportRefreshTimer === undefined) {
+    exportRefreshTimer = window.setInterval(() => void loadHistories(), 2000)
+  }
+  if (!hasActiveExport && exportRefreshTimer !== undefined) {
+    window.clearInterval(exportRefreshTimer)
+    exportRefreshTimer = undefined
+  }
 }
 
 async function reloadAll(): Promise<void> {
@@ -188,7 +199,6 @@ async function reloadAll(): Promise<void> {
 
 function applyFilters(): void {
   page.value = 1
-  selectedIds.value = []
   void loadRecords()
 }
 
@@ -247,18 +257,37 @@ function changeSort(by: DataRecordQuery['sortBy']): void {
 function goToPage(nextPage: number): void {
   if (nextPage < 1 || nextPage > totalPages.value || nextPage === page.value) return
   page.value = nextPage
-  selectedIds.value = []
   void loadRecords()
 }
 
 function toggleAll(): void {
-  selectedIds.value = allSelected.value ? [] : records.value.map((record) => record.id)
+  const currentPageIds = new Set(records.value.map((record) => record.id))
+  if (allSelected.value) {
+    selectedIds.value = selectedIds.value.filter((id) => !currentPageIds.has(id))
+    records.value.forEach((record) => selectedTypeById.delete(record.id))
+    return
+  }
+  const selected = new Set(selectedIds.value)
+  records.value.forEach((record) => {
+    selected.add(record.id)
+    selectedTypeById.set(record.id, record.dataType.code as DataTypeCode)
+  })
+  selectedIds.value = [...selected]
 }
 
-function toggleRecord(recordId: string): void {
-  selectedIds.value = selectedIds.value.includes(recordId)
-    ? selectedIds.value.filter((id) => id !== recordId)
-    : [...selectedIds.value, recordId]
+function toggleRecord(record: DataRecordListItemDto): void {
+  if (selectedIds.value.includes(record.id)) {
+    selectedIds.value = selectedIds.value.filter((id) => id !== record.id)
+    selectedTypeById.delete(record.id)
+    return
+  }
+  selectedIds.value = [...selectedIds.value, record.id]
+  selectedTypeById.set(record.id, record.dataType.code as DataTypeCode)
+}
+
+function clearSelectedRecords(): void {
+  selectedIds.value = []
+  selectedTypeById.clear()
 }
 
 async function openDetail(record: DataRecordListItemDto): Promise<void> {
@@ -360,7 +389,7 @@ async function submitDelete(): Promise<void> {
     if (batchDeleting.value) {
       const result = await batchDeleteDataRecords(selectedIds.value, deleteReason.value.trim())
       actionNotice.value = `批量删除完成：成功 ${result.deleted} 条，跳过 ${result.skipped} 条。`
-      selectedIds.value = []
+      clearSelectedRecords()
     } else if (activeRecord.value) {
       await deleteDataRecord(activeRecord.value.id, deleteReason.value.trim(), activeRecord.value.version)
       actionNotice.value = '记录已移入恢复期。'
@@ -375,31 +404,73 @@ async function submitDelete(): Promise<void> {
 }
 
 async function submitExport(): Promise<void> {
+  if (selectedIds.value.length === 0) {
+    actionError.value = '请先在左侧勾选需要导出的数据。'
+    return
+  }
   actionLoading.value = true
   actionError.value = ''
-  const query = buildQuery()
+  const groupsByType = new Map<DataTypeCode, string[]>()
+  selectedIds.value.forEach((recordId) => {
+    const dataTypeCode = selectedTypeById.get(recordId)
+    if (!dataTypeCode) return
+    const recordIds = groupsByType.get(dataTypeCode) ?? []
+    recordIds.push(recordId)
+    groupsByType.set(dataTypeCode, recordIds)
+  })
   const payload: ExportCreatePayload = {
-    format: exportForm.format,
-    filters: {
-      dataTypeCode: exportForm.dataTypeCode,
-      tagIds: query.tagIds ?? [],
-      airlineCode: query.airlineCode ?? null,
-      flightNo: query.flightNo ?? null,
-      sourceDeviceCode: query.sourceDeviceCode ?? null,
-      aircraftModel: query.aircraftModel ?? null,
-      origin: query.origin ?? null,
-      destination: query.destination ?? null,
-      receivedFrom: query.receivedFrom ?? null,
-      receivedTo: query.receivedTo ?? null,
-    },
-    sortBy: query.sortBy,
-    sortDirection: query.sortDirection,
+    groups: [...groupsByType.entries()].map(([dataTypeCode, recordIds]) => ({ dataTypeCode, recordIds })),
+  }
+  if (payload.groups.length === 0) {
+    actionLoading.value = false
+    actionError.value = '勾选记录已失效，请刷新后重新选择。'
+    return
   }
   try {
-    await createExport(payload)
+    const jobs = await createExport(payload)
+    actionNotice.value = `已创建 ${jobs.length} 个 CSV 导出任务。`
     await loadHistories()
   } catch (error) {
     actionError.value = errorMessage(error, '导出任务接口暂不可用')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+async function downloadExport(job: FileJobSummaryDto): Promise<void> {
+  actionError.value = ''
+  try {
+    const { blob, fileName } = await downloadExportFile(job.id)
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = fileName || `raw-json-${job.id}.csv`
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    actionError.value = errorMessage(error, '导出文件下载失败')
+  }
+}
+
+function openExportDelete(job: FileJobSummaryDto): void {
+  exportDeleteTarget.value = job
+  actionError.value = ''
+  exportDeleteOpen.value = true
+}
+
+async function submitExportDelete(): Promise<void> {
+  if (!exportDeleteTarget.value) return
+  actionLoading.value = true
+  actionError.value = ''
+  try {
+    await deleteExport(exportDeleteTarget.value.id)
+    exportDeleteOpen.value = false
+    exportDeleteTarget.value = null
+    await loadHistories()
+  } catch (error) {
+    actionError.value = errorMessage(error, '导出历史删除失败')
   } finally {
     actionLoading.value = false
   }
@@ -484,6 +555,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (refreshTimer !== undefined) window.clearInterval(refreshTimer)
+  if (exportRefreshTimer !== undefined) window.clearInterval(exportRefreshTimer)
   document.removeEventListener('pointerdown', handleDocumentPointerDown)
   document.removeEventListener('keydown', handleDocumentKeyDown)
 })
@@ -585,7 +657,7 @@ onBeforeUnmount(() => {
             </thead>
             <tbody>
               <tr v-for="record in records" :key="record.id" :class="{ 'is-selected': selectedIds.includes(record.id) }">
-                <td class="selection-cell"><input type="checkbox" :checked="selectedIds.includes(record.id)" @change="toggleRecord(record.id)" /></td>
+                <td class="selection-cell"><input type="checkbox" :checked="selectedIds.includes(record.id)" @change="toggleRecord(record)" /></td>
                 <td><button class="record-link" @click="openDetail(record)">{{ record.aircraftRegistrationNo }}</button></td>
                 <td><span class="type-name">{{ record.dataType.name }}</span></td>
                 <td>{{ formatDate(record.sentAt) }}</td>
@@ -607,6 +679,7 @@ onBeforeUnmount(() => {
           <div class="table-footer__summary">
             <span>总计 <strong>{{ total }}</strong> 条</span>
             <span v-if="selectedIds.length" class="selection-count">已选择 {{ selectedIds.length }} 条</span>
+            <button v-if="selectedIds.length" class="batch-action" @click="clearSelectedRecords">清空选择</button>
             <button v-if="selectedIds.length" class="batch-action" :disabled="!canManageData" @click="openBatchDelete">批量删除</button>
             <span v-if="actionNotice" class="action-notice">{{ actionNotice }}</span>
           </div>
@@ -628,26 +701,28 @@ onBeforeUnmount(() => {
           <div class="export-block">
             <label>数据类型</label>
             <div class="radio-grid">
-              <label v-for="(label, code) in DATA_TYPE_LABELS" :key="code"><input v-model="exportForm.dataTypeCode" type="radio" :value="code" /><span></span>{{ label }}</label>
+              <label v-for="(label, code) in DATA_TYPE_LABELS" :key="code"><input v-model="filters.dataTypeCodes" type="checkbox" :value="code" @change="applyFilters" /><span></span>{{ label }}</label>
             </div>
           </div>
           <div class="export-block export-format">
             <label>数据格式</label>
-            <label><input v-model="exportForm.format" type="radio" value="CSV" /><span></span>CSV</label>
-            <label><input v-model="exportForm.format" type="radio" value="PDF" /><span></span>PDF</label>
+            <label><input type="radio" checked /><span></span>CSV</label>
+            <label class="is-disabled"><input type="radio" disabled /><span></span>PDF（暂未支持）</label>
           </div>
-          <button class="export-button" :disabled="actionLoading" @click="submitExport">{{ actionLoading ? '提交中…' : '创建导出任务' }}</button>
+          <div class="export-actions">
+            <button class="export-button" :disabled="actionLoading || selectedIds.length === 0" @click="submitExport">{{ actionLoading ? '提交中…' : `导出已选 ${selectedIds.length} 条` }}</button>
+          </div>
           <p v-if="actionError" class="inline-error">{{ actionError }}</p>
           </section>
         </div>
 
         <div class="inspector-section-group">
-          <header><h2>导出历史</h2><button @click="loadHistories">刷新</button></header>
+          <header><h2>导出历史</h2></header>
           <section class="inspector-section history-section">
-          <div class="history-head"><span>创建时间</span><span>数据类型</span><span>状态</span></div>
+          <div class="history-head history-head--export"><span>创建时间</span><span>数据类型</span><span>状态</span><span>操作</span></div>
           <div v-if="exportHistory.length" class="history-list">
-            <div v-for="job in exportHistory.slice(0, 6)" :key="job.id" class="history-row">
-              <span>{{ formatDate(job.createdAt) }}</span><span>{{ DATA_TYPE_LABELS[job.dataTypeCode] || job.dataTypeCode }}</span><span :class="`job-${job.status.toLowerCase()}`">{{ statusLabel(job.status) }}</span>
+            <div v-for="job in exportHistory.slice(0, 6)" :key="job.id" class="history-row history-row--export">
+              <span>{{ formatDate(job.createdAt) }}</span><span>{{ DATA_TYPE_LABELS[job.dataTypeCode] || job.dataTypeCode }}</span><span :class="`job-${job.status.toLowerCase()}`">{{ statusLabel(job.status) }}</span><span class="history-actions"><button v-if="job.status === 'SUCCEEDED' || job.status === 'PARTIAL'" class="row-action" @click="downloadExport(job)">下载</button><button v-if="job.status !== 'PENDING' && job.status !== 'RUNNING'" class="row-action row-action--danger" @click="openExportDelete(job)">删除</button></span>
             </div>
           </div>
           <div v-else class="history-empty">{{ historyError || '暂无导出记录' }}</div>
@@ -725,6 +800,24 @@ onBeforeUnmount(() => {
         <label class="field-label">删除原因<textarea v-model="deleteReason" rows="4" placeholder="请填写删除原因"></textarea></label>
         <p v-if="actionError" class="inline-error">{{ actionError }}</p>
         <footer><button class="button button--ghost" @click="deleteOpen = false">取消</button><button class="button button--danger" :disabled="!deleteReason.trim() || actionLoading" @click="submitDelete">确认删除</button></footer>
+      </section>
+    </div>
+
+    <div v-if="exportDeleteOpen" class="overlay" @click.self="exportDeleteOpen = false">
+      <section class="dialog-panel dialog-panel--small dialog-panel--export-delete">
+        <header>
+          <div>
+            <span class="export-delete__eyebrow">不可恢复操作</span>
+            <h2>删除导出记录？</h2>
+          </div>
+          <button class="close-button" aria-label="关闭" @click="exportDeleteOpen = false">×</button>
+        </header>
+        <p class="dialog-hint">将同时删除这条导出历史和对应的 CSV 文件，删除后不可恢复。</p>
+        <p v-if="actionError" class="inline-error">{{ actionError }}</p>
+        <footer>
+          <button class="button button--ghost" @click="exportDeleteOpen = false">取消</button>
+          <button class="button button--danger" :disabled="actionLoading" @click="submitExportDelete">确认删除</button>
+        </footer>
       </section>
     </div>
 

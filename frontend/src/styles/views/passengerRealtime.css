@@ -105,8 +105,9 @@
 
 .panel-title h2 {
   margin: 0;
-  color: #f2f6ff;
-  font-size: 16px;
+  color: #f4f8ff;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .passenger-panel--traffic {
@@ -197,11 +198,17 @@
   background: url('/assets/子标题组件.svg') center / 100% 100% no-repeat;
 }
 
-.media-card h3,
-.cockpit-card h3 {
+.media-card h3 {
   margin: 0;
   color: #f2f6ff;
   font-size: 18px;
+}
+
+.cockpit-card h3 {
+  margin: 0;
+  color: #f4f8ff;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .media-card__heading span,

@@ -66,7 +66,7 @@ export type DataTypeCode =
 
 export type ParseStatus = 'RECEIVED' | 'PARSED' | 'PARTIAL' | 'FAILED'
 export type JobStatus = 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'PARTIAL' | 'FAILED'
-export type ExportFormat = 'CSV' | 'PDF'
+export type ExportFormat = 'CSV'
 export type WindowSide = 'LEFT' | 'RIGHT'
 export type SmartWindowStatus = 'NORMAL' | 'FAULT' | 'TEST'
 

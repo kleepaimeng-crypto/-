@@ -329,7 +329,7 @@
 | `contentName` | string | 64 | 影片名称 | `流浪地球 3` | 是 |
 | `contentType` | string | 16 | 影片类别 | `科幻`、`喜剧` | 是 |
 | `contentDuration` | int | 8 | 影片总时长，单位分钟 | `157`、`128`、`180` | 是 |
-| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`STOP`、`SEEK` | 是 |
+| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`SEEK`、`EXIT` | 是 |
 | `playPosition` | int | 8 | 播放进度，单位秒 | `360`、`600`、`180` | 是，`PLAY`/`SEEK` 时 |
 | `resolution` | string | 16 | 播放分辨率 | `720P`、`1080P`、`4K` | 是 |
 
@@ -343,7 +343,7 @@
 | `musicType` | string | 16 | 音乐类型 | `中国风` | 是 |
 | `artist` | string | 32 | 艺术家/歌手 | `周杰伦` | 是 |
 | `album` | string | 32 | 专辑名称 | `魔杰座` | 否 |
-| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`NEXT`、`PREV` | 是 |
+| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`NEXT`、`PREV`、`EXIT` | 是 |
 | `playPosition` | int | 8 | 播放进度，单位秒 | `120`、`80`、`150` | 是，`PLAY` 时 |
 | `volume` | int | 3 | 播放音量，0-100，0 为静音 | `70`、`50`、`90` | 是 |
 
@@ -353,7 +353,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `behaviorType` | string | 16 | 业务行为类型标识 | `CAST_SCREEN` | 是 |
 | `targetDevice` | string | 24 | 投屏目标设备 | `SVDU-F01`、`SVDU-F02`、`HEAD-CABIN-SCREEN-01` | 是 |
-| `castAction` | string | 16 | 投屏动作 | `CAST`、`STOP` | 是 |
+| `castAction` | string | 16 | 投屏动作 | `CAST`、`STOP`、`EXIT` | 是 |
 | `castStatus` | string | 16 | 投屏状态 | `CONNECTED`、`FAILED`、`DISCONNECTED` | 是 |
 | `resolution` | string | 16 | 投屏分辨率 | `720P`、`1080P`、`4K` | 是 |
 | `castDuration` | int | 8 | 投屏时长，单位秒，仅投屏成功时填写 | `1800`、`3600`、`600` | 否 |
@@ -369,6 +369,7 @@
 | `dstDomain` | string | 64 | 目标域名，IP 访问时为空 | `www.baidu.com`、`www.weixin.com` | 否 |
 | `protocol` | string | 8 | 网络协议 | `HTTP`、`HTTPS`、`TCP`、`UDP` | 是 |
 | `port` | int | 5 | 目标端口 | `80`、`443`、`8080` | 是 |
+| `WAPAction` | string | 16 | 上网动作 | `ACCESS`、`EXIT` | 是 |
 
 ### 4.10 633 IFE 枚举
 
@@ -395,10 +396,10 @@
 | --- | --- |
 | `PLAY` | 开始播放 |
 | `PAUSE` | 暂停播放 |
-| `STOP` | 停止播放 |
 | `SEEK` | 进度拖动，仅电影 |
 | `NEXT` | 下一首，仅音乐 |
 | `PREV` | 上一首，仅音乐 |
+| `EXIT` | 退出 |
 
 #### resolution
 
@@ -414,6 +415,7 @@
 | --- | --- |
 | `CAST` | 开始投屏 |
 | `STOP` | 停止投屏 |
+| `EXIT` | 退出 |
 
 #### castStatus
 
@@ -432,13 +434,12 @@
 | `TCP` | TCP 协议 |
 | `UDP` | UDP 协议 |
 
-#### coverMimeType
+#### WAPAction
 
-| 枚举值 | 说明 |
+| 枚举值 | 含义 |
 | --- | --- |
-| `jpeg` | JPEG 格式图片 |
-| `png` | PNG 格式图片 |
-| `webp` | WebP 格式图片 |
+| `ACCESS` | 访问 |
+| `EXIT` | 退出 |
 
 ## 5. 科克瑞尔 IFE 接口
 
@@ -507,7 +508,7 @@
 | `contentName` | string | 64 | 影片名称 | `流浪地球 3` | 是 |
 | `contentType` | string | 16 | 影片类别 | `科幻`、`喜剧` | 是 |
 | `contentDuration` | int | 8 | 影片总时长，单位分钟 | `157`、`128`、`180` | 是 |
-| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`STOP`、`SEEK` | 是 |
+| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`SEEK`、`EXIT` | 是 |
 | `playPosition` | int | 8 | 播放进度，单位秒 | `360`、`600`、`180` | 是，`PLAY`/`SEEK` 时 |
 | `resolution` | string | 16 | 播放分辨率 | `720P`、`1080P`、`4K` | 是 |
 | `coverBase64` | string | <=524288 | 封面图片 | Base64 编码串 | 否 |
@@ -524,7 +525,7 @@
 | `musicType` | string | 16 | 音乐类型 | `中国风` | 是 |
 | `artist` | string | 32 | 艺术家/歌手 | `周杰伦` | 是 |
 | `album` | string | 32 | 专辑名称 | `魔杰座` | 否 |
-| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`NEXT`、`PREV` | 是 |
+| `playAction` | string | 16 | 播放动作 | `PLAY`、`PAUSE`、`NEXT`、`PREV`、`EXIT` | 是 |
 | `playPosition` | int | 8 | 播放进度，单位秒 | `120`、`80`、`150` | 是，`PLAY` 时 |
 | `volume` | int | 3 | 播放音量，0-100，0 为静音 | `70`、`50`、`90` | 是 |
 | `coverBase64` | string | <=524288 | 封面图片 | Base64 编码串 | 否 |
@@ -544,6 +545,7 @@
 | `port` | int | 5 | 目标端口 | `80`、`443`、`8080` | 是 |
 | `trafficBytes` | long | 16 | 累计上网流量，单位字节 | `10240`、`1048576` | 是 |
 | `url` | string | 256 | 访问 URL 地址 | `https://www.baidu.com/s?wd=机票`、`https://weixin.qq.com` | 是 |
+| `WAPAction` | string | 16 | 上网动作 | `ACCESS`、`EXIT` | 是 |
 
 ### 5.9 behaviorInfo：SHOPPING 购物
 
@@ -560,7 +562,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `orderId` | string | 32 | 订单唯一编号 | `ORDER-20260408-001` | 是，`BUY`/`PAY`/`CANCEL` 时 |
 | `totalPrice` | decimal | 8 | 订单总金额，元 | `209.00` | 是 |
-| `shopAction` | string | 16 | 订单操作类型 | `ADD`、`BUY`、`PAY`、`CANCEL` | 是 |
+| `shopAction` | string | 16 | 订单操作类型 | `ADD`、`BUY`、`PAY`、`CANCEL`、`EXIT` | 是 |
 | `payStatus` | string | 16 | 支付状态 | `UNPAID`、`PAID`、`FAILED`、`REFUND` | 是 |
 | `payType` | string | 16 | 支付方式 | `ALIPAY`、`WECHAT`、`CREDITCARD` | 否 |
 | `goodsList` | array | - | 商品列表，单个订单下多个商品 | 数组 | 是 |
@@ -602,10 +604,10 @@
 | --- | --- |
 | `PLAY` | 开始播放 |
 | `PAUSE` | 暂停播放 |
-| `STOP` | 停止播放 |
 | `SEEK` | 进度拖动，仅电影 |
 | `NEXT` | 下一首，仅音乐 |
 | `PREV` | 上一首，仅音乐 |
+| `EXIT` | 退出 |
 
 #### resolution
 
@@ -632,6 +634,13 @@
 | `png` | PNG 格式图片 |
 | `webp` | WebP 格式图片 |
 
+#### WAPAction
+
+| 枚举值 | 含义 |
+| --- | --- |
+| `ACCESS` | 访问 |
+| `EXIT` | 退出 |
+
 #### shopAction
 
 | 枚举值 | 含义 |
@@ -640,6 +649,7 @@
 | `BUY` | 提交订单/购买 |
 | `PAY` | 支付订单 |
 | `CANCEL` | 取消订单 |
+| `EXIT` | 退出 |
 
 #### payStatus
 

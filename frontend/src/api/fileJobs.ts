@@ -1,5 +1,5 @@
 import { apiDownload, apiRequest } from './http'
-import type { DataTypeCode, ExportFormat, FileJobSummaryDto, PageDto } from './types'
+import type { DataTypeCode, FileJobSummaryDto, PageDto } from './types'
 
 export interface ImportCreatePayload {
   dataTypeCode: DataTypeCode
@@ -14,21 +14,10 @@ export interface ImportCreatePayload {
 }
 
 export interface ExportCreatePayload {
-  format: ExportFormat
-  filters: {
-    dataTypeCode: string | null
-    tagIds: string[]
-    airlineCode: string | null
-    flightNo: string | null
-    sourceDeviceCode: string | null
-    aircraftModel: string | null
-    origin: string | null
-    destination: string | null
-    receivedFrom: string | null
-    receivedTo: string | null
-  }
-  sortBy: 'dataType' | 'sentAt' | 'receivedAt'
-  sortDirection: 'asc' | 'desc'
+  groups: Array<{
+    dataTypeCode: DataTypeCode
+    recordIds: string[]
+  }>
 }
 
 export function createImport(payload: ImportCreatePayload): Promise<FileJobSummaryDto> {
@@ -55,8 +44,8 @@ export function downloadImportErrorFile(jobId: string): ReturnType<typeof apiDow
   return apiDownload(`/imports/${encodeURIComponent(jobId)}/error-file`)
 }
 
-export function createExport(payload: ExportCreatePayload): Promise<FileJobSummaryDto> {
-  return apiRequest<FileJobSummaryDto>('/exports', {
+export function createExport(payload: ExportCreatePayload): Promise<FileJobSummaryDto[]> {
+  return apiRequest<FileJobSummaryDto[]>('/exports', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
@@ -72,4 +61,8 @@ export function getExportJob(jobId: string): Promise<FileJobSummaryDto> {
 
 export function downloadExportFile(jobId: string): ReturnType<typeof apiDownload> {
   return apiDownload(`/exports/${encodeURIComponent(jobId)}/file`)
+}
+
+export function deleteExport(jobId: string): Promise<null> {
+  return apiRequest<null>(`/exports/${encodeURIComponent(jobId)}`, { method: 'DELETE' })
 }

@@ -103,7 +103,7 @@ class IfeModel:
             "contentName": work.title,
             "contentType": "/".join(work.genres),
             "contentDuration": work.duration_seconds // 60,
-            "playAction": self.rng.choice(["PLAY", "PAUSE"]),
+            "playAction": self.rng.choice(["PLAY", "PAUSE", "SEEK", "EXIT"]),
             "playPosition": self.rng.randint(0, work.duration_seconds),
             "resolution": self.rng.choice(["720P", "1080P", "4K"]),
         }
@@ -120,7 +120,7 @@ class IfeModel:
             "musicType": "/".join(work.genres),
             "artist": work.creator_name,
             "album": work.collection_name or "",
-            "playAction": self.rng.choice(["PLAY", "PAUSE"]),
+            "playAction": self.rng.choice(["PLAY", "PAUSE", "NEXT", "PREV", "EXIT"]),
             "playPosition": self.rng.randint(0, work.duration_seconds),
             "volume": self.rng.randint(20, 90),
         }
@@ -132,7 +132,7 @@ class IfeModel:
         return {
             "behaviorType": "CAST_SCREEN",
             "targetDevice": self.rng.choice(["SVDU-F01", "SVDU-F02", "HEAD-CABIN-SCREEN-01"]),
-            "castAction": self.rng.choice(["CAST", "STOP"]),
+            "castAction": self.rng.choice(["CAST", "STOP", "EXIT"]),
             "castStatus": self.rng.choice(["CONNECTED", "FAILED", "DISCONNECTED"]),
             "resolution": self.rng.choice(["720P", "1080P", "4K"]),
             "castDuration": self.rng.randint(60, 3600),
@@ -153,12 +153,13 @@ class IfeModel:
             "port": port,
             "trafficBytes": self.rng.randint(10_240, 5_242_880),
             "url": f"https://{domain}/flight/{self.context.flight_number.lower()}",
+            "WAPAction": self.rng.choice(["ACCESS", "EXIT"]),
         }
 
     def _shopping_info(self) -> dict:
         goods_id, goods_name, goods_type, unit_price = self.rng.choice(SHOP_GOODS)
         quantity = self.rng.randint(1, 3)
-        shop_action = self.rng.choice(["ADD", "BUY", "PAY", "CANCEL"])
+        shop_action = self.rng.choice(["ADD", "BUY", "PAY", "CANCEL", "EXIT"])
         pay_status = self.rng.choice(["UNPAID", "PAID", "FAILED", "REFUND"])
         return {
             "behaviorType": "SHOPPING",

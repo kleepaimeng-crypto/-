@@ -3,7 +3,9 @@
 ## 1. 既有表复用
 
 ```text
-数据管理筛选
+已勾选 data_record.id
+      ↓
+按 data_type_code 分组
       ↓
 data_record.raw_payload (jsonb)
       ↓
@@ -33,7 +35,7 @@ file_job (EXPORT)
 - 不新增 Flyway 迁移、表、字段、索引或约束。
 - 不回改既有 `V1` 至当前已发布迁移。
 - 不复制 QAR、633 IFE、科可瑞尔 IFE、舷窗或流量业务表的数据。
-- `file_job.filter_snapshot` 保存任务创建时的筛选和排序快照；不保存原始报文副本。
+- `file_job.filter_snapshot` 保存任务创建时的记录 ID 和数据类型快照；不保存原始报文副本。
 
 ## 4. 数据安全
 

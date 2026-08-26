@@ -81,6 +81,13 @@ public interface PassengerRealtimeMapper {
                             END AS action,
                             b.behavior_detail ->> 'dstDomain' AS domain,
                             b.behavior_detail ->> 'url' AS url,
+                            CASE b.behavior_type
+                                WHEN 'MOVIE_PLAY' THEN b.behavior_detail ->> 'playAction' = 'EXIT'
+                                WHEN 'MUSIC_PLAY' THEN b.behavior_detail ->> 'playAction' = 'EXIT'
+                                WHEN 'WAP_BROWSING' THEN b.behavior_detail ->> 'WAPAction' = 'EXIT'
+                                WHEN 'SHOPPING' THEN b.behavior_detail #>> '{orderList,0,shopAction}' = 'EXIT'
+                                ELSE false
+                            END AS is_exit,
                             CASE
                                 WHEN (b.behavior_detail ->> 'trafficBytes') ~ '^[0-9]+$'
                                 THEN (b.behavior_detail ->> 'trafficBytes')::bigint
@@ -142,6 +149,13 @@ public interface PassengerRealtimeMapper {
                             END AS action,
                             b.behavior_detail ->> 'dstDomain' AS domain,
                             b.behavior_detail ->> 'url' AS url,
+                            CASE b.behavior_type
+                                WHEN 'MOVIE_PLAY' THEN b.behavior_detail ->> 'playAction' = 'EXIT'
+                                WHEN 'MUSIC_PLAY' THEN b.behavior_detail ->> 'playAction' = 'EXIT'
+                                WHEN 'CAST_SCREEN' THEN b.behavior_detail ->> 'castAction' = 'EXIT'
+                                WHEN 'WAP_BROWSING' THEN b.behavior_detail ->> 'WAPAction' = 'EXIT'
+                                ELSE false
+                            END AS is_exit,
                             CASE
                                 WHEN (b.behavior_detail ->> 'trafficBytes') ~ '^[0-9]+$'
                                 THEN (b.behavior_detail ->> 'trafficBytes')::bigint
@@ -182,6 +196,7 @@ public interface PassengerRealtimeMapper {
                          candidates.source_id DESC
                 LIMIT 1
             ) activity
+            WHERE activity.is_exit = false
             ORDER BY requested.seat_no
             </script>
             """)

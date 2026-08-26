@@ -104,14 +104,18 @@ class C929LayoutTests(unittest.TestCase):
                 self.assertEqual(work.title, info["contentName"])
                 self.assertEqual("/".join(work.genres), info["contentType"])
                 self.assertEqual(work.duration_seconds // 60, info["contentDuration"])
-                self.assertIn(info["playAction"], {"PLAY", "PAUSE"})
+                self.assertIn(info["playAction"], {"PLAY", "PAUSE", "SEEK", "EXIT"})
             elif info["behaviorType"] == "MUSIC_PLAY":
                 work = music_by_code[info["musicId"]]
                 self.assertEqual(work.title, info["musicName"])
                 self.assertEqual("/".join(work.genres), info["musicType"])
                 self.assertEqual(work.creator_name, info["artist"])
                 self.assertEqual(work.collection_name or "", info["album"])
-                self.assertIn(info["playAction"], {"PLAY", "PAUSE"})
+                self.assertIn(info["playAction"], {"PLAY", "PAUSE", "NEXT", "PREV", "EXIT"})
+            elif info["behaviorType"] == "WAP_BROWSING":
+                self.assertIn(info["WAPAction"], {"ACCESS", "EXIT"})
+            elif info["behaviorType"] == "SHOPPING":
+                self.assertIn(info["orderList"][0]["shopAction"], {"ADD", "BUY", "PAY", "CANCEL", "EXIT"})
 
     def test_default_config_matches_confirmed_aircraft(self) -> None:
         config = SimulatorConfig()

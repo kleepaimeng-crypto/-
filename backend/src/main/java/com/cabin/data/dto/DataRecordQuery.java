@@ -16,7 +16,7 @@ public class DataRecordQuery {
     private final String aircraftModel;
     private final String origin;
     private final String destination;
-    private final String dataTypeCode;
+    private final List<String> dataTypeCodes;
     private final OffsetDateTime receivedFrom;
     private final OffsetDateTime receivedTo;
     private final boolean includeDeleted;
@@ -53,7 +53,7 @@ public class DataRecordQuery {
         this.aircraftModel = blankToNull(aircraftModel);
         this.origin = airportOrNull("origin", origin);
         this.destination = airportOrNull("destination", destination);
-        this.dataTypeCode = upperOrNull(dataTypeCode);
+        this.dataTypeCodes = dataTypeCodes(dataTypeCode);
         this.receivedFrom = receivedFrom;
         this.receivedTo = receivedTo;
         this.includeDeleted = includeDeleted;
@@ -97,8 +97,8 @@ public class DataRecordQuery {
         return destination;
     }
 
-    public String getDataTypeCode() {
-        return dataTypeCode;
+    public List<String> getDataTypeCodes() {
+        return dataTypeCodes;
     }
 
     public OffsetDateTime getReceivedFrom() {
@@ -188,6 +188,17 @@ public class DataRecordQuery {
     private static String upperOrNull(String value) {
         String normalized = blankToNull(value);
         return normalized == null ? null : normalized.toUpperCase(Locale.ROOT);
+    }
+
+    private static List<String> dataTypeCodes(String value) {
+        if (value == null || value.isBlank()) {
+            return List.of();
+        }
+        return List.of(value.split(",")).stream()
+                .map(DataRecordQuery::upperOrNull)
+                .filter(code -> code != null)
+                .distinct()
+                .toList();
     }
 
     private static String blankToNull(String value) {

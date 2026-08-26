@@ -25,7 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         JwtProperties.class,
         BootstrapAdminProperties.class,
         UdpProperties.class,
-        CockpitVideoProperties.class
+        CockpitVideoProperties.class,
+        ExportProperties.class
 })
 public class SecurityConfig {
     @Bean
