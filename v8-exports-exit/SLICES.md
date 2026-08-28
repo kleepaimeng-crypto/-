@@ -11,7 +11,7 @@
 
 ## 2. 切片 2：CSV 生成
 
-- CSV 以 `raw_json` 作为唯一业务列，使用 UTF-8 with BOM 和标准 CSV 转义。
+- CSV 使用 UTF-8 with BOM 和标准 CSV 转义；JSON 键展开为表头列，顶层 `items` 数组按元素展开为多行。
 - 使用流式文件写入；不得将全部导出结果或 Base64 报文一次性载入内存。
 - `raw_payload` 为空的记录计入跳过数量，任务结果为 `PARTIAL` 或 `FAILED`。
 

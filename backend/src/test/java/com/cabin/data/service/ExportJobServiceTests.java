@@ -33,7 +33,7 @@ class ExportJobServiceTests {
     private final ExportJobMapper exportJobMapper = mock(ExportJobMapper.class);
 
     @Test
-    void createsCsvWithOneEscapedRawJsonColumn() throws Exception {
+    void createsCsvWithFlattenedColumns() throws Exception {
         Path storageDir = Files.createTempDirectory("cabin-export-test-");
         UUID userId = UUID.randomUUID();
         CurrentUser user = new CurrentUser(userId, "admin", null, "ADMIN");
@@ -75,8 +75,8 @@ class ExportJobServiceTests {
                 .findFirst()
                 .orElseThrow();
         String content = Files.readString(csv);
-        assertThat(content).contains("raw_json");
-        assertThat(content).contains("{\"\"name\"\":\"\"测试,报文\"\"");
+        assertThat(content).contains("name,quote");
+        assertThat(content).contains("\"测试,报文\",\"\"\"ok\"\"\"");
         verify(exportJobMapper).complete(
                 any(), eq(userId), eq("SUCCEEDED"), anyString(), anyString(), anyLong(),
                 eq(1), eq(1), eq(0)

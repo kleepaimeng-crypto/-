@@ -13,6 +13,7 @@ import com.cabin.data.dto.ExportJobResponse;
 import com.cabin.data.entity.ExportJobRow;
 import com.cabin.data.mapper.ExportJobMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -123,7 +125,7 @@ public class ExportJobService {
                 try {
                     Files.deleteIfExists(file);
                 } catch (IOException exception) {
-                    throw new BusinessException(ResponseCode.INTERNAL_ERROR, "导出文件删除失败");
+                    throw new BusinessException(ResponseCode.INTERNAL_ERROR, "文件正在被其他程序使用");
                 }
             }
         }
@@ -181,23 +183,109 @@ public class ExportJobService {
         int totalRows = 0;
         int successRows = 0;
         int failedRows = 0;
-        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
-            writer.write('\uFEFF');
-            writer.write("raw_json\r\n");
-            for (ExportRawPayloadRow row : rows) {
-                totalRows++;
-                String rawPayload = row.getRawPayload();
-                if (rawPayload == null || rawPayload.isBlank()) {
+        List<Map<String, String>> csvRows = new ArrayList<>();
+        Set<String> headers = new LinkedHashSet<>();
+
+        for (ExportRawPayloadRow row : rows) {
+            totalRows++;
+            String rawPayload = row.getRawPayload();
+            if (rawPayload == null || rawPayload.isBlank()) {
+                failedRows++;
+                continue;
+            }
+            try {
+                List<Map<String, String>> payloadRows = flattenPayload(objectMapper.readTree(rawPayload));
+                if (payloadRows.isEmpty()) {
                     failedRows++;
                     continue;
                 }
-                writer.write('"');
-                writer.write(rawPayload.replace("\"", "\"\""));
-                writer.write("\"\r\n");
+                csvRows.addAll(payloadRows);
+                payloadRows.forEach(payloadRow -> headers.addAll(payloadRow.keySet()));
                 successRows++;
+            } catch (JsonProcessingException exception) {
+                failedRows++;
+            }
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+            writer.write('\uFEFF');
+            writeCsvRow(writer, headers);
+            for (Map<String, String> csvRow : csvRows) {
+                List<String> values = headers.stream().map(header -> csvRow.getOrDefault(header, "")).toList();
+                writeCsvRow(writer, values);
             }
         }
         return new ExportResult(totalRows, successRows, failedRows);
+    }
+
+    private List<Map<String, String>> flattenPayload(JsonNode root) {
+        if (root.isObject() && root.path("items").isArray()) {
+            Map<String, String> sharedValues = new LinkedHashMap<>();
+            root.fields().forEachRemaining(entry -> {
+                if (!"items".equals(entry.getKey())) {
+                    flattenValue(entry.getValue(), entry.getKey(), sharedValues);
+                }
+            });
+
+            List<Map<String, String>> itemRows = new ArrayList<>();
+            for (JsonNode item : root.path("items")) {
+                Map<String, String> itemRow = new LinkedHashMap<>(sharedValues);
+                flattenValue(item, "", itemRow);
+                itemRows.add(itemRow);
+            }
+            return itemRows;
+        }
+
+        Map<String, String> row = new LinkedHashMap<>();
+        flattenValue(root, "", row);
+        return List.of(row);
+    }
+
+    private void flattenValue(JsonNode value, String path, Map<String, String> row) {
+        if (value.isObject()) {
+            value.fields().forEachRemaining(entry -> flattenValue(
+                    entry.getValue(), joinPath(path, entry.getKey()), row
+            ));
+            return;
+        }
+        if (value.isArray()) {
+            for (int index = 0; index < value.size(); index++) {
+                flattenValue(value.get(index), path + "[" + index + "]", row);
+            }
+            return;
+        }
+        row.put(path.isEmpty() ? "value" : path, value.isNull() ? "" : value.asText());
+    }
+
+    private String joinPath(String parent, String child) {
+        return parent.isEmpty() ? child : parent + "." + child;
+    }
+
+    private void writeCsvRow(BufferedWriter writer, Iterable<String> values) throws IOException {
+        boolean first = true;
+        for (String value : values) {
+            if (!first) {
+                writer.write(',');
+            }
+            writeCsvValue(writer, value);
+            first = false;
+        }
+        writer.write("\r\n");
+    }
+
+    private void writeCsvValue(BufferedWriter writer, String value) throws IOException {
+        String safeValue = value == null ? "" : value;
+        boolean requiresQuoting = safeValue.indexOf(',') >= 0
+                || safeValue.indexOf('"') >= 0
+                || safeValue.indexOf('\r') >= 0
+                || safeValue.indexOf('\n') >= 0;
+        if (requiresQuoting) {
+            writer.write('"');
+            writer.write(safeValue.replace("\"", "\"\""));
+            writer.write('"');
+            return;
+        }
+        writer.write(safeValue);
     }
 
     private void ensureEnabledDataType(String dataTypeCode) {

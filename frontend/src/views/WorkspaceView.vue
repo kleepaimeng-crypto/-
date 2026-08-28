@@ -125,6 +125,7 @@ const pageNumbers = computed(() => {
 
 let refreshTimer: number | undefined
 let exportRefreshTimer: number | undefined
+let exportNoticeTimer: number | undefined
 
 function buildQuery(): DataRecordQuery {
   return {
@@ -428,7 +429,13 @@ async function submitExport(): Promise<void> {
   }
   try {
     const jobs = await createExport(payload)
-    actionNotice.value = `已创建 ${jobs.length} 个 CSV 导出任务。`
+    const notice = `已创建 ${jobs.length} 个 CSV 导出任务。`
+    actionNotice.value = notice
+    if (exportNoticeTimer !== undefined) window.clearTimeout(exportNoticeTimer)
+    exportNoticeTimer = window.setTimeout(() => {
+      if (actionNotice.value === notice) actionNotice.value = ''
+      exportNoticeTimer = undefined
+    }, 3000)
     await loadHistories()
   } catch (error) {
     actionError.value = errorMessage(error, '导出任务接口暂不可用')
@@ -556,6 +563,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (refreshTimer !== undefined) window.clearInterval(refreshTimer)
   if (exportRefreshTimer !== undefined) window.clearInterval(exportRefreshTimer)
+  if (exportNoticeTimer !== undefined) window.clearTimeout(exportNoticeTimer)
   document.removeEventListener('pointerdown', handleDocumentPointerDown)
   document.removeEventListener('keydown', handleDocumentKeyDown)
 })

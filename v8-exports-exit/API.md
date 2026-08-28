@@ -76,8 +76,8 @@ GET /api/v1/exports/{jobId}/file
 ### 4.1 CSV
 
 ```csv
-raw_json
-"{\"time\":\"12:00:00\",\"FLIGHT NUMBER\":\"CA8533\"}"
+time,FLIGHT NUMBER
+12:00:00,CA8533
 ```
 
-文件可以被 CSV 阅读器读取；第一列的值是完整 JSON 字符串。超长 Base64 JSON 可能超过 Excel 可显示的单元格上限，但不得在服务端截断。
+文件第一行是字段名，后续每行是一个数据项。嵌套对象使用点号列名；顶层 `items` 数组中的每个元素展开为一行。超长 Base64 字段可能超过 Excel 可显示的单元格上限，但不得在服务端截断。
