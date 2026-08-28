@@ -13,6 +13,7 @@ frontend/map/tiles_street/
 # logs
 *.log
 logs/
+exports/
 
 # env / secrets
 .env
