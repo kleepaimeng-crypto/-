@@ -7,16 +7,16 @@
 
 .platform-brand__mark {
   display: block;
-  width: 31px;
-  height: 41px;
+  width: 60px;
+  height: 24px;
   flex: 0 0 auto;
-  filter: drop-shadow(0 0 14px rgba(84, 136, 253, 0.42));
 }
 
 .platform-brand__mark img {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .platform-brand__text {
@@ -38,8 +38,8 @@
 }
 
 .platform-brand--compact .platform-brand__mark {
-  width: 30px;
-  height: 40px;
+  width: 52px;
+  height: 21px;
 }
 
 .platform-brand--compact .platform-brand__text {
@@ -52,8 +52,8 @@
   }
 
   .platform-brand__mark {
-    width: 25px;
-    height: 33px;
+    width: 50px;
+    height: 20px;
   }
 
   .platform-brand__text {

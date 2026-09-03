@@ -206,42 +206,43 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 78px;
-  padding: 14px clamp(24px, 4vw, 72px);
-  border-bottom: 1px solid rgba(58, 112, 224, 0.42);
-  background: rgba(18, 29, 47, 0.78);
-  backdrop-filter: blur(16px);
+  min-height: 70px;
+  padding: 0 30px 0 0;
+  border-bottom: 0;
+  background: #1f2535;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
-.login-company-strip {
+.login-header::after {
   position: absolute;
-  top: 104px;
-  left: clamp(112px, 8vw, 164px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(70, 118, 201, 0.32);
+  content: "";
+  pointer-events: none;
+}
+
+.login-header .platform-brand {
+  position: relative;
+  width: 482px;
+  height: 70px;
+  background: url('/assets/主表头%201.svg') left center / 100% 100% no-repeat;
+}
+
+.login-header .platform-brand__mark {
+  position: absolute;
+  top: 23px;
+  left: 20px;
   z-index: 1;
-  display: inline-flex;
-  width: fit-content;
-  max-width: 100%;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  color: rgba(218, 226, 238, 0.84);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  width: 58px;
+  height: 23px;
 }
 
-.login-company-strip img {
-  display: block;
-  width: 70px;
-  height: auto;
-  flex: 0 0 auto;
-}
-
-.login-company-strip span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.login-header .platform-brand__text {
+  visibility: hidden;
 }
 
 .login-header__status {
@@ -452,6 +453,7 @@
 
 .login-footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 14px clamp(24px, 4vw, 72px);
   border-top: 1px solid rgba(98, 122, 160, 0.14);
@@ -504,18 +506,8 @@
 
 @media (max-width: 600px) {
   .login-header {
-    min-height: 68px;
-    padding-inline: 18px;
-  }
-
-  .login-company-strip {
-    top: 82px;
-    left: 52px;
-    font-size: 11px;
-  }
-
-  .login-company-strip img {
-    width: 50px;
+    min-height: 70px;
+    padding: 0;
   }
 
   .login-header__status {
@@ -527,7 +519,7 @@
     padding: 38px 0;
   }
 
-  .login-footer span:last-child {
+  .login-footer > span:last-child {
     display: none;
   }
 

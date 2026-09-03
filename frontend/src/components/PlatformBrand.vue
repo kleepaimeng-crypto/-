@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const brandMarkUrl = '/assets/Frame%202.svg?v=2'
+const brandMarkUrl = '/assets/logo-red.png'
 
 defineProps<{
   compact?: boolean

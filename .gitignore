@@ -1,4 +1,6 @@
 .idea/
+.codex/
+.vscode/
 
 # Java / Maven
 target/
@@ -26,6 +28,7 @@ application-*.local.yml
 venv/
 __pycache__/
 *.py[cod]
+
 
 # system
 .DS_Store

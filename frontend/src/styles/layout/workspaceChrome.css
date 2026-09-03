@@ -155,10 +155,18 @@
   width: 482px;
   height: 70px;
   justify-self: start;
-  background: url('/assets/主表头.svg') left center / 100% 100% no-repeat;
+  background: url('/assets/主表头%201.svg') left center / 100% 100% no-repeat;
 }
 
-.workspace-header .platform-brand__mark,
+.workspace-header .platform-brand__mark {
+  position: absolute;
+  top: 23px;
+  left: 20px;
+  z-index: 1;
+  width: 58px;
+  height: 23px;
+}
+
 .workspace-header .platform-brand__text {
   visibility: hidden;
 }

@@ -111,11 +111,6 @@ function resolveLoginError(error: unknown): { title: string; detail: string } {
       </div>
     </header>
 
-    <div class="login-company-strip" aria-label="中电科航空电子有限公司">
-      <img src="/assets/logo-red.png" alt="CETC" />
-      <span>中电科航空电子有限公司</span>
-    </div>
-
     <section class="login-stage">
       <div class="login-context">
         <p class="login-context__eyebrow">GROUND SYSTEM</p>
@@ -177,7 +172,7 @@ function resolveLoginError(error: unknown): { title: string; detail: string } {
     </section>
 
     <footer class="login-footer">
-      <span>前中后舱网联数据显示平台</span>
+      <span>中电科航空电子有限公司</span>
       <span>AUTHORIZED ACCESS ONLY</span>
     </footer>
   </main>
