@@ -115,7 +115,15 @@ onBeforeUnmount(() => {
           />
         </aside>
 
-        <FlightMapStage ref="mapStage" :current="current" :loading="loading" :error="error" />
+        <FlightMapStage
+          ref="mapStage"
+          :current="current"
+          plane-icon-src="/assets/plane-c929.png"
+          :plane-icon-source-width="628"
+          :plane-heading-offset-deg="90"
+          :loading="loading"
+          :error="error"
+        />
 
         <aside class="flight-right-stack">
           <FlightChartPanel

@@ -24,6 +24,9 @@ const props = defineProps<{
   current?: FlightTrackCurrentDto | null
   track?: FlightTelemetryPointDto[]
   currentPoint?: FlightTelemetryPointDto | null
+  planeIconSrc?: string
+  planeIconSourceWidth?: number
+  planeHeadingOffsetDeg?: number
   loading: boolean
   error: string
 }>()
@@ -44,7 +47,7 @@ const provinceLabelZoom = 4
 const countyLabelZoom = 9.5
 const countyLoadDebounceMs = 220
 const basePlaneZoom = 6
-const planeSourceSize = 512
+const defaultPlaneSourceWidth = 512
 const planeMinSize = 44
 const planeMaxSize = 122
 const mapContainer = ref<HTMLElement | null>(null)
@@ -583,14 +586,15 @@ function planeStyle(feature: FeatureLike, resolution: number): Style {
   const zoom = map?.getView().getZoomForResolution(resolution) ?? initialZoom
   const size = planeSize(zoom)
   const heading = Number(feature.get('heading') ?? 90)
+  const headingOffset = props.planeHeadingOffsetDeg ?? 0
   return new Style({
     image: new Icon({
       anchor: [0.5, 0.5],
       opacity: 1,
       rotateWithView: false,
-      rotation: (heading * Math.PI) / 180,
-      scale: size / planeSourceSize,
-      src: '/assets/plane.png',
+      rotation: ((heading + headingOffset) * Math.PI) / 180,
+      scale: size / (props.planeIconSourceWidth ?? defaultPlaneSourceWidth),
+      src: props.planeIconSrc ?? '/assets/plane.png',
     }),
     zIndex: 20,
   })

@@ -214,7 +214,16 @@ onBeforeUnmount(() => {
           <FlightChartPanel title="海拔高与地速" left-label="地速(kt)" right-label="海拔高(ft)" :points="playback.chartPoints.value" :series="speedSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" />
         </aside>
 
-        <FlightMapStage ref="mapStage" :track="playback.flownPoints.value" :current-point="playback.currentPoint.value" :loading="trackLoading" :error="trackError" />
+        <FlightMapStage
+          ref="mapStage"
+          :track="playback.flownPoints.value"
+          :current-point="playback.currentPoint.value"
+          plane-icon-src="/assets/plane-c929.png"
+          :plane-icon-source-width="628"
+          :plane-heading-offset-deg="90"
+          :loading="trackLoading"
+          :error="trackError"
+        />
 
         <aside class="flight-right-stack history-right-stack">
           <FlightChartPanel title="航向角" :points="playback.chartPoints.value" :series="headingSeries" :current-index="playback.chartPoints.value.length - 1" :cursor-at-ms="playback.playbackTimeMs.value" :time-domain="playback.chartDomain.value" :scale-padding="0.72" />
