@@ -718,7 +718,7 @@ onBeforeUnmount(() => {
             <label class="is-disabled"><input type="radio" disabled /><span></span>PDF（暂未支持）</label>
           </div>
           <div class="export-actions">
-            <button class="export-button" :disabled="actionLoading || selectedIds.length === 0" @click="submitExport">{{ actionLoading ? '提交中…' : `导出已选 ${selectedIds.length} 条` }}</button>
+            <button class="export-button" :disabled="actionLoading || selectedIds.length === 0" @click="submitExport">{{ actionLoading ? '提交中…' : selectedIds.length ? `导出已选 ${selectedIds.length} 条` : '导出' }}</button>
           </div>
           <p v-if="actionError" class="inline-error">{{ actionError }}</p>
           </section>
