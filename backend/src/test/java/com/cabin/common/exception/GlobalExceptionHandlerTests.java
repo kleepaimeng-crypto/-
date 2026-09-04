@@ -7,7 +7,9 @@ import com.cabin.common.response.ResponseCode;
 import com.cabin.common.trace.TraceContext;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 class GlobalExceptionHandlerTests {
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
@@ -38,5 +40,17 @@ class GlobalExceptionHandlerTests {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().code()).isEqualTo("VALIDATION_ERROR");
         assertThat(response.getBody().message()).isEqualTo("bad input");
+    }
+
+    @Test
+    void handlesMissingStaticResourceAsNotFound() {
+        ResponseEntity<Response<Void>> response = handler.handleResourceNotFound(
+                new NoResourceFoundException(HttpMethod.POST, "/api/v1/imports", "")
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(ResponseCode.RESOURCE_NOT_FOUND.httpStatus());
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().code()).isEqualTo("RESOURCE_NOT_FOUND");
+        assertThat(response.getBody().message()).isEqualTo("请求的资源不存在");
     }
 }

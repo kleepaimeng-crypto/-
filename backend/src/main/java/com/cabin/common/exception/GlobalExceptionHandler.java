@@ -17,6 +17,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -68,6 +69,16 @@ public class GlobalExceptionHandler {
                 .body(Response.error(
                         ResponseCode.DATABASE_UNAVAILABLE,
                         "数据库暂不可用",
+                        TraceContext.currentTraceId()
+                ));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Response<Void>> handleResourceNotFound(NoResourceFoundException exception) {
+        return ResponseEntity.status(ResponseCode.RESOURCE_NOT_FOUND.httpStatus())
+                .body(Response.error(
+                        ResponseCode.RESOURCE_NOT_FOUND,
+                        "请求的资源不存在",
                         TraceContext.currentTraceId()
                 ));
     }
