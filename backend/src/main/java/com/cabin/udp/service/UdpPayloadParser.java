@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 public class UdpPayloadParser {
     private static final DateTimeFormatter COMPACT_TIME =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final BigDecimal FULL_CIRCLE_DEGREES = new BigDecimal("360");
 
     private final ObjectMapper objectMapper;
     private final UdpProperties properties;
@@ -115,8 +116,8 @@ public class UdpPayloadParser {
         row.put("groundSpeedKt", decimalOrNull(root, "GROUNDSPEED"));
         row.put("latitude", doubleOrNull(root, "PRES POSN LAT - FMC"));
         row.put("longitude", doubleOrNull(root, "PRES POSN LONG - FMC"));
-        row.put("trackAngleDeg", decimalOrNull(root, "TRACK ANGLE TRUE - FMC"));
-        row.put("headingDeg", decimalOrNull(root, "CAPT DISPLAY HEADING"));
+        row.put("trackAngleDeg", angleDegreesOrNull(root, "TRACK ANGLE TRUE - FMC"));
+        row.put("headingDeg", angleDegreesOrNull(root, "CAPT DISPLAY HEADING"));
         row.put("pitchDeg", decimalOrNull(root, "BODY PITCH RATE"));
         row.put("rollDeg", decimalOrNull(root, "BODY ROLL RATE"));
         row.put("leftFuelQty", decimalOrNull(root, "LT MAIN FUEL QTY"));
@@ -498,6 +499,15 @@ public class UdpPayloadParser {
         } catch (NumberFormatException exception) {
             throw new PayloadParseException("invalid decimal field " + field, exception);
         }
+    }
+
+    private BigDecimal angleDegreesOrNull(JsonNode node, String field) {
+        BigDecimal value = decimalOrNull(node, field);
+        if (value == null) {
+            return null;
+        }
+        BigDecimal normalized = value.remainder(FULL_CIRCLE_DEGREES);
+        return normalized.signum() < 0 ? normalized.add(FULL_CIRCLE_DEGREES) : normalized;
     }
 
     private Double doubleOrNull(JsonNode node, String field) {

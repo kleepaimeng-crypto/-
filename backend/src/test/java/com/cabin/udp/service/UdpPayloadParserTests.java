@@ -45,6 +45,22 @@ class UdpPayloadParserTests {
     }
 
     @Test
+    void normalizesNegativeQarHeadingAndTrackAngles() throws Exception {
+        ParsedUdpPayload parsed = parse(
+                "QAR",
+                "qar.frame",
+                qarJson()
+                        .replace("\"180.100\"", "\"-114.608\"")
+                        .replace("\"181.100\"", "\"-106.875\"")
+        );
+
+        assertThat(parsed.businessRows()).singleElement().satisfies(row -> {
+            assertThat(row).containsEntry("trackAngleDeg", new java.math.BigDecimal("245.392"));
+            assertThat(row).containsEntry("headingDeg", new java.math.BigDecimal("253.125"));
+        });
+    }
+
+    @Test
     void partialBatchKeepsSuccessfulItemsAndMarksRecordPartial() throws Exception {
         ParsedUdpPayload parsed = parse("GROUND_TRAFFIC_RECORD", "ground.traffic_record", trafficJson(true));
 
