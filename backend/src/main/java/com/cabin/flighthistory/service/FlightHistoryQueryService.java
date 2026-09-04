@@ -116,9 +116,7 @@ public class FlightHistoryQueryService {
     }
 
     private String airport(String value) {
-        String result = prefix(value, 4);
-        if (result != null && !result.matches("[A-Z0-9]{4}")) throw validation("机场代码必须为 4 位");
-        return result;
+        return prefix(value, 64);
     }
 
     private String enumValue(String value) {

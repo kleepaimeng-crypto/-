@@ -455,7 +455,7 @@ public class UdpPayloadParser {
 
     private String airport(JsonNode node, String field) {
         String value = requiredText(node, field).toUpperCase(Locale.ROOT);
-        if (!value.matches("[A-Z0-9]{4}")) {
+        if (value.length() > 64) {
             throw new PayloadParseException("invalid airport " + field);
         }
         return value;

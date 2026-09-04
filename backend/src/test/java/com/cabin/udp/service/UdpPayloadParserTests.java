@@ -61,6 +61,23 @@ class UdpPayloadParserTests {
     }
 
     @Test
+    void acceptsQarAirportFieldsLongerThanFourCharacters() throws Exception {
+        ParsedUdpPayload parsed = parse(
+                "QAR",
+                "qar.frame",
+                qarJson()
+                        .replace("\"ZBAA\"", "\"ZSNULNUL\"")
+                        .replace("\"ZSPD\"", "\"ZSHNUL\"")
+        );
+
+        assertThat(parsed.record().getParseStatus()).isEqualTo("PARSED");
+        assertThat(parsed.businessRows()).singleElement().satisfies(row -> {
+            assertThat(row).containsEntry("origin", "ZSNULNUL");
+            assertThat(row).containsEntry("destination", "ZSHNUL");
+        });
+    }
+
+    @Test
     void partialBatchKeepsSuccessfulItemsAndMarksRecordPartial() throws Exception {
         ParsedUdpPayload parsed = parse("GROUND_TRAFFIC_RECORD", "ground.traffic_record", trafficJson(true));
 
