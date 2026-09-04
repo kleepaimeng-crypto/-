@@ -60,7 +60,7 @@ public class FlightTrackService {
         if (latest == null) {
             return null;
         }
-        if (latest.getSampleAt() == null || latest.getSampleAt().isBefore(cutoff)) {
+        if (latest.getLastReceivedAt() == null || latest.getLastReceivedAt().isBefore(cutoff)) {
             return null;
         }
 

@@ -8,6 +8,7 @@ public class FlightTrackPointRow {
     private UUID flightSessionId;
     private UUID recordId;
     private OffsetDateTime sampleAt;
+    private OffsetDateTime lastReceivedAt;
     private String sourceTimeText;
     private String flightNo;
     private String origin;
@@ -50,6 +51,14 @@ public class FlightTrackPointRow {
 
     public void setSampleAt(OffsetDateTime sampleAt) {
         this.sampleAt = sampleAt;
+    }
+
+    public OffsetDateTime getLastReceivedAt() {
+        return lastReceivedAt;
+    }
+
+    public void setLastReceivedAt(OffsetDateTime lastReceivedAt) {
+        this.lastReceivedAt = lastReceivedAt;
     }
 
     public String getSourceTimeText() {

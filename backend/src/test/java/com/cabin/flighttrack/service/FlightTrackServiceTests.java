@@ -71,9 +71,21 @@ class FlightTrackServiceTests {
     @Test
     void returnsNullWhenActiveSessionIsStale() {
         FlightTrackPointRow stale = row(now.minusMinutes(10), "470");
+        stale.setLastReceivedAt(now.minusMinutes(10));
         when(mapper.findActiveSessionLatest()).thenReturn(stale);
 
         assertThat(service.getCurrent()).isNull();
+    }
+
+    @Test
+    void returnsCurrentFlightWhenQarSampleTimeIsOldButRecentlyReceived() {
+        FlightTrackPointRow latest = row(now.minusHours(16), "470");
+        latest.setLastReceivedAt(now.minusSeconds(10));
+        when(mapper.findActiveSessionLatest()).thenReturn(latest);
+        when(mapper.findTrack(latest.getFlightSessionId(), latest.getSampleAt().minusHours(24), latest.getSampleAt()))
+                .thenReturn(List.of(latest));
+
+        assertThat(service.getCurrent()).isNotNull();
     }
 
     @Test
@@ -120,6 +132,7 @@ class FlightTrackServiceTests {
         row.setFlightSessionId(UUID.randomUUID());
         row.setRecordId(UUID.randomUUID());
         row.setSampleAt(sampleAt);
+        row.setLastReceivedAt(sampleAt);
         row.setSourceTimeText(sampleAt.toLocalTime().withNano(0).toString());
         row.setFlightNo("CA4732");
         row.setOrigin("ZBAA");

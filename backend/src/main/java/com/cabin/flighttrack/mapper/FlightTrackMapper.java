@@ -15,6 +15,7 @@ public interface FlightTrackMapper {
                 fs.id AS flight_session_id,
                 q.record_id,
                 q.sample_at,
+                fs.last_received_at,
                 q.source_time_text,
                 q.flight_no,
                 q.origin,
