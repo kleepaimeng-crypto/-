@@ -7,7 +7,6 @@ import com.cabin.flighttrack.dto.FlightTrackInfoResponse;
 import com.cabin.flighttrack.dto.FlightTrackPointResponse;
 import com.cabin.flighttrack.entity.FlightTrackPointRow;
 import com.cabin.flighttrack.mapper.FlightTrackMapper;
-import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +23,6 @@ public class FlightTrackService {
     private static final int FRESHNESS_SECONDS = 300;
     private static final int TRACK_WINDOW_HOURS = 24;
     private static final int MAX_TRACK_POINTS = 720;
-    private static final BigDecimal ACTIVE_GROUND_SPEED_KT = new BigDecimal("100");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final Map<String, String> AIRPORT_NAMES = Map.of(
             "ZBAA", "北京首都国际机场",
@@ -59,7 +57,7 @@ public class FlightTrackService {
         FlightTrackMapper mapper = mapper();
         OffsetDateTime cutoff = OffsetDateTime.now(clock).minusSeconds(FRESHNESS_SECONDS);
         FlightTrackPointRow latest = mapper.findActiveSessionLatest();
-        if (latest == null || !isActive(latest)) {
+        if (latest == null) {
             return null;
         }
         if (latest.getSampleAt() == null || latest.getSampleAt().isBefore(cutoff)) {
@@ -88,11 +86,6 @@ public class FlightTrackService {
                 FRESHNESS_SECONDS,
                 track
         );
-    }
-
-    private boolean isActive(FlightTrackPointRow row) {
-        BigDecimal speed = row.getGroundSpeedKt();
-        return speed != null && speed.compareTo(ACTIVE_GROUND_SPEED_KT) > 0;
     }
 
     private List<FlightTrackPointRow> sampleTrack(List<FlightTrackPointRow> rows) {

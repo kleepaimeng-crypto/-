@@ -32,11 +32,13 @@ class FlightTrackServiceTests {
     }
 
     @Test
-    void returnsNullWhenCurrentQarIsNotFlying() {
+    void returnsCurrentFlightForLowGroundSpeed() {
         FlightTrackPointRow row = row(now.minusSeconds(10), "80");
         when(mapper.findActiveSessionLatest()).thenReturn(row);
+        when(mapper.findTrack(row.getFlightSessionId(), now.minusHours(24), row.getSampleAt()))
+                .thenReturn(List.of(row));
 
-        assertThat(service.getCurrent()).isNull();
+        assertThat(service.getCurrent()).isNotNull();
     }
 
     @Test
